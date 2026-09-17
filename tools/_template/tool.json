@@ -1,0 +1,26 @@
+{
+  "slug": "my-tool",
+  "name": "My Tool",
+  "kind": "app",
+  "summary": "One plain sentence saying what the tool does and for whom, between sixty and one hundred sixty characters long.",
+  "version": "1.0.0",
+  "author": { "name": "Your name", "url": "https://example.com" },
+  "repository": "https://github.com/you/my-tool",
+  "homepage": "https://example.com/my-tool",
+  "license": "MIT",
+  "publishedAt": "2026-01-01",
+  "updatedAt": "2026-01-01",
+  "categories": ["productivity"],
+  "tags": ["example"],
+  "seo": {
+    "title": "My Tool - a plain title under sixty characters",
+    "keywords": ["nextos", "my tool"],
+    "ogImage": "images/share.png"
+  },
+  "screenshots": [{ "src": "images/main.png", "alt": "The main screen of My Tool showing a list of items", "caption": "The main screen." }],
+  "faq": [{ "q": "Does it work offline?", "a": "Yes - everything runs inside NextOS and nothing leaves your browser." }],
+  "install": { "kind": "command", "command": "npx my-tool --help" },
+  "requires": { "platforms": ["web"] },
+  "related": [],
+  "support": { "issues": "https://github.com/you/my-tool/issues" }
+}

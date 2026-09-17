@@ -1,0 +1,14 @@
+{
+  "name": "nextos-community-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Community-built tools for NextOS - one tool.json per tool, one generated manifest.json",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/validate.mjs",
+    "build": "node scripts/build-manifest.mjs",
+    "check-manifest": "node scripts/build-manifest.mjs --check"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}

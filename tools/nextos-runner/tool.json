@@ -1,0 +1,28 @@
+{
+  "slug": "nextos-runner",
+  "name": "NextOS Runner",
+  "kind": "cli",
+  "summary": "Run your NextOS agents on your own computer instead of the cloud: real files in a folder you choose, your hardware, no cloud CPU charged.",
+  "version": "0.1.0",
+  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" },
+  "repository": "https://github.com/kumin-consulting/jonkum.in/tree/main/packages/nextos-runner",
+  "homepage": "https://www.jonkum.in/docs/your-machine",
+  "license": "MIT",
+  "publishedAt": "2026-09-05",
+  "updatedAt": "2026-09-17",
+  "categories": ["developer-tools", "agents", "infrastructure"],
+  "tags": ["bring-your-own-machine", "runner", "local", "claude-code", "codex", "cli"],
+  "seo": {
+    "title": "NextOS Runner - run NextOS agents on your own machine",
+    "keywords": ["nextos runner", "run ai agents locally", "bring your own machine", "claude code runner", "codex runner", "local agent execution"]
+  },
+  "faq": [
+    { "q": "What does it need on my computer?", "a": "Node.js 18 or newer and a folder for the agent's file tools. To run Claude Code or Codex jobs on your subscription, that client must be installed and signed in on the same machine." },
+    { "q": "Can it touch files outside the folder I chose?", "a": "No. File tools are confined to that folder, and shell commands run only if they are on the allowlist you pass with --allow." },
+    { "q": "Does it cost anything?", "a": "The runner is free and open source. A job uses your computer's CPU and your own AI provider key or subscription, never cloud sandbox hours." }
+  ],
+  "install": { "kind": "command", "command": "npx @kumin-consulting/nextos-runner --key <your gateway key> --dir ~/nextos-workspace" },
+  "requires": { "nextos": "Plus plan or above", "platforms": ["macos", "linux", "windows"] },
+  "related": [],
+  "support": { "issues": "https://github.com/kumin-consulting/jonkum.in/issues" }
+}
