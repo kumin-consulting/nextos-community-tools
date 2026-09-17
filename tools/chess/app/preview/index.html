@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chess - preview harness</title>
+    <link rel="stylesheet" href="../files/build/app.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #f6f5f2;
+      }
+      @media (prefers-color-scheme: dark) {
+        html,
+        body {
+          background: #16151a;
+        }
+      }
+      #root {
+        position: relative;
+        height: 100vh;
+      }
+      #harness-error {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-content: center;
+        padding: 40px;
+        font: 14px/1.6 ui-monospace, Menlo, monospace;
+        white-space: pre-wrap;
+        color: #b3452f;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <pre id="harness-error"></pre>
+
+    <script src="./vendor/react.production.min.js"></script>
+    <script src="./vendor/react-dom.production.min.js"></script>
+    <script src="./stub-sdk.js"></script>
+    <script type="module">
+      // The harness: seed the stub filesystem and storage for whichever
+      // scenario was asked for, then mount the app's default export.
+      const { vfs, storage, HOME, APP_DIR, params } = window.__kuminPreview;
+      const scenario = params.get('scenario') || 'fresh';
+
+      const PLAYED = `[Event "Casual game"]
+[Site "NextOS"]
+[Date "2026.09.17"]
+[Round "-"]
+[White "You"]
+[Black "Chess engine (level 5)"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6
+8. c3 O-O 9. h3 Na5 10. Bc2 c5 11. d4 Qc7 12. Nbd2 cxd4 13. cxd4 Nc6
+14. Nb3 a5 15. Be3 a4 16. Nbd2 Bd7 *
+`;
+
+      const FINISHED = `[Event "Casual game"]
+[Site "NextOS"]
+[Date "2026.09.14"]
+[Round "-"]
+[White "You"]
+[Black "Chess engine (level 6)"]
+[Result "1-0"]
+[ECO "C50"]
+[Opening "Giuoco Piano"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4 Bb4+ 7. Nc3 Nxe4
+8. O-O Bxc3 9. d5 Bf6 10. Re1 Ne7 11. Rxe4 d6 12. Bg5 Bxg5 13. Nxg5 h6
+14. Qe2 hxg5 15. Re1 Be6 16. dxe6 f6 17. Re3 c6 18. Rh3 Rxh3 19. gxh3 g6
+20. Qf3 Kf8 21. Qxf6+ Ke8 22. Qf7# 1-0
+`;
+
+      const DRAWN = `[Event "Casual game"]
+[Site "NextOS"]
+[Date "2026.09.11"]
+[Round "-"]
+[White "Chess engine (level 8)"]
+[Black "You"]
+[Result "1/2-1/2"]
+[ECO "B10"]
+[Opening "Caro-Kann Defence"]
+
+1. e4 c6 2. d4 d5 3. exd5 cxd5 4. Bd3 Nc6 5. c3 Nf6 6. Bf4 Bg4 7. Qb3 Qd7
+8. Nd2 e6 9. Ngf3 Bd6 10. Bxd6 Qxd6 11. O-O O-O 12. Rfe1 Rfe8 1/2-1/2
+`;
+
+      const LOSS = `[Event "Casual game"]
+[Site "NextOS"]
+[Date "2026.09.09"]
+[Round "-"]
+[White "You"]
+[Black "Chess engine (level 7)"]
+[Result "0-1"]
+[ECO "C42"]
+[Opening "Petrov Defence"]
+
+1. e4 e5 2. Nf3 Nf6 3. Nxe5 d6 4. Nf3 Nxe4 5. d4 d5 6. Bd3 Be7 7. O-O Nc6
+8. Re1 Bg4 9. c3 f5 10. Qb3 O-O 11. Nbd2 Kh8 12. h3 Bh5 0-1
+`;
+
+      async function seedGames() {
+        await vfs.mkdir(HOME + '/Chess/games');
+        await vfs.writeFile(HOME + '/Chess/games/2026-09-14-You-Chess-engine.pgn', FINISHED);
+        await vfs.writeFile(HOME + '/Chess/games/2026-09-11-Chess-engine-You.pgn', DRAWN);
+        await vfs.writeFile(HOME + '/Chess/games/2026-09-09-You-Chess-engine.pgn', LOSS);
+      }
+
+      function seedGame(pgn, extra) {
+        storage.set('game', Object.assign({ pgn, mode: 'human-engine', humanColor: 0, level: 5, timeControl: null }, extra || {}));
+      }
+
+      function seedSettings(extra) {
+        // Any setting can also be forced from the query string, which is
+        // what the screenshot script uses to ask for a particular piece
+        // set or board theme without inventing a scenario for each.
+        const overrides = {};
+        if (params.get('set')) overrides.pieceSet = params.get('set');
+        if (params.get('board')) overrides.boardTheme = params.get('board');
+        if (params.get('flip') === '1') overrides.flipped = true;
+        if (params.get('analysis')) overrides.analysis = params.get('analysis') === '1';
+        storage.set(
+          'settings',
+          Object.assign(
+            {
+              flipped: false,
+              sound: true,
+              pieceSet: 'classic',
+              boardTheme: 'walnut',
+              coordinates: true,
+              analysis: false,
+              level: 5,
+              mode: 'human-engine',
+              humanColor: 0,
+            },
+            extra || {},
+            overrides
+          )
+        );
+      }
+
+      try {
+        localStorage.clear();
+      } catch {
+        /* a private window is fine */
+      }
+
+      if (scenario === 'play') {
+        seedGame(PLAYED);
+        seedSettings({ analysis: true, level: 5 });
+        await seedGames();
+      } else if (scenario === 'analysis') {
+        seedGame(FINISHED, { nodeId: 24, mode: 'human-human' });
+        seedSettings({ analysis: true, boardTheme: 'sea', level: 8 });
+        await seedGames();
+      } else if (scenario === 'games') {
+        seedGame(FINISHED, { mode: 'human-human' });
+        seedSettings({ analysis: false, boardTheme: 'slate', pieceSet: 'line' });
+        await seedGames();
+      } else if (scenario === 'puzzles') {
+        seedGame(LOSS, { mode: 'human-human' });
+        seedSettings({ analysis: true });
+        await seedGames();
+      } else {
+        seedSettings({});
+      }
+
+      // The engine worker reads the app's own bundle out of the VFS, so
+      // put it there - exactly as an installed app would find it.
+      try {
+        const source = await fetch('../files/build/app.js').then((r) => r.text());
+        await vfs.writeFile(APP_DIR + '/build/app.js', source);
+      } catch (error) {
+        console.warn('[preview] could not seed the bundle for the worker:', error);
+      }
+
+      try {
+        const module = await import('../files/build/app.js');
+        const root = window.ReactDOM.createRoot(document.getElementById('root'));
+        root.render(window.React.createElement(module.default));
+        window.__chessReady = true;
+        window.__chessTools = module.tools;
+        window.__chessIntents = module.intents;
+      } catch (error) {
+        const box = document.getElementById('harness-error');
+        box.style.display = 'grid';
+        box.textContent = 'The app failed to load:\n\n' + (error && error.stack ? error.stack : String(error));
+      }
+    </script>
+  </body>
+</html>

@@ -22,7 +22,8 @@ import type { Color } from './types';
 import type { GameTree } from './game';
 import { mainLine, positionAt } from './game';
 import { toFen } from './fen';
-import { makeMove, unmakeMove } from './board';
+import { inCheck, makeMove, unmakeMove } from './board';
+import { hasLegalMove } from './moves';
 import { toSan } from './san';
 
 /** What the analyser needs from an engine: a score for the side to move
@@ -117,13 +118,36 @@ function qualityFor(loss: number): MoveQuality {
  * the score before the next, negated - so a forty-move game costs
  * forty-one engine calls, not eighty.
  */
-export function analyzeGame(tree: GameTree, analyse: Analyser, onProgress?: (done: number, total: number) => void): GameReport {
+export function analyzeGame(
+  tree: GameTree,
+  analyse: Analyser,
+  onProgress?: (done: number, total: number) => void
+): GameReport {
+  const line = mainLine(tree);
+  const pos = positionAt(tree, 0);
+  const judgements: Judgement[] = [analyse(pos)];
+  for (let i = 0; i < line.length; i++) {
+    makeMove(pos, tree.nodes[line[i]].move);
+    judgements.push(analyse(pos));
+    onProgress?.(i + 1, line.length);
+  }
+  for (let i = line.length - 1; i >= 0; i--) unmakeMove(pos, tree.nodes[line[i]].move);
+  return buildReport(tree, judgements);
+}
+
+/**
+ * Turns a judgement per position - `judgements[i]` is the engine's view
+ * of the position after i plies - into the report. Kept apart from
+ * `analyzeGame` because the window collects those judgements from a Web
+ * Worker, one await at a time, and must not have to reimplement any of
+ * the arithmetic below to do it.
+ */
+export function buildReport(tree: GameTree, judgements: Judgement[]): GameReport {
   const line = mainLine(tree);
   const reports: MoveReport[] = [];
   const pos = positionAt(tree, 0);
 
-  // The judgement of the position before the first move.
-  let previous = analyse(pos);
+  let previous = judgements[0] ?? { score: 0, mate: null, pv: [] };
   let previousScore = normalise(previous);
   let previousBest = previous.pv.length ? sanLine(pos, previous.pv) : [];
 
@@ -131,7 +155,11 @@ export function analyzeGame(tree: GameTree, analyse: Analyser, onProgress?: (don
     const node = tree.nodes[line[i]];
     const color = pos.turn;
     makeMove(pos, node.move);
-    const next = analyse(pos);
+    // A position with no legal moves is not something to ask an engine
+    // about: it has no move and no score, and taking its zero at face
+    // value would make every checkmate look like a ten-pawn blunder by
+    // the player who delivered it.
+    const next = terminalJudgement(pos) ?? judgements[i + 1] ?? { score: 0, mate: null, pv: [] };
     // `next` is from the opponent's point of view; negate it to compare
     // with the score the mover had before playing.
     const afterFromMover = -normalise(next);
@@ -157,7 +185,6 @@ export function analyzeGame(tree: GameTree, analyse: Analyser, onProgress?: (don
     previous = next;
     previousScore = normalise(next);
     previousBest = next.pv.length ? sanLine(pos, next.pv) : [];
-    onProgress?.(i + 1, line.length);
   }
 
   // Leave the position as we found it.
@@ -169,6 +196,13 @@ export function analyzeGame(tree: GameTree, analyse: Analyser, onProgress?: (don
     black: summarise(reports, BLACK),
     worst: [...reports].sort((a, b) => b.loss - a.loss).slice(0, 3),
   };
+}
+
+/** The judgement a finished position deserves: mated, or drawn. Null
+ *  when the game is still going. */
+export function terminalJudgement(pos: Position): Judgement | null {
+  if (hasLegalMove(pos)) return null;
+  return inCheck(pos) ? { score: -CLAMP, mate: -1, pv: [] } : { score: 0, mate: null, pv: [] };
 }
 
 /** Prints a line of packed moves as SAN without disturbing `pos`. */
@@ -238,9 +272,9 @@ export function describeReport(report: GameReport, color: Color, result: string)
     const worst = mine[0];
     const moveNumber = Math.floor((worst.ply - 1) / 2) + 1;
     const dots = color === WHITE ? '.' : '...';
-    const better = worst.bestSan ? ` ${worst.bestSan} was the move` : '';
     parts.push(
-      `The costliest was ${moveNumber}${dots} ${worst.san}, which gave away ${(worst.loss / 100).toFixed(1)} pawns of evaluation${better}.`
+      `The costliest was ${moveNumber}${dots} ${worst.san}, which gave away ${(worst.loss / 100).toFixed(1)} pawns.` +
+        (worst.bestSan && worst.bestSan !== worst.san ? ` ${worst.bestSan} was the move.` : '')
     );
   }
   if (lost && !side.blunders && !side.mistakes) {
