@@ -258,6 +258,11 @@ export const useSketch = create<SketchState>((set, get) => ({
       isDark,
       palette,
       elements,
+      // The step undo would land on is this one, so it carries the
+      // translated colours too. Older steps keep the colours they were
+      // recorded with - undoing far enough back is undoing to how the
+      // board looked then, which is what undo means.
+      history: { ...state.history, present: { ...state.history.present, snapshot: { ...state.history.present.snapshot, elements } } },
       style: {
         ...state.style,
         stroke: translateColor(state.style.stroke, isDark),

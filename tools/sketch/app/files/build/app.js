@@ -1514,9 +1514,10 @@ exports.TOOLS = [
 ];
 const Toolbar = () => {
     const tool = (0, store_1.useSketch)((s) => s.tool);
+    const keepTool = (0, store_1.useSketch)((s) => s.keepTool);
     const setTool = (0, store_1.useSketch)((s) => s.setTool);
     const setDialog = (0, store_1.useSketch)((s) => s.setDialog);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "sk-island sk-toolbar", role: "toolbar", "aria-label": "Tools", children: [exports.TOOLS.map((spec) => ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: `sk-tool${tool === spec.tool ? ' is-active' : ''}`, "aria-pressed": tool === spec.tool, "aria-keyshortcuts": spec.key, title: `${spec.label} — ${spec.key}`, onClick: () => setTool(spec.tool), onDoubleClick: () => setTool(spec.tool, true), children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: spec.icon }), spec.digit ? (0, jsx_runtime_1.jsx)("span", { className: "sk-tool-digit", "aria-hidden": "true", children: spec.digit }) : null, (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: spec.label })] }, spec.tool))), (0, jsx_runtime_1.jsx)("span", { className: "sk-toolbar-divider", "aria-hidden": "true" }), (0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-tool", title: "Shape library \u2014 /", "aria-keyshortcuts": "/", onClick: () => setDialog('slash', true), children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "library" }), (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: "Shape library" })] })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "sk-island sk-toolbar", role: "toolbar", "aria-label": "Tools", children: [exports.TOOLS.map((spec) => ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: `sk-tool${tool === spec.tool ? ' is-active' : ''}${tool === spec.tool && keepTool ? ' is-kept' : ''}`, "aria-pressed": tool === spec.tool, "aria-keyshortcuts": spec.key, title: `${spec.label} — ${spec.key}${tool === spec.tool && keepTool ? ' (kept after drawing; press it again to release)' : ' (double-click to keep it after drawing)'}`, onClick: () => setTool(spec.tool, tool === spec.tool ? !keepTool : false), onDoubleClick: () => setTool(spec.tool, true), children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: spec.icon }), spec.digit ? (0, jsx_runtime_1.jsx)("span", { className: "sk-tool-digit", "aria-hidden": "true", children: spec.digit }) : null, (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: spec.label })] }, spec.tool))), (0, jsx_runtime_1.jsx)("span", { className: "sk-toolbar-divider", "aria-hidden": "true" }), (0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-tool", title: "Shape library \u2014 /", "aria-keyshortcuts": "/", onClick: () => setDialog('slash', true), children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "library" }), (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: "Shape library" })] })] }));
 };
 exports.Toolbar = Toolbar;
 
@@ -2366,6 +2367,11 @@ exports.useSketch = (0, zustand_1.create)((set, get) => ({
             isDark,
             palette,
             elements,
+            // The step undo would land on is this one, so it carries the
+            // translated colours too. Older steps keep the colours they were
+            // recorded with - undoing far enough back is undoing to how the
+            // board looked then, which is what undo means.
+            history: { ...state.history, present: { ...state.history.present, snapshot: { ...state.history.present.snapshot, elements } } },
             style: {
                 ...state.style,
                 stroke: (0, palette_1.translateColor)(state.style.stroke, isDark),

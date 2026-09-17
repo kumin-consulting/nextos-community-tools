@@ -31,6 +31,7 @@ export const TOOLS: ToolSpec[] = [
 
 export const Toolbar: React.FC = () => {
   const tool = useSketch((s) => s.tool);
+  const keepTool = useSketch((s) => s.keepTool);
   const setTool = useSketch((s) => s.setTool);
   const setDialog = useSketch((s) => s.setDialog);
   return (
@@ -39,11 +40,11 @@ export const Toolbar: React.FC = () => {
         <button
           key={spec.tool}
           type="button"
-          className={`sk-tool${tool === spec.tool ? ' is-active' : ''}`}
+          className={`sk-tool${tool === spec.tool ? ' is-active' : ''}${tool === spec.tool && keepTool ? ' is-kept' : ''}`}
           aria-pressed={tool === spec.tool}
           aria-keyshortcuts={spec.key}
-          title={`${spec.label} — ${spec.key}`}
-          onClick={() => setTool(spec.tool)}
+          title={`${spec.label} — ${spec.key}${tool === spec.tool && keepTool ? ' (kept after drawing; press it again to release)' : ' (double-click to keep it after drawing)'}`}
+          onClick={() => setTool(spec.tool, tool === spec.tool ? !keepTool : false)}
           onDoubleClick={() => setTool(spec.tool, true)}
         >
           <Icon name={spec.icon} />
