@@ -4,5 +4,49 @@
   "name": "NextOS community tools",
   "description": "Apps built by the community for NextOS - one page each at jonkum.in/community.",
   "updatedAt": "2026-09-17T00:00:00.000Z",
-  "apps": []
+  "apps": [
+    {
+      "id": "recall",
+      "name": "Recall",
+      "version": "1.0.0",
+      "kind": "native",
+      "description": "Spaced-repetition flashcards whose decks are plain Markdown files you can edit anywhere.",
+      "icon": "🧠",
+      "homepage": "https://www.jonkum.in/community/recall",
+      "author": "Kumin Consulting",
+      "license": "MIT",
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "notifications",
+        "clipboard",
+        "intents"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/app/app.zip",
+        "sha256": "5bfed8b7635fc92cd49b25ee5e865d0c6571d127467febe6487645f184ad1e17",
+        "bytes": 303853
+      },
+      "screenshots": [
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/decks-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/review-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/cards-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/decks-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/review-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/cards-dark.png"
+      ],
+      "tags": [
+        "spaced-repetition",
+        "flashcards",
+        "anki",
+        "markdown",
+        "study",
+        "memory",
+        "srs",
+        "cloze",
+        "learning"
+      ]
+    }
+  ]
 }
