@@ -24,6 +24,7 @@ export const FileSwitcher: React.FC = () => {
   const store = useSketch;
   const [query, setQuery] = useState('');
   const [confirming, setConfirming] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<{ path: string; value: string } | null>(null);
   const fileInput = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -100,6 +101,27 @@ export const FileSwitcher: React.FC = () => {
         <ul className="sk-filelist">
           {shown.map((file) => (
             <li key={file.path} className={file.path === path ? 'is-current' : undefined}>
+              {renaming?.path === file.path ? (
+                <input
+                  className="sk-name-input sk-file-rename"
+                  autoFocus
+                  value={renaming.value}
+                  aria-label={`Rename ${file.name}`}
+                  onChange={(e) => setRenaming({ path: file.path, value: e.target.value })}
+                  onBlur={() => {
+                    void store.getState().renameDocumentAt(file.path, renaming.value);
+                    setRenaming(null);
+                  }}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === 'Enter') {
+                      void store.getState().renameDocumentAt(file.path, renaming.value);
+                      setRenaming(null);
+                    }
+                    if (e.key === 'Escape') setRenaming(null);
+                  }}
+                />
+              ) : (
               <button
                 type="button"
                 className="sk-file-open"
@@ -112,7 +134,17 @@ export const FileSwitcher: React.FC = () => {
                 <span className="sk-file-name">{file.name}</span>
                 <span className="sk-file-meta">{when(file.mtime)}</span>
               </button>
+              )}
               <span className="sk-file-actions">
+                <button
+                  type="button"
+                  className="sk-icon-btn"
+                  title={`Rename ${file.name}`}
+                  onClick={() => setRenaming({ path: file.path, value: file.name })}
+                >
+                  <Icon name="pencil" size={16} />
+                  <span className="sk-sr">Rename {file.name}</span>
+                </button>
                 {file.path === path ? (
                   <button
                     type="button"
@@ -127,6 +159,7 @@ export const FileSwitcher: React.FC = () => {
                     <span className="sk-sr">Duplicate {file.name}</span>
                   </button>
                 ) : null}
+
                 {confirming === file.path ? (
                   <button
                     type="button"

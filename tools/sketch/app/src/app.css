@@ -677,6 +677,11 @@
   white-space: nowrap;
 }
 
+.sk-file-rename {
+  flex: 1;
+  margin: 4px 0 4px 6px;
+}
+
 .sk-file-actions {
   display: flex;
   align-items: center;

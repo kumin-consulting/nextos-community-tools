@@ -25,9 +25,13 @@ export const DocumentBar: React.FC = () => {
   const [editing, setEditing] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Keyed on "is the field open", not on its value: keying it on the
+  // value would re-select the text after every keystroke, and the next
+  // character would replace the name instead of extending it.
+  const isEditing = editing !== null;
   useEffect(() => {
-    if (editing !== null) inputRef.current?.select();
-  }, [editing]);
+    if (isEditing) inputRef.current?.select();
+  }, [isEditing]);
 
   return (
     <div className="sk-island sk-docbar">

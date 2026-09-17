@@ -161,6 +161,7 @@ export interface SketchState {
   newDocument(name?: string): Promise<void>;
   openDocument(path: string): Promise<void>;
   renameDocument(name: string): Promise<void>;
+  renameDocumentAt(path: string, name: string): Promise<void>;
   duplicateDocument(): Promise<void>;
   deleteDocument(path: string): Promise<void>;
   importDocument(text: string, name: string): Promise<void>;
@@ -582,12 +583,30 @@ export const useSketch = create<SketchState>((set, get) => ({
     const state = get();
     const clean = sanitizeName(name);
     if (!clean || clean === state.name) return;
-    const unique = await freeName(clean);
+    const unique = await freeName(clean, state.path ?? undefined);
     const from = state.path;
     const to = from ? await renameDocumentFile(from, unique) : pathFor(unique);
     set({ name: unique, path: to });
     await writeDocumentFile(to, currentDocument(get()));
     rememberRecent(get, set, to);
+    await get().refreshFiles();
+  },
+
+  /** Renames any board, open or not. */
+  async renameDocumentAt(path, name) {
+    if (path === get().path) {
+      await get().renameDocument(name);
+      return;
+    }
+    const clean = sanitizeName(name);
+    if (!clean) return;
+    const parsed = await readDocumentFile(path);
+    const unique = await freeName(clean, path);
+    const to = await renameDocumentFile(path, unique);
+    if (parsed.ok) await writeDocumentFile(to, { ...parsed.doc, name: unique });
+    const recent = get().recent.map((p) => (p === path ? to : p));
+    sdk.storage.set(RECENT_KEY, recent);
+    set({ recent });
     await get().refreshFiles();
   },
 

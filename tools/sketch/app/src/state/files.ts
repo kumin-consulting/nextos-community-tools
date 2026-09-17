@@ -98,10 +98,12 @@ export async function renameDocumentFile(from: string, name: string): Promise<st
   return to;
 }
 
-/** A name nothing else in the folder is using. */
-export async function freeName(base: string): Promise<string> {
+/** A name nothing else in the folder is using. `ignorePath` excludes one
+ *  file from the check - the one being renamed, so changing a board's
+ *  name to a different spelling of itself does not append a "2". */
+export async function freeName(base: string, ignorePath?: string): Promise<string> {
   const existing = await listDocuments();
-  return uniqueName(existing.map((f) => f.name), base);
+  return uniqueName(existing.filter((f) => f.path !== ignorePath).map((f) => f.name), base);
 }
 
 export async function fileExists(path: string): Promise<boolean> {

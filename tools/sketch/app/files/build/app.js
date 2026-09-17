@@ -1424,10 +1424,14 @@ const DocumentBar = () => {
     const renameDocument = (0, store_1.useSketch)((s) => s.renameDocument);
     const [editing, setEditing] = (0, react_1.useState)(null);
     const inputRef = (0, react_1.useRef)(null);
+    // Keyed on "is the field open", not on its value: keying it on the
+    // value would re-select the text after every keystroke, and the next
+    // character would replace the name instead of extending it.
+    const isEditing = editing !== null;
     (0, react_1.useEffect)(() => {
-        if (editing !== null)
+        if (isEditing)
             inputRef.current?.select();
-    }, [editing]);
+    }, [isEditing]);
     return ((0, jsx_runtime_1.jsxs)("div", { className: "sk-island sk-docbar", children: [(0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-icon-btn", title: "All boards \u2014 \u2318O", onClick: () => setDialog('files', true), "aria-keyshortcuts": "Meta+O", children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "files" }), (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: "All boards" })] }), editing !== null ? ((0, jsx_runtime_1.jsx)("input", { ref: inputRef, className: "sk-name-input", value: editing, "aria-label": "Board name", onChange: (e) => setEditing(e.target.value), onBlur: () => {
                     void renameDocument(editing);
                     setEditing(null);
@@ -1692,6 +1696,7 @@ const FileSwitcher = () => {
     const store = store_1.useSketch;
     const [query, setQuery] = (0, react_1.useState)('');
     const [confirming, setConfirming] = (0, react_1.useState)(null);
+    const [renaming, setRenaming] = (0, react_1.useState)(null);
     const fileInput = (0, react_1.useRef)(null);
     (0, react_1.useEffect)(() => {
         void store.getState().refreshFiles();
@@ -1724,10 +1729,21 @@ const FileSwitcher = () => {
                         const text = await file.text();
                         await store.getState().importDocument(text, file.name.replace(/\.sketch\.json$|\.json$/, ''));
                         close();
-                    } })] }), children: [(0, jsx_runtime_1.jsxs)("label", { className: "sk-search", children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "search", size: 16 }), (0, jsx_runtime_1.jsx)("input", { type: "search", value: query, placeholder: "Search boards", "aria-label": "Search boards", onChange: (e) => setQuery(e.target.value), onKeyDown: (e) => e.stopPropagation() })] }), shown.length === 0 ? ((0, jsx_runtime_1.jsx)("p", { className: "sk-empty", children: files.length ? 'No board matches that.' : 'No boards yet - the one you are on will appear here once it is saved.' })) : ((0, jsx_runtime_1.jsx)("ul", { className: "sk-filelist", children: shown.map((file) => ((0, jsx_runtime_1.jsxs)("li", { className: file.path === path ? 'is-current' : undefined, children: [(0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-file-open", onClick: () => {
+                    } })] }), children: [(0, jsx_runtime_1.jsxs)("label", { className: "sk-search", children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "search", size: 16 }), (0, jsx_runtime_1.jsx)("input", { type: "search", value: query, placeholder: "Search boards", "aria-label": "Search boards", onChange: (e) => setQuery(e.target.value), onKeyDown: (e) => e.stopPropagation() })] }), shown.length === 0 ? ((0, jsx_runtime_1.jsx)("p", { className: "sk-empty", children: files.length ? 'No board matches that.' : 'No boards yet - the one you are on will appear here once it is saved.' })) : ((0, jsx_runtime_1.jsx)("ul", { className: "sk-filelist", children: shown.map((file) => ((0, jsx_runtime_1.jsxs)("li", { className: file.path === path ? 'is-current' : undefined, children: [renaming?.path === file.path ? ((0, jsx_runtime_1.jsx)("input", { className: "sk-name-input sk-file-rename", autoFocus: true, value: renaming.value, "aria-label": `Rename ${file.name}`, onChange: (e) => setRenaming({ path: file.path, value: e.target.value }), onBlur: () => {
+                                void store.getState().renameDocumentAt(file.path, renaming.value);
+                                setRenaming(null);
+                            }, onKeyDown: (e) => {
+                                e.stopPropagation();
+                                if (e.key === 'Enter') {
+                                    void store.getState().renameDocumentAt(file.path, renaming.value);
+                                    setRenaming(null);
+                                }
+                                if (e.key === 'Escape')
+                                    setRenaming(null);
+                            } })) : ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-file-open", onClick: () => {
                                 void store.getState().openDocument(file.path);
                                 close();
-                            }, children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "file", size: 16 }), (0, jsx_runtime_1.jsx)("span", { className: "sk-file-name", children: file.name }), (0, jsx_runtime_1.jsx)("span", { className: "sk-file-meta", children: when(file.mtime) })] }), (0, jsx_runtime_1.jsxs)("span", { className: "sk-file-actions", children: [file.path === path ? ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-icon-btn", title: "Duplicate this board", onClick: () => {
+                            }, children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "file", size: 16 }), (0, jsx_runtime_1.jsx)("span", { className: "sk-file-name", children: file.name }), (0, jsx_runtime_1.jsx)("span", { className: "sk-file-meta", children: when(file.mtime) })] })), (0, jsx_runtime_1.jsxs)("span", { className: "sk-file-actions", children: [(0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-icon-btn", title: `Rename ${file.name}`, onClick: () => setRenaming({ path: file.path, value: file.name }), children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "pencil", size: 16 }), (0, jsx_runtime_1.jsxs)("span", { className: "sk-sr", children: ["Rename ", file.name] })] }), file.path === path ? ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: "sk-icon-btn", title: "Duplicate this board", onClick: () => {
                                         void store.getState().duplicateDocument();
                                         close();
                                     }, children: [(0, jsx_runtime_1.jsx)(icons_1.Icon, { name: "copy", size: 16 }), (0, jsx_runtime_1.jsxs)("span", { className: "sk-sr", children: ["Duplicate ", file.name] })] })) : null, confirming === file.path ? ((0, jsx_runtime_1.jsx)("button", { type: "button", className: "sk-btn sk-btn-danger sk-btn-small", onClick: () => {
@@ -2654,12 +2670,31 @@ exports.useSketch = (0, zustand_1.create)((set, get) => ({
         const clean = (0, document_1.sanitizeName)(name);
         if (!clean || clean === state.name)
             return;
-        const unique = await (0, files_1.freeName)(clean);
+        const unique = await (0, files_1.freeName)(clean, state.path ?? undefined);
         const from = state.path;
         const to = from ? await (0, files_1.renameDocumentFile)(from, unique) : (0, files_1.pathFor)(unique);
         set({ name: unique, path: to });
         await (0, files_1.writeDocumentFile)(to, currentDocument(get()));
         rememberRecent(get, set, to);
+        await get().refreshFiles();
+    },
+    /** Renames any board, open or not. */
+    async renameDocumentAt(path, name) {
+        if (path === get().path) {
+            await get().renameDocument(name);
+            return;
+        }
+        const clean = (0, document_1.sanitizeName)(name);
+        if (!clean)
+            return;
+        const parsed = await (0, files_1.readDocumentFile)(path);
+        const unique = await (0, files_1.freeName)(clean, path);
+        const to = await (0, files_1.renameDocumentFile)(path, unique);
+        if (parsed.ok)
+            await (0, files_1.writeDocumentFile)(to, { ...parsed.doc, name: unique });
+        const recent = get().recent.map((p) => (p === path ? to : p));
+        sdk_1.default.storage.set(RECENT_KEY, recent);
+        set({ recent });
         await get().refreshFiles();
     },
     async duplicateDocument() {
@@ -4067,10 +4102,12 @@ async function renameDocumentFile(from, name) {
         await vfs().rename(from, to);
     return to;
 }
-/** A name nothing else in the folder is using. */
-async function freeName(base) {
+/** A name nothing else in the folder is using. `ignorePath` excludes one
+ *  file from the check - the one being renamed, so changing a board's
+ *  name to a different spelling of itself does not append a "2". */
+async function freeName(base, ignorePath) {
     const existing = await listDocuments();
-    return (0, document_1.uniqueName)(existing.map((f) => f.name), base);
+    return (0, document_1.uniqueName)(existing.filter((f) => f.path !== ignorePath).map((f) => f.name), base);
 }
 async function fileExists(path) {
     try {
