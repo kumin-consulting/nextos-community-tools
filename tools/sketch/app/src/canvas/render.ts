@@ -57,13 +57,13 @@ export const GRID_SIZE = 20;
 
 /* ------------------------------------------------------- measuring */
 
-const fontCache = new WeakMap<CanvasRenderingContext2D, string>();
-
 export function setFont(ctx: CanvasRenderingContext2D, fontSize: number, family: keyof typeof FONT_STACKS): void {
-  const font = `${fontSize}px ${FONT_STACKS[family]}`;
-  if (fontCache.get(ctx) === font) return;
-  ctx.font = font;
-  fontCache.set(ctx, font);
+  // Deliberately uncached: ctx.save()/restore() around each element puts
+  // the font back without telling us, so a cache keyed on the context
+  // would hand out measurements taken in the wrong font. The measurement
+  // cache in measureWith is what keeps this cheap - a repeated string
+  // never reaches here at all.
+  ctx.font = `${fontSize}px ${FONT_STACKS[family]}`;
 }
 
 /** A measurer bound to a context - the exact widths the browser will use,

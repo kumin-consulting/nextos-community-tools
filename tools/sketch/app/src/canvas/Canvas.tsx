@@ -27,6 +27,7 @@ import {
   rotatedBounds,
   sceneToCanvas,
   simplifyPoints,
+  toLocal,
   transformElement,
   zoomAt,
 } from '../lib/geometry';
@@ -716,7 +717,11 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
     (e: React.MouseEvent<HTMLCanvasElement>) => {
       const state = useSketch.getState();
       const scene = toScene(e.clientX, e.clientY);
-      const hit = hitTestElements(state.elements, scene, 8 / state.viewport.zoom);
+      // Double-clicking anywhere inside a shape edits that shape's text,
+      // even when the shape has no fill (a single click still needs its
+      // outline, so an empty box does not swallow clicks meant for the
+      // canvas behind it).
+      const hit = hitTestElements(state.elements, scene, 8 / state.viewport.zoom) ?? containerUnder(state.elements, scene);
       if (hit && !hit.locked) {
         startEditing(hit);
         state.setSelection([hit.id]);
@@ -789,6 +794,17 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
 };
 
 /* ----------------------------------------------------------- helpers */
+
+/** Topmost shape whose box contains the point, filled or not. */
+function containerUnder(elements: SketchElement[], p: Point): SketchElement | null {
+  for (let i = elements.length - 1; i >= 0; i--) {
+    const el = elements[i];
+    if (el.locked || isLinear(el) || el.type === 'frame') continue;
+    const local = toLocal(el, p);
+    if (local[0] >= el.x && local[0] <= el.x + el.w && local[1] >= el.y && local[1] <= el.y + el.h) return el;
+  }
+  return null;
+}
 
 export function isTypingTarget(target: EventTarget | null): boolean {
   const el = target as HTMLElement | null;

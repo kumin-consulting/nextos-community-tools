@@ -19,6 +19,7 @@ import {
   LINEAR_TYPES,
 } from './types';
 import { normalizeLinear } from './geometry';
+import { estimateTextWidth, lineHeightFor } from './text';
 
 export const SCHEMA_VERSION = 1;
 export const FILE_EXTENSION = '.sketch.json';
@@ -148,7 +149,24 @@ export function coerceElement(raw: unknown): SketchElement | null {
     if (!el.points.length) return null;
     return normalizeLinear(el);
   }
+  if (el.type === 'text' && el.text) return sizeTextElement(el);
   return el;
+}
+
+/** A free text element's box IS its text - everything downstream (the
+ *  selection box, zoom-to-fit, the export frame) reads w/h rather than
+ *  re-measuring. A file written by hand or by an agent rarely gets those
+ *  right, so a box that is clearly too small for what it holds is
+ *  re-sized from the estimator here. A box within a few per cent of the
+ *  estimate is left exactly as it was: the app measures with the real
+ *  font and its numbers are better than this one's. */
+export function sizeTextElement(el: SketchElement): SketchElement {
+  const lines = el.text.split('\n');
+  let width = 0;
+  for (const line of lines) width = Math.max(width, estimateTextWidth(line, el.fontSize, el.fontFamily));
+  const height = lines.length * lineHeightFor(el.fontSize);
+  if (el.w >= width * 0.8 && el.h >= height * 0.8) return el;
+  return { ...el, w: Math.max(el.w, Math.round(width)), h: Math.max(el.h, height) };
 }
 
 function coerceView(v: unknown): Viewport {

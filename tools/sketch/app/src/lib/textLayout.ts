@@ -94,13 +94,15 @@ export function elementTextLayout(el: SketchElement, measure: MeasureText): Text
   }
 
   if (el.type === 'text') {
-    // A text element is its own box: it wraps to the width it was given
-    // and grows downward from the top edge.
-    const wrapWidth = el.w > 1 ? el.w : Infinity;
-    const lines = wrapWidth === Infinity ? content.split('\n') : wrapText(content, wrapWidth, m);
+    // A free text element never wraps on its own: it grows sideways and
+    // breaks only where someone pressed Enter. (Wrapping to its own
+    // width would be a feedback loop - the box is sized FROM the text,
+    // so the next character would re-wrap what the last one widened.
+    // Text that must wrap goes inside a shape, which has a fixed width.)
+    const lines = content.split('\n');
     let width = 0;
     for (const line of lines) width = Math.max(width, m(line));
-    const boxWidth = wrapWidth === Infinity ? width : el.w;
+    const boxWidth = width;
     return {
       lines,
       anchorX: anchorFor(el.textAlign, el.x, boxWidth),

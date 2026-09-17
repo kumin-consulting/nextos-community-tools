@@ -87,7 +87,7 @@ function Swatches({
             type="text"
             inputMode="text"
             spellCheck={false}
-            placeholder={known ? '#hex' : value.replace('#', '')}
+            placeholder={known || !value.startsWith('#') ? '#hex' : value}
             value={custom}
             onChange={(e) => {
               setCustom(e.target.value);
@@ -134,9 +134,13 @@ export const Properties: React.FC = () => {
   const multiple = selected.length > 1;
   const locked = selected.length > 0 && selected.every((el) => el.locked);
 
+  const onlyText = selected.length > 0 && selected.every((el) => el.type === 'text');
+
   return (
     <aside className="sk-island sk-properties" aria-label="Properties">
-      <Swatches label="Stroke" value={sample.stroke} swatches={palette.strokes} onChange={(stroke) => setStyle({ stroke })} />
+      {onlyText ? null : (
+        <Swatches label="Stroke" value={sample.stroke} swatches={palette.strokes} onChange={(stroke) => setStyle({ stroke })} />
+      )}
       {anyShape || anyLinear ? (
         <>
           <Swatches label="Fill" value={sample.fill} swatches={palette.fills} onChange={(fill) => setStyle({ fill, fillStyle: fill === 'transparent' ? 'none' : sample.fillStyle === 'none' ? 'solid' : sample.fillStyle })} />

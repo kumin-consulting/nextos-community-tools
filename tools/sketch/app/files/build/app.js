@@ -1216,7 +1216,11 @@ const Canvas = ({ onReady }) => {
     const onDoubleClick = (0, react_1.useCallback)((e) => {
         const state = store_1.useSketch.getState();
         const scene = toScene(e.clientX, e.clientY);
-        const hit = (0, geometry_1.hitTestElements)(state.elements, scene, 8 / state.viewport.zoom);
+        // Double-clicking anywhere inside a shape edits that shape's text,
+        // even when the shape has no fill (a single click still needs its
+        // outline, so an empty box does not swallow clicks meant for the
+        // canvas behind it).
+        const hit = (0, geometry_1.hitTestElements)(state.elements, scene, 8 / state.viewport.zoom) ?? containerUnder(state.elements, scene);
         if (hit && !hit.locked) {
             startEditing(hit);
             state.setSelection([hit.id]);
@@ -1253,6 +1257,18 @@ const Canvas = ({ onReady }) => {
 };
 exports.Canvas = Canvas;
 /* ----------------------------------------------------------- helpers */
+/** Topmost shape whose box contains the point, filled or not. */
+function containerUnder(elements, p) {
+    for (let i = elements.length - 1; i >= 0; i--) {
+        const el = elements[i];
+        if (el.locked || (0, types_1.isLinear)(el) || el.type === 'frame')
+            continue;
+        const local = (0, geometry_1.toLocal)(el, p);
+        if (local[0] >= el.x && local[0] <= el.x + el.w && local[1] >= el.y && local[1] <= el.y + el.h)
+            return el;
+    }
+    return null;
+}
 function isTypingTarget(target) {
     const el = target;
     if (!el || !el.tagName)
@@ -1524,7 +1540,7 @@ function Seg({ label, value, options, onChange, }) {
 function Swatches({ label, value, swatches, onChange, }) {
     const [custom, setCustom] = react_1.default.useState('');
     const known = swatches.some((s) => s.value === value);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "sk-field", children: [(0, jsx_runtime_1.jsx)("span", { className: "sk-field-label", children: label }), (0, jsx_runtime_1.jsxs)("div", { className: "sk-swatches", role: "group", "aria-label": label, children: [swatches.map((s) => ((0, jsx_runtime_1.jsx)("button", { type: "button", className: `sk-swatch${s.value === value ? ' is-active' : ''}${s.value === 'transparent' ? ' is-none' : ''}`, style: s.value === 'transparent' ? undefined : { background: s.value }, title: s.name, "aria-pressed": s.value === value, onClick: () => onChange(s.value), children: (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: s.name }) }, s.value))), (0, jsx_runtime_1.jsxs)("label", { className: "sk-swatch-custom", title: "Custom colour", children: [(0, jsx_runtime_1.jsxs)("span", { className: "sk-sr", children: ["Custom ", label.toLowerCase(), " colour, as a hex code"] }), (0, jsx_runtime_1.jsx)("input", { type: "text", inputMode: "text", spellCheck: false, placeholder: known ? '#hex' : value.replace('#', ''), value: custom, onChange: (e) => {
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "sk-field", children: [(0, jsx_runtime_1.jsx)("span", { className: "sk-field-label", children: label }), (0, jsx_runtime_1.jsxs)("div", { className: "sk-swatches", role: "group", "aria-label": label, children: [swatches.map((s) => ((0, jsx_runtime_1.jsx)("button", { type: "button", className: `sk-swatch${s.value === value ? ' is-active' : ''}${s.value === 'transparent' ? ' is-none' : ''}`, style: s.value === 'transparent' ? undefined : { background: s.value }, title: s.name, "aria-pressed": s.value === value, onClick: () => onChange(s.value), children: (0, jsx_runtime_1.jsx)("span", { className: "sk-sr", children: s.name }) }, s.value))), (0, jsx_runtime_1.jsxs)("label", { className: "sk-swatch-custom", title: "Custom colour", children: [(0, jsx_runtime_1.jsxs)("span", { className: "sk-sr", children: ["Custom ", label.toLowerCase(), " colour, as a hex code"] }), (0, jsx_runtime_1.jsx)("input", { type: "text", inputMode: "text", spellCheck: false, placeholder: known || !value.startsWith('#') ? '#hex' : value, value: custom, onChange: (e) => {
                                     setCustom(e.target.value);
                                     const hex = (0, palette_1.normalizeHex)(e.target.value);
                                     if (hex)
@@ -1556,7 +1572,8 @@ const Properties = () => {
     const hasText = selected.some((el) => el.text || el.type === 'text' || el.type === 'sticky') || tool === 'text' || tool === 'sticky';
     const multiple = selected.length > 1;
     const locked = selected.length > 0 && selected.every((el) => el.locked);
-    return ((0, jsx_runtime_1.jsxs)("aside", { className: "sk-island sk-properties", "aria-label": "Properties", children: [(0, jsx_runtime_1.jsx)(Swatches, { label: "Stroke", value: sample.stroke, swatches: palette.strokes, onChange: (stroke) => setStyle({ stroke }) }), anyShape || anyLinear ? ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(Swatches, { label: "Fill", value: sample.fill, swatches: palette.fills, onChange: (fill) => setStyle({ fill, fillStyle: fill === 'transparent' ? 'none' : sample.fillStyle === 'none' ? 'solid' : sample.fillStyle }) }), (0, jsx_runtime_1.jsx)(Seg, { label: "Fill style", value: sample.fillStyle, onChange: (fillStyle) => setStyle({ fillStyle }), options: [
+    const onlyText = selected.length > 0 && selected.every((el) => el.type === 'text');
+    return ((0, jsx_runtime_1.jsxs)("aside", { className: "sk-island sk-properties", "aria-label": "Properties", children: [onlyText ? null : ((0, jsx_runtime_1.jsx)(Swatches, { label: "Stroke", value: sample.stroke, swatches: palette.strokes, onChange: (stroke) => setStyle({ stroke }) })), anyShape || anyLinear ? ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(Swatches, { label: "Fill", value: sample.fill, swatches: palette.fills, onChange: (fill) => setStyle({ fill, fillStyle: fill === 'transparent' ? 'none' : sample.fillStyle === 'none' ? 'solid' : sample.fillStyle }) }), (0, jsx_runtime_1.jsx)(Seg, { label: "Fill style", value: sample.fillStyle, onChange: (fillStyle) => setStyle({ fillStyle }), options: [
                             { value: 'none', label: 'No fill', text: 'None' },
                             { value: 'solid', label: 'Solid fill', text: 'Solid' },
                             { value: 'hatch', label: 'Hatched fill', text: 'Hatch' },
@@ -4827,14 +4844,16 @@ function elementTextLayout(el, measure) {
         };
     }
     if (el.type === 'text') {
-        // A text element is its own box: it wraps to the width it was given
-        // and grows downward from the top edge.
-        const wrapWidth = el.w > 1 ? el.w : Infinity;
-        const lines = wrapWidth === Infinity ? content.split('\n') : (0, text_1.wrapText)(content, wrapWidth, m);
+        // A free text element never wraps on its own: it grows sideways and
+        // breaks only where someone pressed Enter. (Wrapping to its own
+        // width would be a feedback loop - the box is sized FROM the text,
+        // so the next character would re-wrap what the last one widened.
+        // Text that must wrap goes inside a shape, which has a fixed width.)
+        const lines = content.split('\n');
         let width = 0;
         for (const line of lines)
             width = Math.max(width, m(line));
-        const boxWidth = wrapWidth === Infinity ? width : el.w;
+        const boxWidth = width;
         return {
             lines,
             anchorX: anchorFor(el.textAlign, el.x, boxWidth),
@@ -5058,13 +5077,13 @@ const shapes_1 = require("../lib/shapes");
 const textLayout_1 = require("../lib/textLayout");
 exports.GRID_SIZE = 20;
 /* ------------------------------------------------------- measuring */
-const fontCache = new WeakMap();
 function setFont(ctx, fontSize, family) {
-    const font = `${fontSize}px ${types_1.FONT_STACKS[family]}`;
-    if (fontCache.get(ctx) === font)
-        return;
-    ctx.font = font;
-    fontCache.set(ctx, font);
+    // Deliberately uncached: ctx.save()/restore() around each element puts
+    // the font back without telling us, so a cache keyed on the context
+    // would hand out measurements taken in the wrong font. The measurement
+    // cache in measureWith is what keeps this cheap - a repeated string
+    // never reaches here at all.
+    ctx.font = `${fontSize}px ${types_1.FONT_STACKS[family]}`;
 }
 /** A measurer bound to a context - the exact widths the browser will use,
  *  which is what keeps the textarea overlay on top of the drawn text. */
