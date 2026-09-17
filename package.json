@@ -7,8 +7,22 @@
   "scripts": {
     "test": "node scripts/validate.mjs",
     "build": "node scripts/build-manifest.mjs",
-    "check-manifest": "node scripts/build-manifest.mjs --check"
+    "check-manifest": "node scripts/build-manifest.mjs --check",
+    "build:app": "node --experimental-transform-types scripts/build-app.mjs",
+    "build:catalog": "node --experimental-transform-types scripts/build-catalog.mjs",
+    "check:apps": "node --experimental-transform-types scripts/check-apps.mjs",
+    "typecheck:apps": "tsc -p tsconfig.app.json",
+    "test:apps": "node --experimental-transform-types scripts/test-apps.mjs"
   },
-  "engines": { "node": ">=18" },
-  "license": "MIT"
+  "engines": {
+    "node": ">=22.7"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "react": "^18.3.1",
+    "@types/react": "^18.3.12",
+    "react-dom": "^18.3.1",
+    "@types/react-dom": "^18.3.1"
+  }
 }
