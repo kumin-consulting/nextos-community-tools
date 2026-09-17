@@ -31,7 +31,7 @@ import {
 } from '../lib/document';
 import { type History, canRedo, canUndo, createHistory, record, redo, seal, undo } from '../lib/history';
 import { type Palette, paletteFor, translateColor } from '../lib/palette';
-import { boundsOfElements, fitBounds, rotatedBounds, zoomAt } from '../lib/geometry';
+import { boundsOfElements, clamp, rotatedBounds, zoomAt } from '../lib/geometry';
 import { pruneBindings, refreshBindings } from '../lib/binding';
 import { type AlignMode, type DistributeAxis, type OrderMode, alignElements, distributeElements, expandSelection, flipElements, reorder } from '../lib/align';
 import { insertLibraryItem } from '../lib/library';
@@ -131,7 +131,7 @@ export interface SketchState {
   commit(elements: SketchElement[], opts?: CommitOptions): void;
   patchSelected(patch: Partial<SketchElement>, opts?: CommitOptions): void;
   setStyle(patch: Partial<ElementStyle>): void;
-  addElements(elements: SketchElement[], opts?: { select?: boolean; label?: string }): void;
+  addElements(elements: SketchElement[], opts?: { select?: boolean; label?: string; coalesce?: string | null }): void;
   deleteSelected(): void;
   duplicateSelected(): void;
   copySelection(cut?: boolean): void;
@@ -282,13 +282,29 @@ export const useSketch = create<SketchState>((set, get) => ({
   },
 
   zoomToFit(size, onlySelection = false) {
-    const { elements, selectedIds } = get();
+    const state = get();
+    const { elements, selectedIds } = state;
     const target = onlySelection && selectedIds.length ? elements.filter((el) => selectedIds.includes(el.id)) : elements;
     if (!target.length) {
       set({ viewport: { scrollX: -size.width / 2, scrollY: -size.height / 2, zoom: 1 } });
       return;
     }
-    set({ viewport: fitBounds(boundsOfElements(target), size.width, size.height) as Viewport });
+    // Fit into the space the floating islands leave free, not the whole
+    // canvas - otherwise "zoom to fit" tucks the top of the board under
+    // the toolbar and the bottom under the zoom controls.
+    const panel = selectedIds.length || (state.tool !== 'select' && state.tool !== 'hand' && state.tool !== 'eraser') ? 252 : 24;
+    const inset = { top: 78, bottom: 76, left: panel, right: 24 };
+    const box = boundsOfElements(target);
+    const availableWidth = Math.max(80, size.width - inset.left - inset.right);
+    const availableHeight = Math.max(80, size.height - inset.top - inset.bottom);
+    const zoom = clamp(Math.min(availableWidth / Math.max(box.w, 1), availableHeight / Math.max(box.h, 1)), 0.05, 1.6);
+    set({
+      viewport: {
+        zoom,
+        scrollX: box.x + box.w / 2 - (inset.left + availableWidth / 2) / zoom,
+        scrollY: box.y + box.h / 2 - (inset.top + availableHeight / 2) / zoom,
+      },
+    });
   },
 
   setSelection(ids) {
@@ -335,7 +351,14 @@ export const useSketch = create<SketchState>((set, get) => ({
   addElements(elements, opts = {}) {
     const state = get();
     const next = [...state.elements, ...elements];
-    state.commit(next, { label: opts.label ?? 'Add', selectedIds: opts.select === false ? state.selectedIds : elements.map((el) => el.id) });
+    // A drawing tool passes the same coalesce key the drag that follows
+    // will use, so "draw a rectangle" is one undo step rather than two
+    // (the element appearing, then being given its size).
+    state.commit(next, {
+      label: opts.label ?? 'Add',
+      coalesce: opts.coalesce ?? null,
+      selectedIds: opts.select === false ? state.selectedIds : elements.map((el) => el.id),
+    });
   },
 
   deleteSelected() {

@@ -125,6 +125,13 @@ function elementPath(ctx: CanvasRenderingContext2D, el: SketchElement): void {
   roundRectPath(ctx, el.x, el.y, el.w, el.h, el.type === 'sticky' ? 3 : cornerRadius(el));
 }
 
+/** Hatching is drawn, not tiled: a canvas pattern lives in device space,
+ *  so it would crawl as the board is panned and shear on a rotated shape.
+ *  Clipping to the shape and stroking 45-degree lines across its box
+ *  costs one extra path and is correct at every zoom and angle.
+ *
+ *  It leaves the hatch lines as the context's current path, which is why
+ *  drawElement rebuilds the element's own path before stroking it. */
 function fillHatched(ctx: CanvasRenderingContext2D, el: SketchElement, colour: string): void {
   const b = expandBounds(rotatedBounds(el), 8);
   ctx.save();
@@ -183,6 +190,8 @@ export function drawElement(ctx: CanvasRenderingContext2D, el: SketchElement, pa
       }
     }
     if (stroked) {
+      // fillHatched (and nothing else) leaves its own path behind.
+      if (filled && el.fillStyle === 'hatch') elementPath(ctx, el);
       ctx.strokeStyle = el.stroke;
       ctx.lineWidth = el.strokeWidth;
       ctx.lineCap = 'round';

@@ -3,7 +3,7 @@ var __appExports = (function () {
   "use strict";
   var modules = Object.create(null);
   var cache = Object.create(null);
-  var resolveMap = {"src/index.tsx":{"./app.css":"src/app.css","./canvas/Canvas":"src/canvas/Canvas.tsx","./ui/Chrome":"src/ui/Chrome.tsx","./ui/Toolbar":"src/ui/Toolbar.tsx","./ui/Properties":"src/ui/Properties.tsx","./ui/FileSwitcher":"src/ui/FileSwitcher.tsx","./ui/ExportDialog":"src/ui/ExportDialog.tsx","./ui/Shortcuts":"src/ui/Shortcuts.tsx","./ui/SlashPalette":"src/ui/SlashPalette.tsx","./ui/Minimap":"src/ui/Minimap.tsx","./ui/Hints":"src/ui/Hints.tsx","./state/store":"src/state/store.ts","./state/view":"src/state/view.ts","./lib/layout":"src/lib/layout.ts","./lib/document":"src/lib/document.ts","./lib/svg":"src/lib/svg.ts","./lib/types":"src/lib/types.ts","./lib/palette":"src/lib/palette.ts","./state/files":"src/state/files.ts"},"src/app.css":{},"src/canvas/Canvas.tsx":{"../lib/types":"src/lib/types.ts","../lib/geometry":"src/lib/geometry.ts","../lib/snap":"src/lib/snap.ts","../lib/binding":"src/lib/binding.ts","../lib/textLayout":"src/lib/textLayout.ts","../lib/align":"src/lib/align.ts","./render":"src/canvas/render.ts","../state/store":"src/state/store.ts"},"src/ui/Chrome.tsx":{"./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts","../lib/history":"src/lib/history.ts"},"src/ui/Toolbar.tsx":{"./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts"},"src/ui/Properties.tsx":{"../lib/types":"src/lib/types.ts","../lib/palette":"src/lib/palette.ts","./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts"},"src/ui/FileSwitcher.tsx":{"./Modal":"src/ui/Modal.tsx","./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts","../state/files":"src/state/files.ts"},"src/ui/ExportDialog.tsx":{"./Modal":"src/ui/Modal.tsx","./icons":"src/ui/icons.tsx","../lib/types":"src/lib/types.ts","../lib/geometry":"src/lib/geometry.ts","../lib/svg":"src/lib/svg.ts","../lib/align":"src/lib/align.ts","../lib/document":"src/lib/document.ts","../canvas/png":"src/canvas/png.ts","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts"},"src/ui/Shortcuts.tsx":{"./Modal":"src/ui/Modal.tsx","../state/store":"src/state/store.ts"},"src/ui/SlashPalette.tsx":{"./Modal":"src/ui/Modal.tsx","./icons":"src/ui/icons.tsx","../lib/library":"src/lib/library.ts","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts"},"src/ui/Minimap.tsx":{"../lib/geometry":"src/lib/geometry.ts","../lib/types":"src/lib/types.ts","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts"},"src/ui/Hints.tsx":{"./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts"},"src/state/store.ts":{"../lib/types":"src/lib/types.ts","../lib/document":"src/lib/document.ts","../lib/history":"src/lib/history.ts","../lib/palette":"src/lib/palette.ts","../lib/geometry":"src/lib/geometry.ts","../lib/binding":"src/lib/binding.ts","../lib/align":"src/lib/align.ts","../lib/library":"src/lib/library.ts","./files":"src/state/files.ts"},"src/state/view.ts":{"../lib/types":"src/lib/types.ts"},"src/lib/layout.ts":{"./types":"src/lib/types.ts","./document":"src/lib/document.ts","./binding":"src/lib/binding.ts","./text":"src/lib/text.ts"},"src/lib/document.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"},"src/lib/svg.ts":{"./types":"src/lib/types.ts","./document":"src/lib/document.ts","./geometry":"src/lib/geometry.ts","./shapes":"src/lib/shapes.ts","./textLayout":"src/lib/textLayout.ts","./text":"src/lib/text.ts"},"src/lib/types.ts":{},"src/lib/palette.ts":{},"src/state/files.ts":{"../lib/document":"src/lib/document.ts"},"src/lib/geometry.ts":{"./types":"src/lib/types.ts"},"src/lib/snap.ts":{"./types":"src/lib/types.ts"},"src/lib/binding.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"},"src/lib/textLayout.ts":{"./types":"src/lib/types.ts","./text":"src/lib/text.ts","./binding":"src/lib/binding.ts"},"src/lib/align.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"},"src/canvas/render.ts":{"../lib/types":"src/lib/types.ts","../lib/palette":"src/lib/palette.ts","../lib/document":"src/lib/document.ts","../lib/geometry":"src/lib/geometry.ts","../lib/shapes":"src/lib/shapes.ts","../lib/textLayout":"src/lib/textLayout.ts","../lib/snap":"src/lib/snap.ts"},"src/ui/icons.tsx":{},"src/lib/history.ts":{"./types":"src/lib/types.ts"},"src/ui/Modal.tsx":{"./icons":"src/ui/icons.tsx"},"src/canvas/png.ts":{"../lib/types":"src/lib/types.ts","../lib/palette":"src/lib/palette.ts","./render":"src/canvas/render.ts"},"src/lib/library.ts":{"./types":"src/lib/types.ts","./document":"src/lib/document.ts","./layout":"src/lib/layout.ts"},"src/lib/text.ts":{"./types":"src/lib/types.ts"},"src/lib/shapes.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"}};
+  var resolveMap = {"src/index.tsx":{"./app.css":"src/app.css","./canvas/Canvas":"src/canvas/Canvas.tsx","./ui/Chrome":"src/ui/Chrome.tsx","./ui/Toolbar":"src/ui/Toolbar.tsx","./ui/Properties":"src/ui/Properties.tsx","./ui/FileSwitcher":"src/ui/FileSwitcher.tsx","./ui/ExportDialog":"src/ui/ExportDialog.tsx","./ui/Shortcuts":"src/ui/Shortcuts.tsx","./ui/SlashPalette":"src/ui/SlashPalette.tsx","./ui/Minimap":"src/ui/Minimap.tsx","./ui/Hints":"src/ui/Hints.tsx","./state/store":"src/state/store.ts","./state/view":"src/state/view.ts","./lib/layout":"src/lib/layout.ts","./lib/document":"src/lib/document.ts","./lib/svg":"src/lib/svg.ts","./lib/types":"src/lib/types.ts","./lib/palette":"src/lib/palette.ts","./state/files":"src/state/files.ts"},"src/app.css":{},"src/canvas/Canvas.tsx":{"../lib/types":"src/lib/types.ts","../lib/geometry":"src/lib/geometry.ts","../lib/snap":"src/lib/snap.ts","../lib/binding":"src/lib/binding.ts","../lib/textLayout":"src/lib/textLayout.ts","../lib/align":"src/lib/align.ts","./render":"src/canvas/render.ts","../state/store":"src/state/store.ts"},"src/ui/Chrome.tsx":{"./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts","../lib/history":"src/lib/history.ts"},"src/ui/Toolbar.tsx":{"./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts"},"src/ui/Properties.tsx":{"../lib/types":"src/lib/types.ts","../lib/palette":"src/lib/palette.ts","./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts"},"src/ui/FileSwitcher.tsx":{"./Modal":"src/ui/Modal.tsx","./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts","../state/files":"src/state/files.ts"},"src/ui/ExportDialog.tsx":{"./Modal":"src/ui/Modal.tsx","./icons":"src/ui/icons.tsx","../lib/types":"src/lib/types.ts","../lib/geometry":"src/lib/geometry.ts","../lib/svg":"src/lib/svg.ts","../lib/align":"src/lib/align.ts","../lib/document":"src/lib/document.ts","../canvas/png":"src/canvas/png.ts","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts"},"src/ui/Shortcuts.tsx":{"./Modal":"src/ui/Modal.tsx","../state/store":"src/state/store.ts"},"src/ui/SlashPalette.tsx":{"./Modal":"src/ui/Modal.tsx","./icons":"src/ui/icons.tsx","../lib/library":"src/lib/library.ts","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts"},"src/ui/Minimap.tsx":{"../lib/geometry":"src/lib/geometry.ts","../lib/types":"src/lib/types.ts","../state/store":"src/state/store.ts","../state/view":"src/state/view.ts"},"src/ui/Hints.tsx":{"./icons":"src/ui/icons.tsx","../state/store":"src/state/store.ts"},"src/state/store.ts":{"../lib/types":"src/lib/types.ts","../lib/document":"src/lib/document.ts","../lib/history":"src/lib/history.ts","../lib/palette":"src/lib/palette.ts","../lib/geometry":"src/lib/geometry.ts","../lib/binding":"src/lib/binding.ts","../lib/align":"src/lib/align.ts","../lib/library":"src/lib/library.ts","./files":"src/state/files.ts"},"src/state/view.ts":{"../lib/types":"src/lib/types.ts"},"src/lib/layout.ts":{"./types":"src/lib/types.ts","./document":"src/lib/document.ts","./binding":"src/lib/binding.ts","./text":"src/lib/text.ts"},"src/lib/document.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts","./text":"src/lib/text.ts"},"src/lib/svg.ts":{"./types":"src/lib/types.ts","./document":"src/lib/document.ts","./geometry":"src/lib/geometry.ts","./shapes":"src/lib/shapes.ts","./textLayout":"src/lib/textLayout.ts","./text":"src/lib/text.ts"},"src/lib/types.ts":{},"src/lib/palette.ts":{},"src/state/files.ts":{"../lib/document":"src/lib/document.ts"},"src/lib/geometry.ts":{"./types":"src/lib/types.ts"},"src/lib/snap.ts":{"./types":"src/lib/types.ts"},"src/lib/binding.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"},"src/lib/textLayout.ts":{"./types":"src/lib/types.ts","./text":"src/lib/text.ts","./binding":"src/lib/binding.ts"},"src/lib/align.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"},"src/canvas/render.ts":{"../lib/types":"src/lib/types.ts","../lib/palette":"src/lib/palette.ts","../lib/document":"src/lib/document.ts","../lib/geometry":"src/lib/geometry.ts","../lib/shapes":"src/lib/shapes.ts","../lib/textLayout":"src/lib/textLayout.ts","../lib/snap":"src/lib/snap.ts"},"src/ui/icons.tsx":{},"src/lib/history.ts":{"./types":"src/lib/types.ts"},"src/ui/Modal.tsx":{"./icons":"src/ui/icons.tsx"},"src/canvas/png.ts":{"../lib/types":"src/lib/types.ts","../lib/palette":"src/lib/palette.ts","./render":"src/canvas/render.ts"},"src/lib/library.ts":{"./types":"src/lib/types.ts","./document":"src/lib/document.ts","./layout":"src/lib/layout.ts"},"src/lib/text.ts":{"./types":"src/lib/types.ts"},"src/lib/shapes.ts":{"./types":"src/lib/types.ts","./geometry":"src/lib/geometry.ts"}};
   var bareMap = {
     "react": function () { return window.__kuminSdk && window.__kuminSdk.react; },
     "react-dom": function () { return window.__kuminSdk && window.__kuminSdk.reactDom; },
@@ -790,7 +790,7 @@ const Canvas = ({ onReady }) => {
         const isFrame = el.type === 'frame';
         if (current.created && !value.trim() && el.type === 'text') {
             // A text element nobody typed into never existed.
-            state.commit(state.elements.filter((e) => e.id !== el.id), { label: 'Delete', selectedIds: [] });
+            state.commit(state.elements.filter((e) => e.id !== el.id), { label: 'Delete', coalesce: `text:${el.id}`, selectedIds: [] });
             return;
         }
         const measure = measureRef.current;
@@ -848,7 +848,7 @@ const Canvas = ({ onReady }) => {
         }
         if (state.tool === 'text') {
             const el = (0, store_1.elementFromStyle)('text', { x: scene[0], y: scene[1], w: 0, h: state.style.fontSize * 1.25 }, state.style);
-            state.addElements([el], { label: 'Text' });
+            state.addElements([el], { label: 'Text', coalesce: `text:${el.id}` });
             startEditing(el, true);
             gestureRef.current = { kind: 'none' };
             if (!state.keepTool)
@@ -868,7 +868,7 @@ const Canvas = ({ onReady }) => {
                 startArrow: 'none',
                 endArrow: 'none',
             }, state.style);
-            state.addElements([el], { label: 'Draw' });
+            state.addElements([el], { label: 'Draw', coalesce: 'draw' });
             gestureRef.current = { kind: 'draw', id: el.id, points: [[0, 0]], origin: scene };
             return;
         }
@@ -883,7 +883,7 @@ const Canvas = ({ onReady }) => {
                 ],
                 startBinding: start ? (0, binding_1.makeBinding)(start, scene) : null,
             }, state.style);
-            state.addElements([el], { label: state.tool === 'arrow' ? 'Arrow' : 'Line' });
+            state.addElements([el], { label: state.tool === 'arrow' ? 'Arrow' : 'Line', coalesce: 'linear' });
             gestureRef.current = { kind: 'linear', id: el.id, origin: scene };
             return;
         }
@@ -897,7 +897,7 @@ const Canvas = ({ onReady }) => {
                 ...(type === 'sticky' ? { fill: state.palette.stickyFill, textColor: state.palette.stickyText } : {}),
                 ...(type === 'frame' ? { name: `Frame ${state.elements.filter((el2) => el2.type === 'frame').length + 1}` } : {}),
             }, state.style);
-            state.addElements([el], { label: 'Draw' });
+            state.addElements([el], { label: 'Draw', coalesce: 'create' });
             gestureRef.current = { kind: 'create', id: el.id, origin: scene, type };
         }
     }, [editing, finishEditing, startEditing, toScene]);
@@ -1185,12 +1185,12 @@ const Canvas = ({ onReady }) => {
                 const tip = pts[pts.length - 1];
                 const length = Math.hypot(tip[0] - pts[0][0], tip[1] - pts[0][1]);
                 if (length < 6) {
-                    state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', selectedIds: [] });
+                    state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', coalesce: 'linear', selectedIds: [] });
                 }
                 else {
                     const target = (0, binding_1.bindableAt)(state.elements, scene, 18 / state.viewport.zoom, el.id);
                     if (target) {
-                        state.commit(state.elements.map((item) => (item.id === el.id ? { ...item, endBinding: (0, binding_1.makeBinding)(target, tip) } : item)), { label: 'Bind' });
+                        state.commit(state.elements.map((item) => (item.id === el.id ? { ...item, endBinding: (0, binding_1.makeBinding)(target, tip) } : item)), { label: 'Arrow', coalesce: 'linear' });
                     }
                 }
             }
@@ -1200,10 +1200,10 @@ const Canvas = ({ onReady }) => {
             if (el) {
                 const simplified = (0, geometry_1.simplifyPoints)(el.points, 0.7 / state.viewport.zoom);
                 if (simplified.length < 2) {
-                    state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', selectedIds: [] });
+                    state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', coalesce: 'draw', selectedIds: [] });
                 }
                 else {
-                    state.commit(state.elements.map((item) => (item.id === el.id ? (0, geometry_1.normalizeLinear)({ ...item, points: simplified }) : item)), { label: 'Draw' });
+                    state.commit(state.elements.map((item) => (item.id === el.id ? (0, geometry_1.normalizeLinear)({ ...item, points: simplified }) : item)), { label: 'Draw', coalesce: 'draw' });
                 }
             }
         }
@@ -2372,13 +2372,29 @@ exports.useSketch = (0, zustand_1.create)((set, get) => ({
         set({ viewport: (0, geometry_1.zoomAt)(viewport, zoom, point) });
     },
     zoomToFit(size, onlySelection = false) {
-        const { elements, selectedIds } = get();
+        const state = get();
+        const { elements, selectedIds } = state;
         const target = onlySelection && selectedIds.length ? elements.filter((el) => selectedIds.includes(el.id)) : elements;
         if (!target.length) {
             set({ viewport: { scrollX: -size.width / 2, scrollY: -size.height / 2, zoom: 1 } });
             return;
         }
-        set({ viewport: (0, geometry_1.fitBounds)((0, geometry_1.boundsOfElements)(target), size.width, size.height) });
+        // Fit into the space the floating islands leave free, not the whole
+        // canvas - otherwise "zoom to fit" tucks the top of the board under
+        // the toolbar and the bottom under the zoom controls.
+        const panel = selectedIds.length || (state.tool !== 'select' && state.tool !== 'hand' && state.tool !== 'eraser') ? 252 : 24;
+        const inset = { top: 78, bottom: 76, left: panel, right: 24 };
+        const box = (0, geometry_1.boundsOfElements)(target);
+        const availableWidth = Math.max(80, size.width - inset.left - inset.right);
+        const availableHeight = Math.max(80, size.height - inset.top - inset.bottom);
+        const zoom = (0, geometry_1.clamp)(Math.min(availableWidth / Math.max(box.w, 1), availableHeight / Math.max(box.h, 1)), 0.05, 1.6);
+        set({
+            viewport: {
+                zoom,
+                scrollX: box.x + box.w / 2 - (inset.left + availableWidth / 2) / zoom,
+                scrollY: box.y + box.h / 2 - (inset.top + availableHeight / 2) / zoom,
+            },
+        });
     },
     setSelection(ids) {
         const { elements } = get();
@@ -2419,7 +2435,14 @@ exports.useSketch = (0, zustand_1.create)((set, get) => ({
     addElements(elements, opts = {}) {
         const state = get();
         const next = [...state.elements, ...elements];
-        state.commit(next, { label: opts.label ?? 'Add', selectedIds: opts.select === false ? state.selectedIds : elements.map((el) => el.id) });
+        // A drawing tool passes the same coalesce key the drag that follows
+        // will use, so "draw a rectangle" is one undo step rather than two
+        // (the element appearing, then being given its size).
+        state.commit(next, {
+            label: opts.label ?? 'Add',
+            coalesce: opts.coalesce ?? null,
+            selectedIds: opts.select === false ? state.selectedIds : elements.map((el) => el.id),
+        });
     },
     deleteSelected() {
         const { elements, selectedIds } = get();
@@ -2960,7 +2983,7 @@ function layerNodes(nodes, edges) {
     const layers = Array.from({ length: depth }, () => []);
     for (const id of ids)
         layers[layerOf.get(id)].push(id);
-    return { layerOf, layers, reversed, acyclic };
+    return { layerOf, layers, reversed, acyclic, clean };
 }
 /* ------------------------------------------------------- 2. ordering */
 /** Number of edge crossings between consecutive layers, counted pairwise.
@@ -3083,9 +3106,38 @@ function layoutGraph(spec, opts = {}) {
     const sized = new Map(nodes.map((n) => [n.id, sizeNode(n, o)]));
     const known = new Set(nodes.map((n) => n.id));
     const edges = (spec.edges ?? []).filter((e) => e && known.has(e.from) && known.has(e.to));
-    const { layers, layerOf, acyclic } = layerNodes(nodes, edges);
-    const ordered = orderLayers(layers, acyclic, layerOf);
-    const cross = assignPositions(ordered, sized, acyclic, o);
+    const { layers, layerOf, acyclic, clean } = layerNodes(nodes, edges);
+    // An edge that skips a layer would otherwise be drawn straight through
+    // whatever sits in the layer it skips. Classic Sugiyama answer: give it
+    // a small invisible node in every layer it crosses, lay those out with
+    // everything else - they take up room, so the boxes move aside - and
+    // route the arrow through where they ended up.
+    const augLayers = layers.map((l) => l.slice());
+    const augLayerOf = new Map(layerOf);
+    const augEdges = [];
+    const bendIds = clean.map(() => []);
+    const BEND_SIZE = 20;
+    acyclic.forEach((edge, index) => {
+        const from = augLayerOf.get(edge.from) ?? 0;
+        const to = augLayerOf.get(edge.to) ?? 0;
+        if (to - from <= 1) {
+            augEdges.push(edge);
+            return;
+        }
+        let previous = edge.from;
+        for (let layer = from + 1; layer < to; layer++) {
+            const id = `\u0000bend-${index}-${layer}`;
+            bendIds[index].push(id);
+            augLayers[layer].push(id);
+            augLayerOf.set(id, layer);
+            sized.set(id, { id, label: '', type: 'rect', w: BEND_SIZE, h: BEND_SIZE, lines: [] });
+            augEdges.push({ from: previous, to: id });
+            previous = id;
+        }
+        augEdges.push({ from: previous, to: edge.to });
+    });
+    const ordered = orderLayers(augLayers, augEdges, augLayerOf);
+    const cross = assignPositions(ordered, sized, augEdges, o);
     // Down-axis: stack layers, each centred on the tallest node in it.
     const down = new Map();
     let cursor = 0;
@@ -3097,14 +3149,18 @@ function layoutGraph(spec, opts = {}) {
             down.set(id, cursor + extent / 2);
         cursor += extent + o.layerGap;
     }
+    const centreOf = (id) => {
+        const c = cross.get(id) ?? 0;
+        const d = down.get(id) ?? 0;
+        return direction === 'TB' ? [c, d] : [d, c];
+    };
     const placed = [];
     for (const [layerIndex, layer] of ordered.entries()) {
         for (const [order, id] of layer.entries()) {
             const n = sized.get(id);
-            const c = cross.get(id) ?? 0;
-            const d = down.get(id) ?? 0;
-            const cx = direction === 'TB' ? c : d;
-            const cy = direction === 'TB' ? d : c;
+            if (!known.has(id))
+                continue;
+            const [cx, cy] = centreOf(id);
             placed.push({ ...n, layer: layerIndex, order, x: cx - n.w / 2, y: cy - n.h / 2 });
         }
     }
@@ -3125,17 +3181,30 @@ function layoutGraph(spec, opts = {}) {
         maxY = 0;
     }
     const [ox, oy] = o.origin;
+    const shiftX = ox - minX;
+    const shiftY = oy - minY;
     for (const n of placed) {
-        n.x = Math.round(n.x - minX + ox);
-        n.y = Math.round(n.y - minY + oy);
+        n.x = Math.round(n.x + shiftX);
+        n.y = Math.round(n.y + shiftY);
     }
+    const bends = bendIds.map((ids, index) => {
+        const points = ids.map((id) => {
+            const [x, y] = centreOf(id);
+            return [Math.round(x + shiftX), Math.round(y + shiftY)];
+        });
+        // A reversed edge was laid out backwards; the arrow still runs the
+        // way the caller asked for it, so its bends do too.
+        const wasReversed = acyclic[index].from !== clean[index].from;
+        return wasReversed ? points.reverse() : points;
+    });
     return {
         nodes: placed,
-        edges,
+        edges: clean,
+        bends,
         direction,
         width: maxX - minX,
         height: maxY - minY,
-        crossings: countCrossings(ordered, acyclic, layerOf),
+        crossings: countCrossings(ordered, augEdges, augLayerOf),
     };
 }
 exports.DEFAULT_DIAGRAM_STYLE = {
@@ -3173,20 +3242,22 @@ function buildDiagram(spec, style = {}, opts = {}) {
         elements.push(el);
         byGraphId.set(n.id, el);
     }
-    for (const e of result.edges) {
+    result.edges.forEach((e, index) => {
         const from = byGraphId.get(e.from);
         const to = byGraphId.get(e.to);
         if (!from || !to)
-            continue;
-        const start = (0, binding_1.boundaryPoint)(from, [to.x + to.w / 2, to.y + to.h / 2], 6);
-        const end = (0, binding_1.boundaryPoint)(to, [from.x + from.w / 2, from.y + from.h / 2], 6);
+            return;
+        const bends = result.bends[index] ?? [];
+        const firstAim = bends[0] ?? [to.x + to.w / 2, to.y + to.h / 2];
+        const lastAim = bends[bends.length - 1] ?? [from.x + from.w / 2, from.y + from.h / 2];
+        const start = (0, binding_1.boundaryPoint)(from, firstAim, 6);
+        const end = (0, binding_1.boundaryPoint)(to, lastAim, 6);
+        const route = [start, ...bends, end];
         elements.push((0, document_1.createElement)('arrow', {
             x: start[0],
             y: start[1],
-            points: [
-                [0, 0],
-                [end[0] - start[0], end[1] - start[1]],
-            ],
+            points: route.map((p) => [p[0] - start[0], p[1] - start[1]]),
+            edge: bends.length ? 'curved' : 'straight',
             stroke: s.stroke,
             endArrow: 'arrow',
             text: e.label ?? '',
@@ -3195,7 +3266,7 @@ function buildDiagram(spec, style = {}, opts = {}) {
             startBinding: { elementId: from.id, gap: 6 },
             endBinding: { elementId: to.id, gap: 6 },
         }));
-    }
+    });
     return elements;
 }
 
@@ -3208,11 +3279,12 @@ function buildDiagram(spec, style = {}, opts = {}) {
 // render as a readable problem, because a whiteboard that shows a blank
 // white window when a file is a byte short is worse than useless.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isSketchFile = exports.documentPath = exports.fileNameFor = exports.FOLDER_NAME = exports.FILE_EXTENSION = exports.SCHEMA_VERSION = void 0;
+exports.isSketchFile = exports.documentPath = exports.fileNameFor = exports.DEFAULT_STICKY_FILL = exports.FOLDER_NAME = exports.FILE_EXTENSION = exports.SCHEMA_VERSION = void 0;
 exports.newId = newId;
 exports.createElement = createElement;
 exports.createDocument = createDocument;
 exports.coerceElement = coerceElement;
+exports.sizeTextElement = sizeTextElement;
 exports.serializeDocument = serializeDocument;
 exports.parseDocument = parseDocument;
 exports.sanitizeName = sanitizeName;
@@ -3221,6 +3293,7 @@ exports.uniqueName = uniqueName;
 exports.describeDocument = describeDocument;
 const types_1 = require("./types");
 const geometry_1 = require("./geometry");
+const text_1 = require("./text");
 exports.SCHEMA_VERSION = 1;
 exports.FILE_EXTENSION = '.sketch.json';
 exports.FOLDER_NAME = 'Sketches';
@@ -3286,11 +3359,17 @@ function coerceBinding(v) {
 }
 /** Turns anything into a valid element, defaulting every field it cannot
  *  read. Returns null only when there is nothing recognisable at all. */
+exports.DEFAULT_STICKY_FILL = '#fde9a9';
 function coerceElement(raw) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw))
         return null;
     const r = raw;
     const type = oneOf(r.type, ELEMENT_TYPES, 'rect');
+    // Somebody (an agent, a hand-written file) who names a fill colour means
+    // the shape to be filled, even when they did not also name a fill style;
+    // and a sticky note is a filled thing by definition.
+    const namedFill = typeof r.fill === 'string' && r.fill && r.fill !== 'transparent';
+    const fillStyleFallback = namedFill || type === 'sticky' ? 'solid' : types_1.DEFAULT_ELEMENT.fillStyle;
     const el = {
         ...types_1.DEFAULT_ELEMENT,
         id: str(r.id, '') || newId(),
@@ -3301,8 +3380,8 @@ function coerceElement(raw) {
         h: Math.max(0, num(r.h, 0)),
         angle: num(r.angle, 0),
         stroke: str(r.stroke, types_1.DEFAULT_ELEMENT.stroke),
-        fill: str(r.fill, types_1.DEFAULT_ELEMENT.fill),
-        fillStyle: oneOf(r.fillStyle, FILL_STYLES, types_1.DEFAULT_ELEMENT.fillStyle),
+        fill: str(r.fill, type === 'sticky' ? exports.DEFAULT_STICKY_FILL : types_1.DEFAULT_ELEMENT.fill),
+        fillStyle: oneOf(r.fillStyle, FILL_STYLES, fillStyleFallback),
         strokeWidth: Math.max(0.25, num(r.strokeWidth, types_1.DEFAULT_ELEMENT.strokeWidth)),
         strokeStyle: oneOf(r.strokeStyle, STROKE_STYLES, types_1.DEFAULT_ELEMENT.strokeStyle),
         opacity: Math.min(1, Math.max(0.05, num(r.opacity, 1))),
@@ -3329,7 +3408,26 @@ function coerceElement(raw) {
             return null;
         return (0, geometry_1.normalizeLinear)(el);
     }
+    if (el.type === 'text' && el.text)
+        return sizeTextElement(el);
     return el;
+}
+/** A free text element's box IS its text - everything downstream (the
+ *  selection box, zoom-to-fit, the export frame) reads w/h rather than
+ *  re-measuring. A file written by hand or by an agent rarely gets those
+ *  right, so a box that is clearly too small for what it holds is
+ *  re-sized from the estimator here. A box within a few per cent of the
+ *  estimate is left exactly as it was: the app measures with the real
+ *  font and its numbers are better than this one's. */
+function sizeTextElement(el) {
+    const lines = el.text.split('\n');
+    let width = 0;
+    for (const line of lines)
+        width = Math.max(width, (0, text_1.estimateTextWidth)(line, el.fontSize, el.fontFamily));
+    const height = lines.length * (0, text_1.lineHeightFor)(el.fontSize);
+    if (el.w >= width * 0.8 && el.h >= height * 0.8)
+        return el;
+    return { ...el, w: Math.max(el.w, Math.round(width)), h: Math.max(el.h, height) };
 }
 function coerceView(v) {
     const r = (v && typeof v === 'object' ? v : {});
@@ -3889,7 +3987,7 @@ function luminance(hex) {
         const s = c / 255;
         return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
     };
-    return 0.2126 * channel((n >> 16) & 255) + 0.7152 * channel((n >> 8) & 255) + 0.0722 * (n & 255);
+    return 0.2126 * channel((n >> 16) & 255) + 0.7152 * channel((n >> 8) & 255) + 0.0722 * channel(n & 255);
 }
 const readableTextOn = (background, light = '#ffffff', dark = '#1e1e1e') => background === 'transparent' ? dark : luminance(background) > 0.5 ? dark : light;
 exports.readableTextOn = readableTextOn;
@@ -5146,6 +5244,13 @@ function elementPath(ctx, el) {
     }
     roundRectPath(ctx, el.x, el.y, el.w, el.h, el.type === 'sticky' ? 3 : (0, shapes_1.cornerRadius)(el));
 }
+/** Hatching is drawn, not tiled: a canvas pattern lives in device space,
+ *  so it would crawl as the board is panned and shear on a rotated shape.
+ *  Clipping to the shape and stroking 45-degree lines across its box
+ *  costs one extra path and is correct at every zoom and angle.
+ *
+ *  It leaves the hatch lines as the context's current path, which is why
+ *  drawElement rebuilds the element's own path before stroking it. */
 function fillHatched(ctx, el, colour) {
     const b = (0, geometry_1.expandBounds)((0, geometry_1.rotatedBounds)(el), 8);
     ctx.save();
@@ -5203,6 +5308,9 @@ function drawElement(ctx, el, palette, measure) {
             }
         }
         if (stroked) {
+            // fillHatched (and nothing else) leaves its own path behind.
+            if (filled && el.fillStyle === 'hatch')
+                elementPath(ctx, el);
             ctx.strokeStyle = el.stroke;
             ctx.lineWidth = el.strokeWidth;
             ctx.lineCap = 'round';

@@ -109,10 +109,17 @@ function coerceBinding(v: unknown): SketchElement['startBinding'] {
 
 /** Turns anything into a valid element, defaulting every field it cannot
  *  read. Returns null only when there is nothing recognisable at all. */
+export const DEFAULT_STICKY_FILL = '#fde9a9';
+
 export function coerceElement(raw: unknown): SketchElement | null {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
   const r = raw as Record<string, unknown>;
   const type = oneOf(r.type, ELEMENT_TYPES, 'rect');
+  // Somebody (an agent, a hand-written file) who names a fill colour means
+  // the shape to be filled, even when they did not also name a fill style;
+  // and a sticky note is a filled thing by definition.
+  const namedFill = typeof r.fill === 'string' && r.fill && r.fill !== 'transparent';
+  const fillStyleFallback: FillStyle = namedFill || type === 'sticky' ? 'solid' : DEFAULT_ELEMENT.fillStyle;
   const el: SketchElement = {
     ...DEFAULT_ELEMENT,
     id: str(r.id, '') || newId(),
@@ -123,8 +130,8 @@ export function coerceElement(raw: unknown): SketchElement | null {
     h: Math.max(0, num(r.h, 0)),
     angle: num(r.angle, 0),
     stroke: str(r.stroke, DEFAULT_ELEMENT.stroke),
-    fill: str(r.fill, DEFAULT_ELEMENT.fill),
-    fillStyle: oneOf(r.fillStyle, FILL_STYLES, DEFAULT_ELEMENT.fillStyle),
+    fill: str(r.fill, type === 'sticky' ? DEFAULT_STICKY_FILL : DEFAULT_ELEMENT.fill),
+    fillStyle: oneOf(r.fillStyle, FILL_STYLES, fillStyleFallback),
     strokeWidth: Math.max(0.25, num(r.strokeWidth, DEFAULT_ELEMENT.strokeWidth)),
     strokeStyle: oneOf(r.strokeStyle, STROKE_STYLES, DEFAULT_ELEMENT.strokeStyle),
     opacity: Math.min(1, Math.max(0.05, num(r.opacity, 1))),

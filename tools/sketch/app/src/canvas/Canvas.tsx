@@ -227,7 +227,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
     const isFrame = el.type === 'frame';
     if (current.created && !value.trim() && el.type === 'text') {
       // A text element nobody typed into never existed.
-      state.commit(state.elements.filter((e) => e.id !== el.id), { label: 'Delete', selectedIds: [] });
+      state.commit(state.elements.filter((e) => e.id !== el.id), { label: 'Delete', coalesce: `text:${el.id}`, selectedIds: [] });
       return;
     }
     const measure = measureRef.current;
@@ -288,7 +288,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
 
       if (state.tool === 'text') {
         const el = elementFromStyle('text', { x: scene[0], y: scene[1], w: 0, h: state.style.fontSize * 1.25 }, state.style);
-        state.addElements([el], { label: 'Text' });
+        state.addElements([el], { label: 'Text', coalesce: `text:${el.id}` });
         startEditing(el, true);
         gestureRef.current = { kind: 'none' };
         if (!state.keepTool) state.setTool('select');
@@ -312,7 +312,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
           },
           state.style
         );
-        state.addElements([el], { label: 'Draw' });
+        state.addElements([el], { label: 'Draw', coalesce: 'draw' });
         gestureRef.current = { kind: 'draw', id: el.id, points: [[0, 0]], origin: scene };
         return;
       }
@@ -332,7 +332,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
           },
           state.style
         );
-        state.addElements([el], { label: state.tool === 'arrow' ? 'Arrow' : 'Line' });
+        state.addElements([el], { label: state.tool === 'arrow' ? 'Arrow' : 'Line', coalesce: 'linear' });
         gestureRef.current = { kind: 'linear', id: el.id, origin: scene };
         return;
       }
@@ -351,7 +351,7 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
           },
           state.style
         );
-        state.addElements([el], { label: 'Draw' });
+        state.addElements([el], { label: 'Draw', coalesce: 'create' });
         gestureRef.current = { kind: 'create', id: el.id, origin: scene, type };
       }
     },
@@ -676,13 +676,13 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
           const tip = pts[pts.length - 1];
           const length = Math.hypot(tip[0] - pts[0][0], tip[1] - pts[0][1]);
           if (length < 6) {
-            state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', selectedIds: [] });
+            state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', coalesce: 'linear', selectedIds: [] });
           } else {
             const target = bindableAt(state.elements, scene, 18 / state.viewport.zoom, el.id);
             if (target) {
               state.commit(
                 state.elements.map((item) => (item.id === el.id ? { ...item, endBinding: makeBinding(target, tip) } : item)),
-                { label: 'Bind' }
+                { label: 'Arrow', coalesce: 'linear' }
               );
             }
           }
@@ -694,11 +694,11 @@ export const Canvas: React.FC<CanvasProps> = ({ onReady }) => {
         if (el) {
           const simplified = simplifyPoints(el.points, 0.7 / state.viewport.zoom);
           if (simplified.length < 2) {
-            state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', selectedIds: [] });
+            state.commit(state.elements.filter((item) => item.id !== el.id), { label: 'Draw', coalesce: 'draw', selectedIds: [] });
           } else {
             state.commit(
               state.elements.map((item) => (item.id === el.id ? normalizeLinear({ ...item, points: simplified }) : item)),
-              { label: 'Draw' }
+              { label: 'Draw', coalesce: 'draw' }
             );
           }
         }
