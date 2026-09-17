@@ -466,6 +466,7 @@
   font-size: 12px;
   box-shadow: var(--sk-shadow);
   animation: sk-rise 140ms ease-out;
+  pointer-events: none;
 }
 
 @keyframes sk-rise {
@@ -850,6 +851,9 @@
   border-radius: 16px;
   background: color-mix(in srgb, var(--sk-surface) 84%, transparent);
   text-align: left;
+  /* The hint sits over the middle of an empty board, which is exactly
+     where someone is about to draw: only its buttons take the pointer. */
+  pointer-events: none;
 }
 
 .sk-firstrun h2 {
@@ -873,6 +877,7 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  pointer-events: auto;
 }
 
 .sk-corrupt {
