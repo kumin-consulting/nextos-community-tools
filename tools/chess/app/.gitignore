@@ -1,0 +1,6 @@
+# The React UMD builds preview/serve.mjs copies out of this repository's
+# own node_modules so the preview page can load them without a network.
+# They belong to React, not to this app, so they are not committed.
+preview/react.production.min.js
+preview/react-dom.production.min.js
+preview/vendor/

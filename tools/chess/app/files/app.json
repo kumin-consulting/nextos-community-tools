@@ -1,0 +1,90 @@
+{
+  "id": "chess",
+  "name": "Chess",
+  "version": "1.0.0",
+  "description": "A complete chess app with its own engine: every rule, an opening book, analysis that finds your blunders, and games saved as PGN.",
+  "icon": "♞",
+  "kind": "native",
+  "source": "src/index.tsx",
+  "entry": "build/app.js",
+  "author": "Kumin Consulting",
+  "homepage": "https://www.jonkum.in/community/chess",
+  "license": "MIT",
+  "permissions": ["fs:read:home", "fs:write:home", "storage", "clipboard", "intents"],
+  "window": { "width": 1180, "height": 840, "minWidth": 720, "minHeight": 560 },
+  "intents": [
+    { "action": "open", "description": "Open a .pgn file in Chess. Params: file - the path to the file." },
+    { "action": "analyze", "description": "Set the board to a position and analyse it. Params: fen - the position." }
+  ],
+  "tools": [
+    {
+      "name": "chess_new_game",
+      "description": "Start a new chess game, replacing the one in progress: choose the opponent (the engine, another person on the same board, or the engine playing itself), the colour, the strength 1-8, an optional starting FEN and an optional clock.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "opponent": { "type": "string", "enum": ["engine", "person", "engine-vs-engine"] },
+          "playAs": { "type": "string", "enum": ["white", "black"] },
+          "level": { "type": "integer", "minimum": 1, "maximum": 8 },
+          "fen": { "type": "string" },
+          "minutes": { "type": "number" },
+          "incrementSeconds": { "type": "number" }
+        }
+      }
+    },
+    {
+      "name": "chess_play_move",
+      "description": "Play one move in the game in progress, in algebraic ('Nf3') or coordinate ('g1f3') notation, and get the engine's reply when it is the engine's turn. Refuses an illegal move without changing anything.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "move": { "type": "string" },
+          "engineReplies": { "type": "boolean" }
+        },
+        "required": ["move"]
+      }
+    },
+    {
+      "name": "chess_position",
+      "description": "Read the game in progress: FEN, a plain-text board, the side to move, every legal move in algebraic notation, check and mate status, the opening's name and the moves so far.",
+      "inputSchema": { "type": "object", "properties": {} },
+      "readOnly": true
+    },
+    {
+      "name": "chess_analyze",
+      "description": "Ask the engine what it thinks of a position (a FEN), a game (a PGN), or the game in progress: the evaluation, the best move, the expected line, and a sentence saying what that means. With everyMove, judges every move and reports the blunders.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fen": { "type": "string" },
+          "pgn": { "type": "string" },
+          "depth": { "type": "integer", "minimum": 1, "maximum": 30 },
+          "movetimeMs": { "type": "integer", "minimum": 50, "maximum": 10000 },
+          "everyMove": { "type": "boolean" }
+        }
+      },
+      "readOnly": true
+    },
+    {
+      "name": "chess_list_games",
+      "description": "List the games saved in the Chess folder, newest first, with the players, the date, the result and the opening.",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "limit": { "type": "integer", "minimum": 1, "maximum": 200 } }
+      },
+      "readOnly": true
+    },
+    {
+      "name": "chess_import_pgn",
+      "description": "Load a game from PGN text or from a .pgn file on disk, replacing the game in progress. Variations, comments and annotations are kept; optionally saves a copy into the Chess games folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pgn": { "type": "string" },
+          "path": { "type": "string" },
+          "save": { "type": "boolean" }
+        }
+      }
+    }
+  ]
+}
