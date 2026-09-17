@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recall - preview harness</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #f4f4f6;
+      }
+      body[data-theme='dark'] {
+        background: #17181c;
+      }
+      #window {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        overflow: hidden;
+      }
+      #window > * {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+      #boot {
+        font: 13px system-ui, sans-serif;
+        color: #8b8f9c;
+        padding: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The preview harness: Recall running in a plain browser tab with a
+         stub of the NextOS SDK, so the app can be looked at (and
+         screenshotted) without the OS. `npm run` nothing - just
+         `node preview/serve.mjs` from tools/recall/app. -->
+    <div id="window"><p id="boot">Loading Recall...</p></div>
+    <script src="./vendor/react.production.min.js"></script>
+    <script src="./vendor/react-dom.production.min.js"></script>
+    <script src="./stub-sdk.js"></script>
+    <script type="module">
+      const css = await fetch('../files/build/app.css').then((r) => (r.ok ? r.text() : ''));
+      if (css) {
+        const style = document.createElement('style');
+        style.textContent = css;
+        document.head.appendChild(style);
+      }
+      const mod = await import('../files/build/app.js');
+      const root = window.ReactDOM.createRoot(document.getElementById('window'));
+      root.render(window.React.createElement(mod.default));
+      window.__recall = mod;
+    </script>
+  </body>
+</html>

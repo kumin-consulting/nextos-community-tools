@@ -1,0 +1,6 @@
+# The preview harness copies React's UMD builds out of the repository's
+# node_modules at run time - they are not ours to commit.
+preview/*.js
+!preview/serve.mjs
+!preview/stub-sdk.js
+preview/vendor/

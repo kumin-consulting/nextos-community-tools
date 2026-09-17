@@ -44,6 +44,49 @@
         "offline",
         "keyboard"
       ]
+    },
+    {
+      "id": "recall",
+      "name": "Recall",
+      "version": "1.0.0",
+      "kind": "native",
+      "description": "Spaced-repetition flashcards whose decks are plain Markdown files you can edit anywhere.",
+      "icon": "🧠",
+      "homepage": "https://www.jonkum.in/community/recall",
+      "author": "Kumin Consulting",
+      "license": "MIT",
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "notifications",
+        "clipboard",
+        "intents"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/app/app.zip",
+        "sha256": "9fb55e2441b7cbc40fead5aed93e2f2ab39feed617281da1a1cc6709b3f95d68",
+        "bytes": 304505
+      },
+      "screenshots": [
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/decks-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/review-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/cards-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/decks-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/review-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/cards-dark.png"
+      ],
+      "tags": [
+        "spaced-repetition",
+        "flashcards",
+        "anki",
+        "markdown",
+        "study",
+        "memory",
+        "srs",
+        "cloze",
+        "learning"
+      ]
     }
   ]
 }

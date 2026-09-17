@@ -1,0 +1,108 @@
+{
+  "slug": "recall",
+  "name": "Recall",
+  "kind": "app",
+  "summary": "Spaced-repetition flashcards whose decks are plain Markdown files you can edit anywhere, with an Anki-style scheduler and tools an agent can call.",
+  "version": "1.0.0",
+  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" },
+  "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/recall",
+  "homepage": "https://www.jonkum.in/community/recall",
+  "license": "MIT",
+  "publishedAt": "2026-09-17",
+  "updatedAt": "2026-09-17",
+  "categories": ["productivity", "agents"],
+  "tags": ["spaced-repetition", "flashcards", "anki", "markdown", "study", "memory", "srs", "cloze", "learning"],
+  "seo": {
+    "title": "Recall - spaced-repetition flashcards in Markdown",
+    "description": "A NextOS flashcard app with an SM-2 scheduler, cloze deletions, typed answers and a card browser - and decks that are ordinary Markdown files in ~/Recall.",
+    "keywords": [
+      "spaced repetition app",
+      "markdown flashcards",
+      "anki alternative",
+      "sm-2 scheduler",
+      "cloze deletion",
+      "flashcards nextos",
+      "plain text flashcards",
+      "review scheduler",
+      "study app",
+      "flashcard agent tools"
+    ],
+    "ogImage": "images/share.png"
+  },
+  "screenshots": [
+    {
+      "src": "images/decks-light.png",
+      "alt": "Recall's deck browser: due counts, a six-month review heatmap, streak and retention",
+      "caption": "Every deck with what is due, over a heatmap of the last six months."
+    },
+    {
+      "src": "images/review-light.png",
+      "alt": "A card being reviewed, with Again, Hard, Good and Easy buttons showing their intervals",
+      "caption": "Each grade button shows the interval it will really give you."
+    },
+    {
+      "src": "images/cards-light.png",
+      "alt": "The card browser: a searchable table of every card next to an editor with a live preview",
+      "caption": "Search, sort, select and edit - with a live preview of the Markdown."
+    },
+    {
+      "src": "images/decks-dark.png",
+      "alt": "The same deck browser in the dark theme, heatmap and statistics included",
+      "caption": "Both themes are designed, not inverted."
+    },
+    {
+      "src": "images/review-dark.png",
+      "alt": "A review in the dark theme, showing inline code in the question and the answer",
+      "caption": "Cards carry Markdown: bold, italic, code, lists and fenced blocks."
+    },
+    {
+      "src": "images/cards-dark.png",
+      "alt": "The card browser in the dark theme with cards selected for a bulk action",
+      "caption": "Select cards and suspend, tag, move or delete them together."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Where are my decks kept?",
+      "a": "In ~/Recall, one Markdown file per deck. A card is a Q: line and an A: line, so a deck stays readable and editable in any editor - Recall picks up outside changes when its window comes back into focus, and keeps the schedule of every card you did not touch."
+    },
+    {
+      "q": "What happens to my scheduling if I edit a deck somewhere else?",
+      "a": "Scheduling lives beside the deck in <deck>.recall.json, keyed by a hash of each card's question. Change an answer, add a card, reorder the file - every unchanged question keeps its interval, ease and history. Rewrite a question and that card starts again, which is usually what you wanted anyway."
+    },
+    {
+      "q": "Which algorithm does it use?",
+      "a": "SM-2 with the refinements everybody ships today: learning steps in minutes, relearning steps after a lapse, graduating and easy intervals, an ease floor of 1.3, an interval modifier, deterministic fuzz, per-deck daily limits and a leech threshold. Every grade button shows the interval it will actually give, because the projection runs the real scheduler."
+    },
+    {
+      "q": "Can it import my Anki deck?",
+      "a": "Yes - export from Anki as tab-separated text (front, back, tags) and paste it in, or point Recall at the file. Export works the same way in both directions: a deck comes out as Markdown or as TSV Anki will read."
+    },
+    {
+      "q": "Does it support cloze deletions?",
+      "a": "Yes. Write {{c1::the hidden part}} inside a line and each cloze number becomes its own card, Anki-style, with an optional hint as {{c1::answer::hint}}."
+    },
+    {
+      "q": "What can an agent do with it?",
+      "a": "List decks, read what is due, add cards, turn a page of notes into a whole deck, read your review statistics and export a deck. Only adding and creating change anything - deleting a deck or a card stays something a person does."
+    },
+    {
+      "q": "Does anything leave my computer?",
+      "a": "No. Recall asks for read and write access to your home folder, local settings storage, notifications for the optional daily reminder, the clipboard for export, and intents. It has no network permission at all."
+    }
+  ],
+  "install": {
+    "kind": "steps",
+    "steps": [
+      "In NextOS, open Settings > Apps > Sources.",
+      "Add the community catalogue: https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/catalog.json",
+      "Open the App Store, find Recall, and install it.",
+      "Approve the permissions it asks for - read and write in your home folder, storage, notifications, clipboard and intents.",
+      "Open Recall and add the sample deck, or start one of your own in ~/Recall."
+    ]
+  },
+  "requires": { "nextos": "Native apps (App Store)", "platforms": ["web"] },
+  "permissions": ["fs:read:home", "fs:write:home", "storage", "notifications", "clipboard", "intents"],
+  "related": [],
+  "support": { "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues" }
+}
