@@ -23,12 +23,12 @@ import sdk from '@kumin/sdk';
 import './styles.css';
 
 import type { Color, Move, Position } from './lib/types';
-import { BLACK, WHITE, moveFrom, moveTo, parseSquare, squareName } from './lib/types';
+import { BLACK, WHITE, moveFrom, moveTo, parseSquare } from './lib/types';
 import { isCapture, isCastle } from './lib/types';
-import { clonePosition, inCheck, makeMove } from './lib/board';
-import { fromFen, parseFen, toAscii, toFen } from './lib/fen';
+import { clonePosition, makeMove } from './lib/board';
+import { parseFen, toFen } from './lib/fen';
 import { generateLegalMoves } from './lib/moves';
-import { parseSan, toSan, toUci } from './lib/san';
+import { parseSan, toSan } from './lib/san';
 import { describeStatus, gameStatus } from './lib/rules';
 import type { GameStatus, Result } from './lib/rules';
 import {
@@ -37,17 +37,16 @@ import {
   mainLine,
   mainLineEnd,
   moveNumberFor,
-  pathTo,
   positionAt,
   truncateAfter,
 } from './lib/game';
 import type { GameTree } from './lib/game';
 import { mainLineSan, parsePgn, printPgn } from './lib/pgn';
-import { nameOpening, openingLabel } from './lib/openings';
-import { LEVELS, levelFor, search } from './lib/engine';
+import { nameOpening } from './lib/openings';
+import { LEVELS, levelFor } from './lib/engine';
 import { runEngineWorker } from './lib/engine';
 import type { Judgement, GameReport, MoveQuality, Puzzle } from './lib/analysis';
-import { buildReport, describeReport, findPuzzles, formatScore } from './lib/analysis';
+import { buildReport, describeReport, findPuzzles } from './lib/analysis';
 import { materialBalance } from './lib/evaluate';
 import type { ClockState } from './lib/clock';
 import { clockAt, createClock, formatClock, hasFlagged, pressClock, startClock, stopClock } from './lib/clock';
@@ -63,7 +62,6 @@ import {
   readGame,
   readOwnBundle,
   saveGame,
-  todayTag,
 } from './files';
 import type { GameFile } from './files';
 import * as store from './store';
@@ -75,7 +73,7 @@ import { BOARD_THEMES, paletteFor } from './ui/themes';
 import { PIECE_SETS } from './ui/pieces';
 import { Icons } from './ui/icons';
 import { MoveList } from './ui/MoveList';
-import { CapturedRow, ClockRow, EngineInfo, EvalBar, ReportPanel, formatPv, moveLabel } from './ui/panels';
+import { CapturedRow, ClockRow, EngineInfo, EvalBar, ReportPanel } from './ui/panels';
 import { ImportDialog, NewGameDialog, PromotionDialog, ShortcutsOverlay } from './ui/dialogs';
 import type { GameMode, NewGameSettings } from './ui/dialogs';
 
@@ -89,8 +87,6 @@ interface PuzzleSession {
   revision: number;
   index: number;
 }
-
-const START_PIECES = [1, 2, 3, 4, 5, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4];
 
 export default function ChessApp(): JSX.Element {
   const isDark = sdk.theme.useIsDark();

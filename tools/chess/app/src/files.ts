@@ -11,6 +11,7 @@
 // yet".
 
 import sdk from '@kumin/sdk';
+import { gameFileName, readTags, safeSegment, todayTag } from './lib/naming';
 
 interface VfsStat {
   path: string;
@@ -60,18 +61,6 @@ export function currentGamePath(): string {
   return `${chessDir()}/current.pgn`;
 }
 
-/** Turns anything into a safe path segment: no slashes, no dots at the
- *  ends, nothing that could climb out of the games folder. */
-export function safeSegment(text: string, fallback: string): string {
-  const cleaned = text
-    .normalize('NFKD')
-    .replace(/[^\w\s.-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/^[.\-]+|[.\-]+$/g, '')
-    .slice(0, 40);
-  return cleaned || fallback;
-}
-
 export interface GameFile {
   path: string;
   name: string;
@@ -83,22 +72,6 @@ export interface GameFile {
   result: string;
   event: string;
   opening: string;
-}
-
-const TAG_RE = /\[(\w+)\s+"((?:[^"\\]|\\.)*)"\]/g;
-
-/** Reads the tag pairs at the top of a PGN without parsing the moves -
- *  a games list of two hundred files should not replay two hundred
- *  games. */
-export function readTags(text: string): Record<string, string> {
-  const head = text.slice(0, 2000);
-  const tags: Record<string, string> = {};
-  TAG_RE.lastIndex = 0;
-  let match: RegExpExecArray | null;
-  while ((match = TAG_RE.exec(head)) !== null) {
-    tags[match[1]] = match[2].replace(/\\(["\\])/g, '$1');
-  }
-  return tags;
 }
 
 export async function ensureDirs(): Promise<boolean> {
@@ -164,10 +137,7 @@ export async function saveGame(pgn: string, tags: Record<string, string>): Promi
   const fs = vfs();
   if (!fs) return null;
   if (!(await ensureDirs())) return null;
-  const date = (tags.Date || todayTag()).replace(/\./g, '-').replace(/\?/g, 'x');
-  const white = safeSegment(tags.White || 'White', 'white');
-  const black = safeSegment(tags.Black || 'Black', 'black');
-  const base = `${date}-${white}-${black}`;
+  const base = gameFileName(tags).replace(/\.pgn$/, '');
   try {
     let path = `${gamesDir()}/${base}.pgn`;
     let counter = 2;
@@ -218,12 +188,6 @@ export async function readCurrent(): Promise<string | null> {
   }
 }
 
-/** '2026.09.17' - the PGN Date tag's format. */
-export function todayTag(date = new Date()): string {
-  const pad = (n: number): string => String(n).padStart(2, '0');
-  return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())}`;
-}
-
 /** Copies text to the clipboard, saying whether it worked - a button
  *  that lies about having copied something is worse than no button. */
 export async function copyText(text: string): Promise<boolean> {
@@ -265,3 +229,5 @@ export async function readOwnBundle(): Promise<string | null> {
     return null;
   }
 }
+
+export { gameFileName, readTags, safeSegment, todayTag };

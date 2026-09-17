@@ -4,5 +4,46 @@
   "name": "NextOS community tools",
   "description": "Apps built by the community for NextOS - one page each at jonkum.in/community.",
   "updatedAt": "2026-09-17T00:00:00.000Z",
-  "apps": []
+  "apps": [
+    {
+      "id": "chess",
+      "name": "Chess",
+      "version": "1.0.0",
+      "kind": "native",
+      "description": "A complete chess app with its own engine: every rule, an opening book, analysis that finds your blunders, and games saved as PGN.",
+      "icon": "♞",
+      "homepage": "https://www.jonkum.in/community/chess",
+      "author": "Kumin Consulting",
+      "license": "MIT",
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "clipboard",
+        "intents"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/app/app.zip",
+        "sha256": "fc379f381abb00455776831be0741828de63ad4eeb3b57b2b88665cd828f7fcd",
+        "bytes": 375812
+      },
+      "screenshots": [
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/play-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/analysis-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/games-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/play-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/analysis-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/games-dark.png"
+      ],
+      "tags": [
+        "chess",
+        "game",
+        "engine",
+        "analysis",
+        "pgn",
+        "offline",
+        "keyboard"
+      ]
+    }
+  ]
 }

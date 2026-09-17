@@ -5,6 +5,148 @@
   "source": "https://github.com/kumin-consulting/nextos-community-tools",
   "tools": [
     {
+      "slug": "chess",
+      "name": "Chess",
+      "kind": "app",
+      "summary": "A complete chess app for NextOS with its own engine, opening book and game analysis - every rule, eight strengths, PGN files.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools",
+      "homepage": "https://www.jonkum.in/community/chess",
+      "license": "MIT",
+      "publishedAt": "2026-09-17",
+      "updatedAt": "2026-09-17",
+      "categories": [
+        "fun",
+        "productivity"
+      ],
+      "tags": [
+        "chess",
+        "game",
+        "engine",
+        "analysis",
+        "pgn",
+        "offline",
+        "keyboard"
+      ],
+      "seo": {
+        "title": "Chess for NextOS - engine, opening book, analysis",
+        "description": "Play chess in NextOS against a real engine: every rule, a 350-line opening book, blunder analysis, puzzles from your own games, and PGN files.",
+        "keywords": [
+          "chess app",
+          "browser chess engine",
+          "chess analysis",
+          "pgn",
+          "opening book",
+          "chess puzzles",
+          "nextos",
+          "offline chess",
+          "chess engine javascript"
+        ],
+        "ogImage": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/share.png"
+      },
+      "screenshots": [
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/play-light.png",
+          "alt": "A Ruy Lopez in progress against the engine, with the evaluation bar, the opening name and the move list",
+          "caption": "Playing the engine at level 5: the evaluation bar, the engine's line, and the move list in algebraic notation."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/analysis-light.png",
+          "alt": "The analysis view: a best-move arrow on the board and a report listing blunders and accuracy",
+          "caption": "The report finds the moves that cost the most, and the arrow shows what the engine would have played."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/games-light.png",
+          "alt": "The games list showing three saved games with players, date, result and opening",
+          "caption": "Games are saved as PGN under ~/Chess/games and listed with their result and opening."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/play-dark.png",
+          "alt": "The same game against the engine rendered in the dark theme",
+          "caption": "The dark theme is designed rather than inverted."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/analysis-dark.png",
+          "alt": "The analysis report and best-move arrow in the dark theme, on the Sea glass board",
+          "caption": "Three board themes and two piece sets, all drawn as inline SVG."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/games-dark.png",
+          "alt": "The games list in the dark theme beside a finished game ending in checkmate",
+          "caption": "A finished game shows its result on the evaluation bar."
+        }
+      ],
+      "faq": [
+        {
+          "q": "How strong is the engine?",
+          "a": "A strong club player. It searches to depth 11 from the starting position in two seconds on a laptop, at about 700,000 nodes a second, and finds every mate in one, two or three in its test suite instantly. It is single threaded, with a hand-written evaluation and no endgame tablebases - so it is not a modern top engine, and it does not pretend to be."
+        },
+        {
+          "q": "Can a beginner beat it?",
+          "a": "Yes, at the lower levels. Levels 1 to 4 limit the search depth, add scaled randomness to the root scores, and at level 1 sometimes just play a random legal move. Level 1 is genuinely beatable by someone who has only just learnt how the pieces move; from level 5 up the randomness is gone."
+        },
+        {
+          "q": "Are the rules complete?",
+          "a": "Yes, including the ones most hobby programs get wrong: castling through check, en passant into a discovered check, under-promotion, insufficient material by the actual rule (two knights against a lone king is NOT a draw), and the difference between a threefold repetition you may claim and a fivefold one that ends the game by itself. The move generator reproduces every published perft count for the standard test positions exactly, and those counts are in the test suite."
+        },
+        {
+          "q": "Does it need the internet?",
+          "a": "No. The engine, the opening book and the analysis all run inside your browser, and the app asks for no network permission at all. Games are files in your own home folder."
+        },
+        {
+          "q": "Does the board freeze while the engine thinks?",
+          "a": "No. The search runs in a Web Worker built from the app's own compiled bundle, so the window stays at sixty frames a second and the depth, node count and rate are shown while it works. If a Web Worker cannot be created, the same search runs on the main thread one depth at a time, yielding between them - slower, but never frozen."
+        },
+        {
+          "q": "What does the analysis actually tell me?",
+          "a": "It replays the game through the engine and marks every move that lost half a pawn, a pawn or two pawns of evaluation as an inaccuracy, a mistake or a blunder; it gives each side an average centipawn loss and an accuracy percentage, names the three costliest moves, and writes a short paragraph in plain words. The positions where you missed something worth two pawns become puzzles you can try again."
+        },
+        {
+          "q": "Where are my games kept?",
+          "a": "As ordinary PGN files in ~/Chess/games, one game per file, named by date and players. Any other chess program can open them. The game in progress is written to ~/Chess/current.pgn after every move, so it comes back when you reopen the app."
+        },
+        {
+          "q": "Can an agent play for me?",
+          "a": "Yes. The app exports six tools - chess_new_game, chess_play_move, chess_position, chess_analyze, chess_list_games and chess_import_pgn - and they act on the same game the window shows, whether or not the window is open. Ask your assistant to open the Sicilian and it will."
+        },
+        {
+          "q": "Can I play someone else on the same screen?",
+          "a": "Yes - choose \"Two people, one board\" when starting a game. You can also set the engine against itself and watch, at any strength, with or without clocks."
+        }
+      ],
+      "install": {
+        "kind": "steps",
+        "steps": [
+          "In NextOS, open Settings > Apps > Sources.",
+          "Add the source https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/catalog.json",
+          "Open the App Store, find Chess, and install it.",
+          "Approve the four permissions it asks for: read and write your home folder (for ~/Chess), storage, clipboard and intents."
+        ]
+      },
+      "requires": {
+        "platforms": [
+          "web"
+        ]
+      },
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "clipboard",
+        "intents"
+      ],
+      "related": [],
+      "support": {
+        "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+      },
+      "readme": "# Chess\n\nA complete chess program that happens to run in a browser tab. Its own\nrules, its own engine, its own opening book, its own analysis - nothing\nis fetched, nothing is a service, and none of it leaves your machine.\n\nPlay against the engine at eight strengths, play someone else across the\nsame board, or set the engine against itself and watch. Then go back\nthrough the game and find out where it actually went wrong.\n\n## The rules, in full\n\nLegal move generation with castling on both sides under every condition,\nen passant, promotion to any of the four pieces, check, checkmate,\nstalemate, insufficient material, threefold repetition, the fifty-move\nrule, and the fivefold-repetition and seventy-five-move rules that end a\ngame whether anyone claims them or not. The two kinds of draw are kept\napart: a third repetition offers a claim, a fifth one ends the game.\n\nThe proof is `perft`. The move generator reproduces every published node\ncount for the standard test positions exactly - the initial position to\ndepth 5 (4,865,609 nodes), Kiwipete to depth 4 (4,085,603), and five\nmore - in under three seconds. Those numbers are in the test suite, and\nthey are the reason you can trust the rest.\n\n## The engine\n\n`src/lib/engine.ts`: iterative deepening over a principal-variation\nalpha-beta search with quiescence at the leaves, MVV-LVA capture\nordering, killer moves and a history heuristic, a transposition table\nkeyed by a Zobrist hash, null-move pruning, late move reductions, check\nextensions, and mate scores that shrink with distance so a mate in two is\npreferred to a mate in four. The evaluation is tapered - every term is\nscored for the middlegame and for the endgame and blended by the material\nleft - and covers material, piece-square tables, mobility, the bishop\npair, rooks on open files, doubled, isolated and passed pawns, a pawn\nshield around the king, and a tempo bonus.\n\nIt reaches depth 11 from the starting position inside a two-second move\nbudget on a laptop, at roughly 700,000 nodes a second, and finds every\nmate-in-one, -two and -three in the test suite in milliseconds.\n\nThe search runs in a **Web Worker**, so the board never stutters while\nthe engine thinks; a \"thinking\" line shows the depth, the node count and\nthe rate. The worker is built at run time from this app's own compiled\nbundle, so the worker and the window run the identical code. Where a\nWorker cannot be created at all, the same iterative deepening runs on the\nmain thread one depth at a time, yielding between them - slower, never\nfrozen. The status bar says which of the two you are getting.\n\n**Strength 1-8.** The lower levels limit the depth, add scaled noise to\nthe root scores and sometimes simply play a random legal move, so a\nbeginner can win at level 1 and has a real game at level 3. From level 5\nup the noise is gone and it plays the best move it found.\n\n## Openings\n\nA 350-line ECO book names what you are playing as you play it (\"C65 Ruy\nLopez, Berlin Defence\") and gives the engine something human to play in\nthe first dozen moves instead of grinding out the same search every game.\nEvery line in the book is replayed from the initial position by the test\nsuite, so a typo in the data cannot ship.\n\n## Analysis\n\nTurn analysis on and an evaluation bar, the engine's expected line and a\nbest-move arrow follow you through any position, including deep inside a\nvariation.\n\n**The report** looks at every move of the game and says where it went\nwrong: blunders, mistakes and inaccuracies at half a pawn, a pawn and two\npawns of evaluation lost, an average centipawn loss and an accuracy\npercentage per side, the three costliest moves, and a short paragraph in\nplain words. A finished position is scored as the result rather than as a\nzero, so delivering checkmate is not reported as a ten-pawn blunder.\n\n**Puzzles** are the positions from that report where you had something\ntwo pawns better and played something else - your own missed tactics,\nwhich are worth a hundred generic ones. Find the move; the app tells you\nwhether you got it.\n\n## Files\n\nGames are PGN, and nothing else.\n\n- Saved to `~/Chess/games/<date>-<white>-<black>.pgn`, one game per file,\n  automatically when a game ends and whenever you press Save.\n- The games list reads each file's tags - players, date, result, opening\n  - without replaying the moves.\n- The game in progress is written to `~/Chess/current.pgn` after every\n  move and comes back when you open the app again.\n- Import by pasting PGN or choosing a `.pgn` file: tags, comments,\n  variations and numeric annotation glyphs all come in, and anything that\n  does not parse is reported rather than swallowed.\n- Copy the game as PGN or the position as FEN to the clipboard.\n\n## Keyboard\n\nEverything is reachable without a mouse. Press `?` in the app for the\nlist.\n\n| Key | What it does |\n| --- | --- |\n| `←` `→` | One move back or forward |\n| `Home` `End` | The start or the end of the game |\n| `Space` | Play through the game, or stop |\n| `F` | Flip the board |\n| `N` | New game |\n| `T` | Take back the last move |\n| `A` | Engine analysis on or off |\n| `E` | Ask the engine to move now |\n| `M` or `/` | Type a move in algebraic notation |\n| `S` | Sound on or off |\n| `C` | Coordinates on or off |\n| `P` | Next piece set |\n| `B` | Next board theme |\n| `R` | Analyse the whole game |\n| `1`-`8` | Set the engine strength |\n| `Ctrl`/`⌘` `S` | Save this game as a PGN file |\n| `Ctrl`/`⌘` `C` | Copy the game as PGN |\n| `?` | The shortcut list |\n| `Esc` | Close whatever is open |\n\nOn the board itself the arrow keys move a cursor and `Enter` picks a\npiece up and puts it down, so a whole game can be played from the\nkeyboard - or typed into the move box in algebraic notation, which\naccepts `Nf3`, `exd5`, `O-O`, `0-0`, `e8=Q` and `e2e4` alike.\n\n## Look and feel\n\nTwo piece sets (Classic, solid; Line, outlined) and three board themes\n(Walnut, Sea glass, Slate), all drawn as inline SVG - no image files.\nBoth the light and the dark theme are designed rather than inverted.\nCoordinates, last-move and check highlights, legal-move dots, and small\nsynthesised click sounds through WebAudio that can be turned off.\nOptional clocks with a Fischer increment, including the rule that a flag\nfall against a king that cannot mate is a draw.\n\n## Tools for agents\n\nEvery tool works whether or not the window is open, and acts on the same\ngame the window shows.\n\n| Tool | What it does |\n| --- | --- |\n| `chess_new_game` | Start a game: the opponent (engine, another person, or engine vs engine), the colour, the strength 1-8, an optional starting FEN and an optional clock. |\n| `chess_play_move` | Play one move in algebraic or coordinate notation, and get the engine's reply when it is the engine's turn. An illegal move changes nothing and comes back with the legal list. |\n| `chess_position` | Read-only: FEN, a plain-text board, the side to move, every legal move in algebraic notation, check and mate status, the opening's name, the moves so far and the game as PGN. |\n| `chess_analyze` | Read-only: the engine's view of a FEN, a PGN or the game in progress - evaluation, best move, expected line, and a sentence saying what that means. With `everyMove`, judges every move and reports the blunders. |\n| `chess_list_games` | Read-only: the saved games, newest first, with players, date, result and opening. |\n| `chess_import_pgn` | Load a game from PGN text or a `.pgn` file, replacing the game in progress; optionally saves a copy. |\n\nIntents: `open` (`{ file }`) opens a `.pgn` file, `analyze` (`{ fen }`)\nsets the board to a position and analyses it.\n\n## Permissions\n\n- `fs:read:home`, `fs:write:home` - the `~/Chess` folder: saved games,\n  the game in progress, and the app's own compiled bundle, which the\n  engine worker reads to run.\n- `storage` - settings and a copy of the game in progress.\n- `clipboard` - the Copy PGN and Copy FEN buttons.\n- `intents` - the `open` and `analyze` intents above.\n\nThere is no `network` permission, and nothing here makes a network\nrequest.\n\n## Limits, honestly\n\n- The engine is a strong club player, not a modern top engine: single\n  threaded, no endgame tablebases, no neural evaluation, a plain\n  hand-written evaluation. Level 8 thinks for about two seconds a move.\n- The transposition table is fixed at half a million entries (about 10\n  MB). It is not configurable.\n- The whole-game report searches each position for about a third of a\n  second, so a fifty-move game takes roughly half a minute. It runs in\n  its own worker and the board stays usable while it does.\n- Puzzles come only from games you have analysed in this app; there is no\n  puzzle database.\n- A move played while you are browsing an earlier position starts a\n  variation rather than changing the game, and the engine does not answer\n  it. That is deliberate - it is how you try things out - but it can\n  surprise you the first time.\n- PGN import reads one game at a time into the board; a file with many\n  games loads the first, and `chess_analyze` can be given the rest.\n\n## Building it\n\n```\nnpm run build:app -- chess      # compile src/ to files/build/app.js and zip it\nnpm run test:apps               # the rules, the engine, the book, the parsers\nnpm run typecheck:apps\nnode tools/chess/app/preview/serve.mjs   # look at it in a browser at :4173\n```\n\nThe tests are the interesting part: `perft.test.mjs` is the proof the\nrules are right, `engine.test.mjs` checks known mates and then asks the\nengine for a move in every position of two hundred random games and\nverifies each one is legal, and `openings.test.mjs` replays all 350 book\nlines.\n\nMIT licensed.",
+      "page": "https://www.jonkum.in/community/chess"
+    },
+    {
       "slug": "nextos-runner",
       "name": "NextOS Runner",
       "kind": "cli",

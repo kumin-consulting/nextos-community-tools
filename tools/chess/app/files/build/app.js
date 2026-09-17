@@ -3,7 +3,7 @@ var __appExports = (function () {
   "use strict";
   var modules = Object.create(null);
   var cache = Object.create(null);
-  var resolveMap = {"src/index.tsx":{"./styles.css":"src/styles.css","./lib/types":"src/lib/types.ts","./lib/board":"src/lib/board.ts","./lib/fen":"src/lib/fen.ts","./lib/moves":"src/lib/moves.ts","./lib/san":"src/lib/san.ts","./lib/rules":"src/lib/rules.ts","./lib/game":"src/lib/game.ts","./lib/pgn":"src/lib/pgn.ts","./lib/openings":"src/lib/openings.ts","./lib/engine":"src/lib/engine.ts","./lib/analysis":"src/lib/analysis.ts","./lib/evaluate":"src/lib/evaluate.ts","./lib/clock":"src/lib/clock.ts","./engineClient":"src/engineClient.ts","./sound":"src/sound.ts","./files":"src/files.ts","./store":"src/store.ts","./ui/Board":"src/ui/Board.tsx","./ui/themes":"src/ui/themes.ts","./ui/pieces":"src/ui/pieces.tsx","./ui/icons":"src/ui/icons.tsx","./ui/MoveList":"src/ui/MoveList.tsx","./ui/panels":"src/ui/panels.tsx","./ui/dialogs":"src/ui/dialogs.tsx","./tools":"src/tools.ts"},"src/styles.css":{},"src/lib/types.ts":{},"src/lib/board.ts":{"./types":"src/lib/types.ts","./zobrist":"src/lib/zobrist.ts"},"src/lib/fen.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts"},"src/lib/moves.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts"},"src/lib/san.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts"},"src/lib/rules.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts"},"src/lib/game.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./fen":"src/lib/fen.ts","./san":"src/lib/san.ts","./rules":"src/lib/rules.ts"},"src/lib/pgn.ts":{"./types":"src/lib/types.ts","./fen":"src/lib/fen.ts","./board":"src/lib/board.ts","./san":"src/lib/san.ts","./game":"src/lib/game.ts","./rules":"src/lib/rules.ts"},"src/lib/openings.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./fen":"src/lib/fen.ts","./san":"src/lib/san.ts","./openings.data":"src/lib/openings.data.ts"},"src/lib/engine.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts","./evaluate":"src/lib/evaluate.ts","./fen":"src/lib/fen.ts","./san":"src/lib/san.ts","./openings":"src/lib/openings.ts"},"src/lib/analysis.ts":{"./types":"src/lib/types.ts","./game":"src/lib/game.ts","./fen":"src/lib/fen.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts","./san":"src/lib/san.ts"},"src/lib/evaluate.ts":{"./types":"src/lib/types.ts"},"src/lib/clock.ts":{"./types":"src/lib/types.ts"},"src/engineClient.ts":{"./lib/types":"src/lib/types.ts","./lib/engine":"src/lib/engine.ts","./lib/fen":"src/lib/fen.ts","./lib/san":"src/lib/san.ts","./lib/game":"src/lib/game.ts"},"src/sound.ts":{},"src/files.ts":{},"src/store.ts":{"./lib/types":"src/lib/types.ts","./lib/game":"src/lib/game.ts","./lib/pgn":"src/lib/pgn.ts","./lib/openings":"src/lib/openings.ts","./lib/clock":"src/lib/clock.ts","./files":"src/files.ts","./ui/dialogs":"src/ui/dialogs.tsx"},"src/ui/Board.tsx":{"../lib/types":"src/lib/types.ts","./themes":"src/ui/themes.ts","./pieces":"src/ui/pieces.tsx"},"src/ui/themes.ts":{},"src/ui/pieces.tsx":{"../lib/types":"src/lib/types.ts"},"src/ui/icons.tsx":{},"src/ui/MoveList.tsx":{"../lib/game":"src/lib/game.ts","../lib/pgn":"src/lib/pgn.ts","../lib/analysis":"src/lib/analysis.ts"},"src/ui/panels.tsx":{"../lib/types":"src/lib/types.ts","../lib/analysis":"src/lib/analysis.ts","../lib/clock":"src/lib/clock.ts","../engineClient":"src/engineClient.ts","./pieces":"src/ui/pieces.tsx","./icons":"src/ui/icons.tsx"},"src/ui/dialogs.tsx":{"../lib/types":"src/lib/types.ts","../lib/engine":"src/lib/engine.ts","../lib/clock":"src/lib/clock.ts","./pieces":"src/ui/pieces.tsx","./icons":"src/ui/icons.tsx"},"src/tools.ts":{"./lib/agentTool":"src/lib/agentTool.ts","./lib/types":"src/lib/types.ts","./lib/fen":"src/lib/fen.ts","./lib/moves":"src/lib/moves.ts","./lib/san":"src/lib/san.ts","./lib/rules":"src/lib/rules.ts","./lib/game":"src/lib/game.ts","./lib/pgn":"src/lib/pgn.ts","./lib/openings":"src/lib/openings.ts","./lib/engine":"src/lib/engine.ts","./lib/analysis":"src/lib/analysis.ts","./files":"src/files.ts","./store":"src/store.ts"},"src/lib/zobrist.ts":{"./types":"src/lib/types.ts"},"src/lib/openings.data.ts":{},"src/lib/agentTool.ts":{}};
+  var resolveMap = {"src/index.tsx":{"./styles.css":"src/styles.css","./lib/types":"src/lib/types.ts","./lib/board":"src/lib/board.ts","./lib/fen":"src/lib/fen.ts","./lib/moves":"src/lib/moves.ts","./lib/san":"src/lib/san.ts","./lib/rules":"src/lib/rules.ts","./lib/game":"src/lib/game.ts","./lib/pgn":"src/lib/pgn.ts","./lib/openings":"src/lib/openings.ts","./lib/engine":"src/lib/engine.ts","./lib/analysis":"src/lib/analysis.ts","./lib/evaluate":"src/lib/evaluate.ts","./lib/clock":"src/lib/clock.ts","./engineClient":"src/engineClient.ts","./sound":"src/sound.ts","./files":"src/files.ts","./store":"src/store.ts","./ui/Board":"src/ui/Board.tsx","./ui/themes":"src/ui/themes.ts","./ui/pieces":"src/ui/pieces.tsx","./ui/icons":"src/ui/icons.tsx","./ui/MoveList":"src/ui/MoveList.tsx","./ui/panels":"src/ui/panels.tsx","./ui/dialogs":"src/ui/dialogs.tsx","./tools":"src/tools.ts"},"src/styles.css":{},"src/lib/types.ts":{},"src/lib/board.ts":{"./types":"src/lib/types.ts","./zobrist":"src/lib/zobrist.ts"},"src/lib/fen.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts"},"src/lib/moves.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts"},"src/lib/san.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts"},"src/lib/rules.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts"},"src/lib/game.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./fen":"src/lib/fen.ts","./san":"src/lib/san.ts","./rules":"src/lib/rules.ts"},"src/lib/pgn.ts":{"./types":"src/lib/types.ts","./fen":"src/lib/fen.ts","./board":"src/lib/board.ts","./san":"src/lib/san.ts","./game":"src/lib/game.ts","./rules":"src/lib/rules.ts"},"src/lib/openings.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./fen":"src/lib/fen.ts","./san":"src/lib/san.ts","./openings.data":"src/lib/openings.data.ts"},"src/lib/engine.ts":{"./types":"src/lib/types.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts","./evaluate":"src/lib/evaluate.ts","./fen":"src/lib/fen.ts","./san":"src/lib/san.ts","./openings":"src/lib/openings.ts"},"src/lib/analysis.ts":{"./types":"src/lib/types.ts","./game":"src/lib/game.ts","./fen":"src/lib/fen.ts","./board":"src/lib/board.ts","./moves":"src/lib/moves.ts","./san":"src/lib/san.ts"},"src/lib/evaluate.ts":{"./types":"src/lib/types.ts"},"src/lib/clock.ts":{"./types":"src/lib/types.ts"},"src/engineClient.ts":{"./lib/types":"src/lib/types.ts","./lib/engine":"src/lib/engine.ts","./lib/fen":"src/lib/fen.ts","./lib/san":"src/lib/san.ts","./lib/game":"src/lib/game.ts"},"src/sound.ts":{},"src/files.ts":{"./lib/naming":"src/lib/naming.ts"},"src/store.ts":{"./lib/types":"src/lib/types.ts","./lib/game":"src/lib/game.ts","./lib/pgn":"src/lib/pgn.ts","./lib/openings":"src/lib/openings.ts","./lib/clock":"src/lib/clock.ts","./files":"src/files.ts","./ui/dialogs":"src/ui/dialogs.tsx"},"src/ui/Board.tsx":{"../lib/types":"src/lib/types.ts","./themes":"src/ui/themes.ts","./pieces":"src/ui/pieces.tsx"},"src/ui/themes.ts":{},"src/ui/pieces.tsx":{"../lib/types":"src/lib/types.ts"},"src/ui/icons.tsx":{},"src/ui/MoveList.tsx":{"../lib/game":"src/lib/game.ts","../lib/pgn":"src/lib/pgn.ts","../lib/analysis":"src/lib/analysis.ts"},"src/ui/panels.tsx":{"../lib/types":"src/lib/types.ts","../lib/analysis":"src/lib/analysis.ts","../lib/clock":"src/lib/clock.ts","../engineClient":"src/engineClient.ts","./pieces":"src/ui/pieces.tsx","./icons":"src/ui/icons.tsx"},"src/ui/dialogs.tsx":{"../lib/types":"src/lib/types.ts","../lib/engine":"src/lib/engine.ts","../lib/clock":"src/lib/clock.ts","./pieces":"src/ui/pieces.tsx","./icons":"src/ui/icons.tsx"},"src/tools.ts":{"./lib/agentTool":"src/lib/agentTool.ts","./lib/types":"src/lib/types.ts","./lib/fen":"src/lib/fen.ts","./lib/moves":"src/lib/moves.ts","./lib/san":"src/lib/san.ts","./lib/rules":"src/lib/rules.ts","./lib/game":"src/lib/game.ts","./lib/pgn":"src/lib/pgn.ts","./lib/openings":"src/lib/openings.ts","./lib/engine":"src/lib/engine.ts","./lib/analysis":"src/lib/analysis.ts","./files":"src/files.ts","./store":"src/store.ts"},"src/lib/zobrist.ts":{"./types":"src/lib/types.ts"},"src/lib/openings.data.ts":{},"src/lib/naming.ts":{},"src/lib/agentTool.ts":{}};
   var bareMap = {
     "react": function () { return window.__kuminSdk && window.__kuminSdk.react; },
     "react-dom": function () { return window.__kuminSdk && window.__kuminSdk.reactDom; },
@@ -115,7 +115,6 @@ const icons_1 = require("./ui/icons");
 const MoveList_1 = require("./ui/MoveList");
 const panels_1 = require("./ui/panels");
 const dialogs_1 = require("./ui/dialogs");
-const START_PIECES = [1, 2, 3, 4, 5, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4];
 function ChessApp() {
     const isDark = sdk_1.default.theme.useIsDark();
     const rootRef = (0, react_1.useRef)(null);
@@ -5243,12 +5242,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.todayTag = exports.safeSegment = exports.readTags = exports.gameFileName = void 0;
 exports.homeDir = homeDir;
 exports.chessDir = chessDir;
 exports.gamesDir = gamesDir;
 exports.currentGamePath = currentGamePath;
-exports.safeSegment = safeSegment;
-exports.readTags = readTags;
 exports.ensureDirs = ensureDirs;
 exports.listGames = listGames;
 exports.readGame = readGame;
@@ -5256,10 +5254,14 @@ exports.saveGame = saveGame;
 exports.deleteGame = deleteGame;
 exports.writeCurrent = writeCurrent;
 exports.readCurrent = readCurrent;
-exports.todayTag = todayTag;
 exports.copyText = copyText;
 exports.readOwnBundle = readOwnBundle;
 const sdk_1 = __importDefault(require("@kumin/sdk"));
+const naming_1 = require("./lib/naming");
+Object.defineProperty(exports, "gameFileName", { enumerable: true, get: function () { return naming_1.gameFileName; } });
+Object.defineProperty(exports, "readTags", { enumerable: true, get: function () { return naming_1.readTags; } });
+Object.defineProperty(exports, "safeSegment", { enumerable: true, get: function () { return naming_1.safeSegment; } });
+Object.defineProperty(exports, "todayTag", { enumerable: true, get: function () { return naming_1.todayTag; } });
 function vfs() {
     try {
         return sdk_1.default.getVfs() ?? null;
@@ -5290,31 +5292,6 @@ function gamesDir() {
 function currentGamePath() {
     return `${chessDir()}/current.pgn`;
 }
-/** Turns anything into a safe path segment: no slashes, no dots at the
- *  ends, nothing that could climb out of the games folder. */
-function safeSegment(text, fallback) {
-    const cleaned = text
-        .normalize('NFKD')
-        .replace(/[^\w\s.-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/^[.\-]+|[.\-]+$/g, '')
-        .slice(0, 40);
-    return cleaned || fallback;
-}
-const TAG_RE = /\[(\w+)\s+"((?:[^"\\]|\\.)*)"\]/g;
-/** Reads the tag pairs at the top of a PGN without parsing the moves -
- *  a games list of two hundred files should not replay two hundred
- *  games. */
-function readTags(text) {
-    const head = text.slice(0, 2000);
-    const tags = {};
-    TAG_RE.lastIndex = 0;
-    let match;
-    while ((match = TAG_RE.exec(head)) !== null) {
-        tags[match[1]] = match[2].replace(/\\(["\\])/g, '$1');
-    }
-    return tags;
-}
 async function ensureDirs() {
     const fs = vfs();
     if (!fs)
@@ -5342,7 +5319,7 @@ async function listGames() {
                 continue;
             let tags = {};
             try {
-                tags = readTags(await fs.readText(`${gamesDir()}/${entry.name}`));
+                tags = (0, naming_1.readTags)(await fs.readText(`${gamesDir()}/${entry.name}`));
             }
             catch {
                 tags = {};
@@ -5386,10 +5363,7 @@ async function saveGame(pgn, tags) {
         return null;
     if (!(await ensureDirs()))
         return null;
-    const date = (tags.Date || todayTag()).replace(/\./g, '-').replace(/\?/g, 'x');
-    const white = safeSegment(tags.White || 'White', 'white');
-    const black = safeSegment(tags.Black || 'Black', 'black');
-    const base = `${date}-${white}-${black}`;
+    const base = (0, naming_1.gameFileName)(tags).replace(/\.pgn$/, '');
     try {
         let path = `${gamesDir()}/${base}.pgn`;
         let counter = 2;
@@ -5444,11 +5418,6 @@ async function readCurrent() {
     catch {
         return null;
     }
-}
-/** '2026.09.17' - the PGN Date tag's format. */
-function todayTag(date = new Date()) {
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())}`;
 }
 /** Copies text to the clipboard, saying whether it worked - a button
  *  that lies about having copied something is worse than no button. */
@@ -7543,6 +7512,59 @@ E90|King's Indian Defence, Classical Variation|d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3
 E92|King's Indian, Classical, Petrosian System|d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 d5
 E97|King's Indian, Mar del Plata Variation|d4 Nf6 c4 g6 Nc3 Bg7 e4 d6 Nf3 O-O Be2 e5 O-O Nc6 d5 Ne7
 `;
+
+  };
+  modules["src/lib/naming.ts"] = function (module, exports, require) {
+"use strict";
+// src/lib/naming.ts
+//
+// Turning a game into a file name, and reading a file's tags back
+// without parsing it. Pure, and separate from src/files.ts so it can be
+// tested without a filesystem: a path built from a player called
+// "../../etc" is a security bug, not a formatting one, and it deserves
+// a test of its own.
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.safeSegment = safeSegment;
+exports.todayTag = todayTag;
+exports.gameFileName = gameFileName;
+exports.readTags = readTags;
+/** A safe single path segment: no slashes, no dots at either end,
+ *  nothing that could climb out of the games folder. */
+function safeSegment(text, fallback) {
+    const cleaned = text
+        .normalize('NFKD')
+        .replace(/[^\w\s.-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/\.{2,}/g, '.')
+        .replace(/^[.\-]+|[.\-]+$/g, '')
+        .slice(0, 40)
+        .replace(/[.\-]+$/g, '');
+    return cleaned || fallback;
+}
+/** '2026.09.17' - the PGN Date tag's format. */
+function todayTag(date = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())}`;
+}
+/** The file name a finished game is saved under. */
+function gameFileName(tags, now = new Date()) {
+    const date = (tags.Date || todayTag(now)).replace(/\./g, '-').replace(/\?/g, 'x');
+    return `${safeSegment(date, todayTag(now).replace(/\./g, '-'))}-${safeSegment(tags.White || 'White', 'white')}-${safeSegment(tags.Black || 'Black', 'black')}.pgn`;
+}
+const TAG_RE = /\[(\w+)\s+"((?:[^"\\]|\\.)*)"\]/g;
+/** The tag pairs at the top of a PGN, without parsing the moves - a
+ *  games list of two hundred files should not replay two hundred
+ *  games. */
+function readTags(text) {
+    const head = text.slice(0, 2000);
+    const tags = {};
+    TAG_RE.lastIndex = 0;
+    let match;
+    while ((match = TAG_RE.exec(head)) !== null) {
+        tags[match[1]] = match[2].replace(/\\(["\\])/g, '$1');
+    }
+    return tags;
+}
 
   };
   modules["src/lib/agentTool.ts"] = function (module, exports, require) {

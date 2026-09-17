@@ -12,7 +12,7 @@
 
 import sdk from '@kumin/sdk';
 import type { AppAgentTool } from './lib/agentTool';
-import type { Color, Position } from './lib/types';
+import type { Position } from './lib/types';
 import { BLACK, WHITE } from './lib/types';
 import { parseFen, toAscii, toFen } from './lib/fen';
 import { generateLegalMoves } from './lib/moves';
