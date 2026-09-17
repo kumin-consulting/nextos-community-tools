@@ -4,5 +4,47 @@
   "name": "NextOS community tools",
   "description": "Apps built by the community for NextOS - one page each at jonkum.in/community.",
   "updatedAt": "2026-09-17T00:00:00.000Z",
-  "apps": []
+  "apps": [
+    {
+      "id": "sketch",
+      "name": "Sketch",
+      "version": "1.0.0",
+      "kind": "native",
+      "description": "An infinite canvas for diagrams and thinking: shapes, arrows that stay attached, freehand, sticky notes and frames, exported as clean SVG or PNG.",
+      "icon": "✏️",
+      "homepage": "https://www.jonkum.in/community/sketch",
+      "author": "Kumin Consulting",
+      "license": "MIT",
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "clipboard",
+        "intents"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/app/app.zip",
+        "sha256": "fe043bb7252b6baf1cf9ee401cbbe3eac475b1d81711f71e351e515e17490fa3",
+        "bytes": 332892
+      },
+      "screenshots": [
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/board-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/properties-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/export-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/board-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/properties-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/shortcuts-light.png"
+      ],
+      "tags": [
+        "whiteboard",
+        "diagrams",
+        "canvas",
+        "drawing",
+        "flowchart",
+        "svg",
+        "excalidraw",
+        "mind-map"
+      ]
+    }
+  ]
 }
