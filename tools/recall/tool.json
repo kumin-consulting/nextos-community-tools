@@ -4,14 +4,30 @@
   "kind": "app",
   "summary": "Spaced-repetition flashcards whose decks are plain Markdown files you can edit anywhere, with an Anki-style scheduler and tools an agent can call.",
   "version": "1.0.0",
-  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" },
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
   "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/recall",
   "homepage": "https://www.jonkum.in/community/recall",
   "license": "MIT",
   "publishedAt": "2026-09-17",
   "updatedAt": "2026-09-17",
-  "categories": ["productivity", "agents"],
-  "tags": ["spaced-repetition", "flashcards", "anki", "markdown", "study", "memory", "srs", "cloze", "learning"],
+  "categories": [
+    "productivity",
+    "agents"
+  ],
+  "tags": [
+    "spaced-repetition",
+    "flashcards",
+    "anki",
+    "markdown",
+    "study",
+    "memory",
+    "srs",
+    "cloze",
+    "learning"
+  ],
   "seo": {
     "title": "Recall - spaced-repetition flashcards in Markdown",
     "description": "A NextOS flashcard app with an SM-2 scheduler, cloze deletions, typed answers and a card browser - and decks that are ordinary Markdown files in ~/Recall.",
@@ -101,8 +117,25 @@
       "Open Recall and add the sample deck, or start one of your own in ~/Recall."
     ]
   },
-  "requires": { "nextos": "Native apps (App Store)", "platforms": ["web"] },
-  "permissions": ["fs:read:home", "fs:write:home", "storage", "notifications", "clipboard", "intents"],
-  "related": [],
-  "support": { "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues" }
+  "requires": {
+    "nextos": "Native apps (App Store)",
+    "platforms": [
+      "web"
+    ]
+  },
+  "permissions": [
+    "fs:read:home",
+    "fs:write:home",
+    "storage",
+    "notifications",
+    "clipboard",
+    "intents"
+  ],
+  "related": [
+    "sketch",
+    "chess"
+  ],
+  "support": {
+    "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+  }
 }

@@ -139,7 +139,10 @@
         "clipboard",
         "intents"
       ],
-      "related": [],
+      "related": [
+        "sketch",
+        "recall"
+      ],
       "support": {
         "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
       },
@@ -211,7 +214,11 @@
           "windows"
         ]
       },
-      "related": [],
+      "related": [
+        "sketch",
+        "recall",
+        "chess"
+      ],
       "support": {
         "issues": "https://github.com/kumin-consulting/jonkum.in/issues"
       },
@@ -352,7 +359,10 @@
         "clipboard",
         "intents"
       ],
-      "related": [],
+      "related": [
+        "sketch",
+        "chess"
+      ],
       "support": {
         "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
       },
@@ -488,7 +498,10 @@
         "clipboard",
         "intents"
       ],
-      "related": [],
+      "related": [
+        "recall",
+        "chess"
+      ],
       "support": {
         "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
       },

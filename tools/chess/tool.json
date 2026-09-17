@@ -4,14 +4,28 @@
   "kind": "app",
   "summary": "A complete chess app for NextOS with its own engine, opening book and game analysis - every rule, eight strengths, PGN files.",
   "version": "1.0.0",
-  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" },
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
   "repository": "https://github.com/kumin-consulting/nextos-community-tools",
   "homepage": "https://www.jonkum.in/community/chess",
   "license": "MIT",
   "publishedAt": "2026-09-17",
   "updatedAt": "2026-09-17",
-  "categories": ["fun", "productivity"],
-  "tags": ["chess", "game", "engine", "analysis", "pgn", "offline", "keyboard"],
+  "categories": [
+    "fun",
+    "productivity"
+  ],
+  "tags": [
+    "chess",
+    "game",
+    "engine",
+    "analysis",
+    "pgn",
+    "offline",
+    "keyboard"
+  ],
   "seo": {
     "title": "Chess for NextOS - engine, opening book, analysis",
     "description": "Play chess in NextOS against a real engine: every rule, a 350-line opening book, blunder analysis, puzzles from your own games, and PGN files.",
@@ -107,8 +121,23 @@
       "Approve the four permissions it asks for: read and write your home folder (for ~/Chess), storage, clipboard and intents."
     ]
   },
-  "requires": { "platforms": ["web"] },
-  "permissions": ["fs:read:home", "fs:write:home", "storage", "clipboard", "intents"],
-  "related": [],
-  "support": { "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues" }
+  "requires": {
+    "platforms": [
+      "web"
+    ]
+  },
+  "permissions": [
+    "fs:read:home",
+    "fs:write:home",
+    "storage",
+    "clipboard",
+    "intents"
+  ],
+  "related": [
+    "sketch",
+    "recall"
+  ],
+  "support": {
+    "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+  }
 }

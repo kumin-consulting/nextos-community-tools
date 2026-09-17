@@ -4,14 +4,29 @@
   "kind": "app",
   "summary": "An infinite whiteboard for NextOS: shapes, arrows that stay attached when you move things, freehand, sticky notes, frames, and clean SVG export.",
   "version": "1.0.0",
-  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" },
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
   "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/sketch",
   "homepage": "https://www.jonkum.in/community/sketch",
   "license": "MIT",
   "publishedAt": "2026-09-17",
   "updatedAt": "2026-09-17",
-  "categories": ["productivity", "media"],
-  "tags": ["whiteboard", "diagrams", "canvas", "drawing", "flowchart", "svg", "excalidraw", "mind-map"],
+  "categories": [
+    "productivity",
+    "media"
+  ],
+  "tags": [
+    "whiteboard",
+    "diagrams",
+    "canvas",
+    "drawing",
+    "flowchart",
+    "svg",
+    "excalidraw",
+    "mind-map"
+  ],
   "seo": {
     "title": "Sketch - an infinite whiteboard for NextOS",
     "description": "Draw on an infinite canvas inside NextOS: bound arrows, sticky notes, frames, freehand, PNG and SVG export, and agent tools that build a flowchart.",
@@ -99,8 +114,24 @@
       "Open Sketch from the launcher, or send it a kumin://sketch/open?file=<board name> intent from another app."
     ]
   },
-  "requires": { "nextos": "App Store with native apps", "platforms": ["web"] },
-  "permissions": ["fs:read:home", "fs:write:home", "storage", "clipboard", "intents"],
-  "related": [],
-  "support": { "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues" }
+  "requires": {
+    "nextos": "App Store with native apps",
+    "platforms": [
+      "web"
+    ]
+  },
+  "permissions": [
+    "fs:read:home",
+    "fs:write:home",
+    "storage",
+    "clipboard",
+    "intents"
+  ],
+  "related": [
+    "recall",
+    "chess"
+  ],
+  "support": {
+    "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+  }
 }
