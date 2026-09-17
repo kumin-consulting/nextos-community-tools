@@ -60,9 +60,16 @@ const FIGURINES: Record<string, string> = {
 export function stripSanDecoration(text: string): string {
   let s = text.trim();
   s = s.replace(/[♔-♟]/g, (ch) => FIGURINES[ch] ?? ch);
-  s = s.replace(/\s*e\.?p\.?$/i, '');
-  s = s.replace(/[+#]+/g, '');
-  s = s.replace(/[!?]+$/, '');
+  // Suffixes can arrive in either order ('exd6 e.p.!?' and 'exd6!? e.p.'
+  // are both out there), so peel them off until nothing more comes.
+  for (let i = 0; i < 4; i++) {
+    const before = s;
+    s = s.replace(/[+#]+/g, '');
+    s = s.replace(/[!?]+$/, '');
+    s = s.replace(/\s*e\.?p\.?$/i, '');
+    s = s.trim();
+    if (s === before) break;
+  }
   s = s.replace(/–|—|−/g, '-');
   return s.trim();
 }
@@ -215,7 +222,9 @@ export function parseSanWithin(pos: Position, text: string, legal: Move[]): Move
     if (fromFile && (from & 15) !== 'abcdefgh'.indexOf(fromFile)) continue;
     if (fromRank && from >> 4 !== Number(fromRank) - 1) continue;
     if (promo && movePromotion(move) !== promo) continue;
-    if (!promo && movePromotion(move)) continue;
+    // A promotion written without a piece ('e8', as some programs do)
+    // means a queen - never a silent under-promotion.
+    if (!promo && movePromotion(move) && movePromotion(move) !== QUEEN) continue;
     if (mustCapture && !isCapture(move)) continue;
     candidates.push(move);
   }
