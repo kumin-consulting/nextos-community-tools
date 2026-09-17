@@ -1,0 +1,106 @@
+{
+  "slug": "sketch",
+  "name": "Sketch",
+  "kind": "app",
+  "summary": "An infinite whiteboard for NextOS: shapes, arrows that stay attached when you move things, freehand, sticky notes, frames, and clean SVG export.",
+  "version": "1.0.0",
+  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" },
+  "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/sketch",
+  "homepage": "https://www.jonkum.in/community/sketch",
+  "license": "MIT",
+  "publishedAt": "2026-09-17",
+  "updatedAt": "2026-09-17",
+  "categories": ["productivity", "media"],
+  "tags": ["whiteboard", "diagrams", "canvas", "drawing", "flowchart", "svg", "excalidraw", "mind-map"],
+  "seo": {
+    "title": "Sketch - an infinite whiteboard for NextOS",
+    "description": "Draw on an infinite canvas inside NextOS: bound arrows, sticky notes, frames, freehand, PNG and SVG export, and agent tools that build a flowchart.",
+    "keywords": [
+      "nextos whiteboard",
+      "infinite canvas app",
+      "excalidraw alternative",
+      "diagram tool",
+      "flowchart maker",
+      "svg export",
+      "sticky notes",
+      "drawing app",
+      "ai diagram generator"
+    ],
+    "ogImage": "images/share.png"
+  },
+  "screenshots": [
+    {
+      "src": "images/board-light.png",
+      "alt": "A checkout flowchart in Sketch, framed and labelled, with sticky notes and a freehand stroke below it",
+      "caption": "A board built by the sketch_create_diagram tool, then annotated by hand. Arrows stay attached to the boxes they connect."
+    },
+    {
+      "src": "images/properties-light.png",
+      "alt": "The Sketch properties panel open beside a selected shape, showing stroke, fill, stroke style and text controls",
+      "caption": "Selecting anything opens the properties panel: colour, fill, stroke, corners, arrowheads, type and opacity."
+    },
+    {
+      "src": "images/export-light.png",
+      "alt": "The Sketch export dialog with a live preview, showing PNG and SVG options and a choice of board, selection or frame",
+      "caption": "Export the whole board, just the selection, or one frame - as a 1x or 2x PNG, or as real, editable SVG."
+    },
+    {
+      "src": "images/board-dark.png",
+      "alt": "The same checkout flowchart in Sketch's dark theme, with the palette translated for a dark board",
+      "caption": "Both themes are designed, not inverted: the curated palette maps across when the system theme changes."
+    },
+    {
+      "src": "images/properties-dark.png",
+      "alt": "Sketch in dark mode with a shape selected and the properties panel open",
+      "caption": "The properties panel in dark mode."
+    },
+    {
+      "src": "images/shortcuts-light.png",
+      "alt": "The Sketch keyboard shortcut sheet listing tools, canvas, editing, arranging and file shortcuts",
+      "caption": "Press ? at any time. Every action in the app has a key."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Where are my boards kept?",
+      "a": "Each board is one JSON file in your Sketches folder, named after the board: <home>/Sketches/<name>.sketch.json. It is plain, readable JSON with a schema version, the elements and the last view - so you can copy it, diff it, or open it with anything else. Sketch autosaves as you draw and flushes when the window loses focus."
+    },
+    {
+      "q": "Does an arrow stay attached to a shape?",
+      "a": "Yes. Draw an arrow that starts or ends on a shape and it binds to it: move, resize or rotate the shape and the arrow re-aims itself at the shape's edge, keeping the gap you gave it. A label typed onto an arrow rides its midpoint."
+    },
+    {
+      "q": "What can an assistant do with it?",
+      "a": "Five tools: sketch_list_documents, sketch_create_diagram (describe a graph of nodes and edges and Sketch lays it out in layers, draws it and opens it), sketch_add_elements, sketch_export_svg and sketch_describe, which reads a board back in plain words so an assistant can talk about a diagram it cannot see."
+    },
+    {
+      "q": "Is the SVG export a real SVG?",
+      "a": "Yes - a rectangle leaves as <rect>, an ellipse as <ellipse>, a diamond as <polygon>, and text as <text> with one <tspan> per line. It opens in Figma, Illustrator or Inkscape as editable objects, and the words stay selectable and searchable."
+    },
+    {
+      "q": "How big a board can it handle?",
+      "a": "The canvas culls to the visible rectangle and redraws only when something changed, which holds 60 fps while panning a board of a couple of thousand elements on a laptop. Freehand strokes are simplified as you draw, so pen input does not bloat the file."
+    },
+    {
+      "q": "What happens if a file gets corrupted?",
+      "a": "Sketch tells you what is wrong with it and offers to start a fresh copy; it never writes over the file it could not read, and never shows a blank window. Elements it cannot read inside an otherwise valid file are dropped and counted, so one bad shape cannot cost you the board."
+    },
+    {
+      "q": "Does it need the network?",
+      "a": "No. Sketch asks for your home folder, local settings storage, the clipboard and intents - nothing else. It has no network permission at all, and nothing you draw leaves your browser."
+    }
+  ],
+  "install": {
+    "kind": "steps",
+    "steps": [
+      "In NextOS, open Settings > Apps > Sources and add https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/catalog.json",
+      "Open the App Store, find Sketch in the community catalogue and press Install.",
+      "Approve the permissions it asks for: your home folder (it keeps boards in ~/Sketches), settings storage, the clipboard and intents.",
+      "Open Sketch from the launcher, or send it a kumin://sketch/open?file=<board name> intent from another app."
+    ]
+  },
+  "requires": { "nextos": "App Store with native apps", "platforms": ["web"] },
+  "permissions": ["fs:read:home", "fs:write:home", "storage", "clipboard", "intents"],
+  "related": [],
+  "support": { "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues" }
+}

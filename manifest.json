@@ -358,6 +358,142 @@
       },
       "readme": "# Recall\n\nSpaced-repetition flashcards for NextOS. It schedules like the app you\nalready use, and it keeps your decks as plain Markdown files you can open\nin any editor - no database, no export step, nothing you cannot read\nwithout this app installed.\n\nA deck is one file in `~/Recall`:\n\n```markdown\n# Capitals\n\nThe ones I keep forgetting.\n\nQ: What is the capital of Australia? #geography\nA: Canberra\n\nC: The {{c1::mitochondrion}} is the powerhouse of the {{c2::cell}}.\n```\n\nScheduling lives beside it in `<deck>.recall.json`, so the Markdown stays\nclean. Every card is keyed by a hash of its question, which is what makes\n\"edit the deck in another editor\" an ordinary thing to do: change an\nanswer, add a card, reorder the file, and every question you did not\ntouch keeps its interval, its ease factor and its history. Recall reloads\na deck when its window comes back into focus.\n\n## What it does\n\n**Review.** One card at a time. Space flips it, `1` to `4` grade it, and\neach grade button shows the interval it will really give you - the\nprojection runs the actual scheduler, fuzz included, so the button cannot\npromise one thing and do another. `Z` undoes the last answer completely,\nincluding its entry in your log. `E` edits the card you are looking at\nwithout leaving the session, `S` suspends it, `B` buries it until\ntomorrow, `M` marks it.\n\n**Type the answer.** A deck can ask you to type the answer instead of\ngrading yourself. Recall compares what you typed word by word, forgives\ncapitals, punctuation, accents and a leading \"the\", and highlights\nexactly what was wrong and what was missing.\n\n**The scheduler.** SM-2 with the refinements everybody ships today:\nlearning steps in minutes, relearning steps after a lapse, graduating and\neasy intervals, an ease factor floored at 1.3, an interval modifier,\ndeterministic fuzz so cards learned together do not come back together\nfor ever, a daily new-card and review limit per deck, and a leech\nthreshold that tags and suspends a card you have forgotten too many\ntimes. A \"day\" starts at 4 am local by default - a late night counts as\nthe day you began - and that hour is a per-deck setting.\n\n**The deck browser.** Every deck with its new, learning and due counts, a\nbar showing how much of it is mature, a heatmap of the last six months,\nyour streak, and your retention with a 30-day sparkline. Create, rename,\nduplicate, delete, import and export from here.\n\n**The card browser.** Every card in a table you can search, sort and\nselect. The search box takes plain words, `tag:chapter-3`, `is:due`,\n`is:suspended`, `is:leech`, `due<7`, `prop:lapses>2`, `-excluded` and\n`\"exact phrases\"`. Select cards to suspend, bury, mark, tag, untag, move\nto another deck, reset or delete them together; the panel beside the\ntable edits whichever card has the cursor, with a live preview.\n\n**Today.** Everything due across every deck, one button to study all of\nit, and a forecast of the next seven days so a backlog is visible before\nit arrives.\n\n**Notes to cards.** Paste a page of revision notes and Recall turns\nheadings with a body, bullets separated by a dash, `Term: meaning` lines,\n`Q:`/`A:` pairs and existing cloze text into cards, shows you what it\nfound, and only then writes a deck. If an assistant is available you can\nask it to draft cards from the same text and merge anything new.\n\n**A daily reminder.** Optional, off by default, at a time you choose, and\nonly when something is actually due. Recall has no background process:\nit checks while it is open and reconciles when you open it.\n\n## Keyboard\n\n| Key | What it does |\n| --- | --- |\n| `?` | The shortcut overlay |\n| `1` `2` `3` | Decks, Today, Cards |\n| `N` / `I` / `G` | New deck / import / make a deck from notes |\n| `R` | Reload the decks from disk |\n| `/` | Jump to the card browser's search |\n| `↑` `↓` | Move between decks |\n| `Enter` | Study the selected deck |\n| `E` / `S` / `Backspace` | Browse / settings / delete the selected deck |\n| `Space` | Show the answer; again to grade it Good |\n| `1` `2` `3` `4` | Again, Hard, Good, Easy |\n| `Z` | Undo the last answer |\n| `E` `S` `B` `M` | Edit, suspend, bury, mark the current card |\n| `Escape` | End the session, or close a dialog |\n| `⌘⏎` | Save the card you are editing |\n\n## The file format\n\n- `# Title` on the first line, then anything you like as a description,\n  until the first card.\n- `Q:` opens a card and runs until `A:`; the answer runs to the next\n  card. Both can span lines and carry Markdown - **bold**, *italic*,\n  `code`, fenced blocks, lists, block quotes. An image written as\n  `![alt](path.png)` is shown as a chip naming the file rather than\n  loaded.\n- `C:` opens a cloze card, and so does any line containing a\n  `{{c1::deletion}}`. Each distinct number makes its own card;\n  `{{c1::answer::hint}}` shows the hint in the gap.\n- `#tag` at the end of a question line, or a `tags:` line of its own,\n  tags the card. Recall writes tags back the way you wrote them.\n- A fenced code block is opaque: a ``` block containing `Q:` is answer\n  text, not a new card.\n- Round-tripping is byte-exact for a file Recall wrote, including\n  Windows line endings and whether the file ended with a newline.\n\n## For agents\n\nSix tools, prefixed `recall_`:\n\n| Tool | What it does |\n| --- | --- |\n| `recall_list_decks` | Every deck with its counts, tags and file path. Read-only. |\n| `recall_due` | What is waiting now, per deck, and when the next card comes back. Read-only. |\n| `recall_add_cards` | Append cards to a deck (`create: true` makes it first). Duplicates are skipped, not added twice. |\n| `recall_create_deck_from_text` | Turn notes into a whole deck; `useAssistant: true` also asks the assistant to draft cards and merges what is new. |\n| `recall_review_stats` | Reviews, retention, streak, the make-up of the collection, the seven-day forecast. Read-only. |\n| `recall_export` | A deck as Markdown or as Anki TSV. Read-only. |\n\nNothing an agent can call deletes anything: removing a deck or a card\nstays a thing a person does, because a card's review history cannot be\ngot back. Every tool that writes flushes to disk before it answers.\n\nTwo intents: `kumin://recall/open?deck=Spanish%20verbs` shows a deck's\ncards, `kumin://recall/study?deck=Spanish%20verbs` starts reviewing (omit\nthe deck to study everything that is due).\n\n## Limits, honestly\n\n- **The reminder needs the app open.** NextOS has no background timer an\n  app can book, so the daily reminder fires while Recall is open, and\n  catches up when you next open it.\n- **Images are named, not shown.** A card can reference a picture by a\n  relative path and Recall shows the path; it does not read the file into\n  the card.\n- **A card edited outside Recall is a new card.** Identity is the\n  question's text. Change a question in another editor and that card\n  starts from new - edit it inside Recall and its schedule follows it.\n- **One search language, no `or`.** Every term in the card browser's\n  search has to match. Negation is there; alternation is not.\n- **No shared decks or sync.** Decks are files. Put `~/Recall` wherever\n  your files already sync and Recall will read what turns up.\n\n## Building it\n\n```\nnpm install\nnpm run build:app -- recall     # files/build/app.js + app.css, app.zip, app.lock.json\nnpm run test:apps               # the pure modules' tests\nnpm run typecheck:apps\nnode tools/recall/preview/serve.mjs   # then open http://localhost:4321\n```\n\nThe preview harness runs the built bundle in an ordinary browser tab\nagainst a stubbed SDK, with a few seeded decks and some review history -\nit is how the screenshots in this folder were taken.",
       "page": "https://www.jonkum.in/community/recall"
+    },
+    {
+      "slug": "sketch",
+      "name": "Sketch",
+      "kind": "app",
+      "summary": "An infinite whiteboard for NextOS: shapes, arrows that stay attached when you move things, freehand, sticky notes, frames, and clean SVG export.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/sketch",
+      "homepage": "https://www.jonkum.in/community/sketch",
+      "license": "MIT",
+      "publishedAt": "2026-09-17",
+      "updatedAt": "2026-09-17",
+      "categories": [
+        "productivity",
+        "media"
+      ],
+      "tags": [
+        "whiteboard",
+        "diagrams",
+        "canvas",
+        "drawing",
+        "flowchart",
+        "svg",
+        "excalidraw",
+        "mind-map"
+      ],
+      "seo": {
+        "title": "Sketch - an infinite whiteboard for NextOS",
+        "description": "Draw on an infinite canvas inside NextOS: bound arrows, sticky notes, frames, freehand, PNG and SVG export, and agent tools that build a flowchart.",
+        "keywords": [
+          "nextos whiteboard",
+          "infinite canvas app",
+          "excalidraw alternative",
+          "diagram tool",
+          "flowchart maker",
+          "svg export",
+          "sticky notes",
+          "drawing app",
+          "ai diagram generator"
+        ],
+        "ogImage": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/share.png"
+      },
+      "screenshots": [
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/board-light.png",
+          "alt": "A checkout flowchart in Sketch, framed and labelled, with sticky notes and a freehand stroke below it",
+          "caption": "A board built by the sketch_create_diagram tool, then annotated by hand. Arrows stay attached to the boxes they connect."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/properties-light.png",
+          "alt": "The Sketch properties panel open beside a selected shape, showing stroke, fill, stroke style and text controls",
+          "caption": "Selecting anything opens the properties panel: colour, fill, stroke, corners, arrowheads, type and opacity."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/export-light.png",
+          "alt": "The Sketch export dialog with a live preview, showing PNG and SVG options and a choice of board, selection or frame",
+          "caption": "Export the whole board, just the selection, or one frame - as a 1x or 2x PNG, or as real, editable SVG."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/board-dark.png",
+          "alt": "The same checkout flowchart in Sketch's dark theme, with the palette translated for a dark board",
+          "caption": "Both themes are designed, not inverted: the curated palette maps across when the system theme changes."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/properties-dark.png",
+          "alt": "Sketch in dark mode with a shape selected and the properties panel open",
+          "caption": "The properties panel in dark mode."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/shortcuts-light.png",
+          "alt": "The Sketch keyboard shortcut sheet listing tools, canvas, editing, arranging and file shortcuts",
+          "caption": "Press ? at any time. Every action in the app has a key."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Where are my boards kept?",
+          "a": "Each board is one JSON file in your Sketches folder, named after the board: <home>/Sketches/<name>.sketch.json. It is plain, readable JSON with a schema version, the elements and the last view - so you can copy it, diff it, or open it with anything else. Sketch autosaves as you draw and flushes when the window loses focus."
+        },
+        {
+          "q": "Does an arrow stay attached to a shape?",
+          "a": "Yes. Draw an arrow that starts or ends on a shape and it binds to it: move, resize or rotate the shape and the arrow re-aims itself at the shape's edge, keeping the gap you gave it. A label typed onto an arrow rides its midpoint."
+        },
+        {
+          "q": "What can an assistant do with it?",
+          "a": "Five tools: sketch_list_documents, sketch_create_diagram (describe a graph of nodes and edges and Sketch lays it out in layers, draws it and opens it), sketch_add_elements, sketch_export_svg and sketch_describe, which reads a board back in plain words so an assistant can talk about a diagram it cannot see."
+        },
+        {
+          "q": "Is the SVG export a real SVG?",
+          "a": "Yes - a rectangle leaves as <rect>, an ellipse as <ellipse>, a diamond as <polygon>, and text as <text> with one <tspan> per line. It opens in Figma, Illustrator or Inkscape as editable objects, and the words stay selectable and searchable."
+        },
+        {
+          "q": "How big a board can it handle?",
+          "a": "The canvas culls to the visible rectangle and redraws only when something changed, which holds 60 fps while panning a board of a couple of thousand elements on a laptop. Freehand strokes are simplified as you draw, so pen input does not bloat the file."
+        },
+        {
+          "q": "What happens if a file gets corrupted?",
+          "a": "Sketch tells you what is wrong with it and offers to start a fresh copy; it never writes over the file it could not read, and never shows a blank window. Elements it cannot read inside an otherwise valid file are dropped and counted, so one bad shape cannot cost you the board."
+        },
+        {
+          "q": "Does it need the network?",
+          "a": "No. Sketch asks for your home folder, local settings storage, the clipboard and intents - nothing else. It has no network permission at all, and nothing you draw leaves your browser."
+        }
+      ],
+      "install": {
+        "kind": "steps",
+        "steps": [
+          "In NextOS, open Settings > Apps > Sources and add https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/catalog.json",
+          "Open the App Store, find Sketch in the community catalogue and press Install.",
+          "Approve the permissions it asks for: your home folder (it keeps boards in ~/Sketches), settings storage, the clipboard and intents.",
+          "Open Sketch from the launcher, or send it a kumin://sketch/open?file=<board name> intent from another app."
+        ]
+      },
+      "requires": {
+        "nextos": "App Store with native apps",
+        "platforms": [
+          "web"
+        ]
+      },
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "clipboard",
+        "intents"
+      ],
+      "related": [],
+      "support": {
+        "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+      },
+      "readme": "# Sketch\n\nAn infinite whiteboard for NextOS. Draw a diagram, think out loud on a\ncanvas that never runs out of room, and take the result away as a clean\nSVG or a PNG. It is the kind of tool people reach for when a paragraph\nwould take longer than a picture: flowcharts, architecture sketches,\nretro boards, wireframes, the shape of an argument.\n\nEverything is local. A board is one JSON file in your `Sketches` folder,\nSketch autosaves as you draw, and nothing it does needs the network.\n\n## The canvas\n\nPan with space and drag, the middle mouse button, or two fingers on a\ntrackpad. Zoom to the cursor with ⌘/Ctrl and the wheel, or pinch. `⇧1`\nfits the whole board, `⇧2` fits the selection, `⌘0` goes back to 100%.\nA minimap in the corner shows where you are; click it to jump. The\nbackground is a grid, dots or plain paper - press `G` to cycle.\n\nThe canvas is a single `<canvas>` with a retained element model: it culls\nto the visible rectangle and redraws only when something actually\nchanged, so panning a board of a couple of thousand elements stays at 60\nframes a second.\n\n## Tools\n\n| Key | Tool | |\n| --- | --- | --- |\n| `V` `1` | Select | click, shift-click, or drag a marquee |\n| `H` `2` | Hand | or hold space with any tool |\n| `R` `3` | Rectangle | shift for a square |\n| `D` `4` | Diamond | |\n| `O` `5` | Ellipse | |\n| `A` `6` | Arrow | binds to the shapes it touches |\n| `L` `7` | Line | |\n| `P` `8` | Draw | freehand, simplified as you go |\n| `T` `9` | Text | |\n| `N` `0` | Sticky note | opens ready to type |\n| `F` | Frame | a named region that carries its contents |\n| `E` | Eraser | drag across what you want gone |\n| `/` | Shape library | flowchart start/end, process, decision, database, cloud, person |\n\nDouble-click a tool to keep it after drawing instead of falling back to\nSelect.\n\n## Arrows that stay attached\n\nDraw an arrow from one shape to another and both ends bind to those\nshapes. Move, resize or rotate either one and the arrow re-aims itself at\nthe shape's edge, keeping the gap you gave it - through undo, through a\nreload, through a file you send someone else. Double-click an arrow to\nput a label on its midpoint. Arrows can be straight, curved or elbowed,\nwith an arrow, a dot, a bar or nothing at either end.\n\n## Text\n\nDouble-click anywhere for a text element; double-click a shape to put\ntext inside it, where it stays centred and wraps to the shape. Text comes\nin four sizes, three families and three alignments, and resizing a text\nelement scales the type rather than re-wrapping it.\n\n## Arranging\n\nSelect many things and align them (left, centre, right, top, middle,\nbottom) or distribute them evenly. Group with `⌘G`, ungroup with `⌘⇧G`.\nMove things through the z-order with `⌘[` and `⌘]` (add shift for all the\nway). Flip with `⇧H` and `⇧V`, lock with `⌘⇧L`, duplicate with `⌘D` or by\nalt-dragging. Arrow keys nudge by a point, shift-arrow by ten. Dragging\nsnaps to the edges and centres of everything else on the board, and to the\ngrid; `⇧S` turns that off.\n\nUndo and redo are coalesced: one drag, one slider run or one burst of\ntyping is one step.\n\n## Frames\n\nA frame is a named region. Anything centred inside it moves when the\nframe moves, and a frame can be exported on its own - which is how you\nget one diagram out of a board holding six.\n\n## Files\n\nBoards live in `<home>/Sketches/<name>.sketch.json`:\n\n```json\n{\n  \"type\": \"sketch\",\n  \"version\": 1,\n  \"name\": \"Checkout flow\",\n  \"createdAt\": \"2026-09-17T09:12:00.000Z\",\n  \"updatedAt\": \"2026-09-17T09:40:11.000Z\",\n  \"background\": \"grid\",\n  \"view\": { \"scrollX\": -120, \"scrollY\": -80, \"zoom\": 1 },\n  \"elements\": [\n    { \"id\": \"e1\", \"type\": \"rect\", \"x\": 0, \"y\": 0, \"w\": 180, \"h\": 90, \"text\": \"Take payment\", \"fill\": \"#d6e6fb\", \"fillStyle\": \"solid\" },\n    { \"id\": \"e2\", \"type\": \"arrow\", \"x\": 180, \"y\": 45, \"points\": [[0, 0], [120, 0]], \"endArrow\": \"arrow\", \"startBinding\": { \"elementId\": \"e1\", \"gap\": 6 } }\n  ]\n}\n```\n\n`⌘O` opens the board switcher: every board newest first, search, rename,\nduplicate, delete, and import of a `.sketch.json` from elsewhere. `⌘N`\nstarts a new one. Saving is automatic - a debounced write that flushes\nwhen the window loses focus - and the indicator by the name says\n`Saving…` or `Saved`. `⌘S` flushes it now if you want to be sure.\n\nIf a file cannot be read, Sketch says exactly what is wrong with it,\nleaves it untouched on disk, and offers to start a fresh copy. If one\nelement inside an otherwise valid file is unreadable, that element is\ndropped and counted rather than costing you the board.\n\n## Export\n\n`⌘E` opens the export sheet: the whole board, just the selection, or one\nframe; PNG at 1x or 2x, or SVG; with or without the paper colour; with a\nlive preview of the exact bytes you will get. Copy to the clipboard where\nthe browser allows it, or download the file.\n\nThe SVG is a real SVG. A rectangle leaves as `<rect>`, an ellipse as\n`<ellipse>`, a diamond as `<polygon>`, freehand and curves as `<path>`,\nand text as `<text>` with one `<tspan>` per line - so it opens in Figma,\nIllustrator or Inkscape as editable objects and its words stay\nselectable, searchable and translatable.\n\n## Tools for agents\n\nSketch exposes five tools, so an assistant can build and read boards.\n\n| Tool | What it does |\n| --- | --- |\n| `sketch_list_documents` | Every board, newest first, with the name to pass to the other tools. Read-only. |\n| `sketch_create_diagram` | Takes a name and a graph - `{ nodes: [{ id, label, shape? }], edges: [{ from, to, label? }], direction?: \"TB\" \\| \"LR\" }` - lays it out in layers, draws the shapes, connects them with bound arrows, saves the board and opens it. |\n| `sketch_add_elements` | Appends elements to a board, the open one by default. |\n| `sketch_export_svg` | Returns a board as SVG text. Read-only. |\n| `sketch_describe` | Reads a board back in plain words: every shape with its label and position, every arrow with what it connects. Read-only. |\n\n`sketch_create_diagram` uses a layered (Sugiyama-style) layout: cycles are\nbroken, nodes are assigned to layers, the ordering within each layer is\nswept to reduce crossings, and an edge that skips a layer is routed\naround whatever it skips instead of being drawn through it. Ask for\n\"a flowchart of our checkout, with a retry loop\" and what comes back is\na board you can then drag about, because every arrow is genuinely\nattached.\n\nSketch also answers one intent: `kumin://sketch/open?file=<board name or\npath>`.\n\n## Keyboard\n\nPress `?` for the full sheet. Everything in the app has a key, every\ncontrol is reachable by Tab, and dialogs trap focus and return it when\nthey close.\n\n## Permissions\n\n| Permission | Why |\n| --- | --- |\n| `fs:read:home`, `fs:write:home` | Boards live in your `Sketches` folder |\n| `storage` | Remembers your last colours, the snapping toggle and recent boards |\n| `clipboard` | \"Copy\" in the export sheet |\n| `intents` | Answers `kumin://sketch/open` |\n\nNo network permission: Sketch cannot phone anywhere, and does not want to.\n\n## Limits, honestly\n\n- One person at a time. There is no multiplayer cursor and no sync\n  service; a board is a file you can send, not a session you can join.\n- No images. You cannot paste a screenshot onto the canvas yet.\n- Freehand is a single-width stroke: no pressure, no calligraphic pen.\n- The diagram layout is built for the size of graph a person describes in\n  a sentence - tens of nodes, not thousands.\n- Copy and paste move elements between boards inside Sketch. Pasting a\n  shape into another application means exporting it first.\n\n## Building it\n\n```\nnpm run build:app -- sketch     # the bundle, the zip and the lock file\nnpm run typecheck:apps          # type-checks src against @kumin/sdk\nnpm run test:apps               # the pure-logic tests in app/test\nnode tools/sketch/app/preview/serve.mjs   # the app in a plain browser tab\n```\n\nThe preview harness at `app/preview/` runs the built bundle against a stub\nSDK - an in-memory VFS, localStorage and the browser's colour-scheme\npreference - which is how the screenshots on this page were taken.\n\nMIT licensed.",
+      "page": "https://www.jonkum.in/community/sketch"
     }
   ]
 }

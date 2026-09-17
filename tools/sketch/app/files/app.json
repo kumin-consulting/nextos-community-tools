@@ -1,0 +1,78 @@
+{
+  "id": "sketch",
+  "name": "Sketch",
+  "version": "1.0.0",
+  "description": "An infinite canvas for diagrams and thinking: shapes, arrows that stay attached, freehand, sticky notes and frames, exported as clean SVG or PNG.",
+  "icon": "✏️",
+  "kind": "native",
+  "source": "src/index.tsx",
+  "entry": "build/app.js",
+  "permissions": ["fs:read:home", "fs:write:home", "storage", "clipboard", "intents"],
+  "window": { "width": 1280, "height": 840, "minWidth": 720, "minHeight": 520 },
+  "tools": [
+    {
+      "name": "sketch_list_documents",
+      "description": "List every Sketch board in the user's Sketches folder, newest first, with the name to pass to the other sketch tools, the file path and when it was last changed. Also says which board is open right now.",
+      "inputSchema": { "type": "object", "properties": {} },
+      "readOnly": true
+    },
+    {
+      "name": "sketch_create_diagram",
+      "description": "Draw a node-and-edge diagram on a new Sketch board and open it. Nodes have an id, a label and an optional shape (process, decision, start, end, database, note); edges name the ids they run between and may carry a label. Sketch lays the graph out in layers and connects it with arrows that stay attached when shapes are moved.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Name for the new board." },
+          "graph": {
+            "type": "object",
+            "description": "{ nodes: [{ id, label, shape? }], edges: [{ from, to, label? }], direction?: 'TB' | 'LR' }",
+            "properties": {
+              "nodes": { "type": "array", "items": { "type": "object" } },
+              "edges": { "type": "array", "items": { "type": "object" } },
+              "direction": { "type": "string" }
+            },
+            "required": ["nodes"]
+          }
+        },
+        "required": ["name", "graph"]
+      }
+    },
+    {
+      "name": "sketch_add_elements",
+      "description": "Append elements to a Sketch board. Each element is { type, x, y, w, h, text?, stroke?, fill?, points? } where type is rect, ellipse, diamond, line, arrow, draw, text, sticky or frame.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Which board. Defaults to the one that is open." },
+          "elements": { "type": "array", "items": { "type": "object" } }
+        },
+        "required": ["elements"]
+      }
+    },
+    {
+      "name": "sketch_export_svg",
+      "description": "Return a Sketch board as SVG text - real shapes and real text, ready to paste into a document or a web page.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Which board. Defaults to the one that is open." },
+          "background": { "type": "boolean", "description": "Include the paper colour. Default false." }
+        }
+      },
+      "readOnly": true
+    },
+    {
+      "name": "sketch_describe",
+      "description": "Describe what is on a Sketch board in plain words: every shape with its label and position, and every arrow with what it connects.",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "description": "Which board. Defaults to the one that is open." } }
+      },
+      "readOnly": true
+    }
+  ],
+  "intents": [{ "action": "open", "description": "Open a board by name or by path: kumin://sketch/open?file=Checkout%20flow" }],
+  "author": "Kumin Consulting",
+  "homepage": "https://www.jonkum.in/community/sketch",
+  "license": "MIT"
+}
