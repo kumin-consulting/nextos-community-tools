@@ -46,7 +46,10 @@
       // The harness: seed the stub filesystem and storage for whichever
       // scenario was asked for, then mount the app's default export.
       const { vfs, storage, HOME, APP_DIR, params } = window.__kuminPreview;
-      const scenario = params.get('scenario') || 'fresh';
+      // With no ?scenario the harness leaves whatever is in storage
+      // alone, so reloading the page is a real test of "does an
+      // unfinished game come back?".
+      const scenario = params.get('scenario');
 
       const PLAYED = `[Event "Casual game"]
 [Site "NextOS"]
@@ -145,10 +148,12 @@
         );
       }
 
-      try {
-        localStorage.clear();
-      } catch {
-        /* a private window is fine */
+      if (scenario) {
+        try {
+          localStorage.clear();
+        } catch {
+          /* a private window is fine */
+        }
       }
 
       if (scenario === 'play') {
@@ -167,7 +172,7 @@
         seedGame(LOSS, { mode: 'human-human' });
         seedSettings({ analysis: true });
         await seedGames();
-      } else {
+      } else if (scenario === 'fresh') {
         seedSettings({});
       }
 

@@ -902,14 +902,27 @@
   border: 1px solid var(--line-strong);
 }
 
+/* Stacked layout. The board's size container measures BOTH axes in the
+ * side-by-side layout, which is what lets the board be "the smaller of
+ * across and down"; stacked, the column has no definite height, so the
+ * container measures the inline axis only and the down direction comes
+ * from the viewport instead. Without this the board computes a negative
+ * height and vanishes. */
 @media (max-width: 860px) {
   .chessapp-body {
     flex-direction: column;
     overflow-y: auto;
   }
+  .chessapp-left {
+    container-type: inline-size;
+    flex: none;
+  }
+  .chessapp-board-stack {
+    width: min(100cqw, 62vh, 560px);
+  }
   .chessapp-panel {
     flex: 1 1 auto;
     max-width: none;
-    min-height: 260px;
+    min-height: 280px;
   }
 }

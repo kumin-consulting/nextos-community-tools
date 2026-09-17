@@ -24,8 +24,8 @@
       ],
       "download": {
         "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/app/app.zip",
-        "sha256": "a832d14d9e6952cbae21e6ea883b523100c11d97e1cd184911065f6e9afeafb6",
-        "bytes": 379506
+        "sha256": "fdfefdadac396311d7ef81ee8c818542f57655ebea4f2ae4cf40e081cf61f34f",
+        "bytes": 380033
       },
       "screenshots": [
         "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/chess/images/play-light.png",
