@@ -103,6 +103,8 @@ list.
 | --- | --- |
 | `←` `→` | One move back or forward |
 | `Home` `End` | The start or the end of the game |
+| `⇧` + arrows | Move the cursor around the board |
+| `Enter` | Pick the piece under the cursor up, and put it down |
 | `Space` | Play through the game, or stop |
 | `F` | Flip the board |
 | `N` | New game |
@@ -121,10 +123,12 @@ list.
 | `?` | The shortcut list |
 | `Esc` | Close whatever is open |
 
-On the board itself the arrow keys move a cursor and `Enter` picks a
-piece up and puts it down, so a whole game can be played from the
-keyboard - or typed into the move box in algebraic notation, which
-accepts `Nf3`, `exd5`, `O-O`, `0-0`, `e8=Q` and `e2e4` alike.
+The bare arrow keys always walk through the game, because that is what
+people reach for a hundred times a session; hold `Shift` to move a cursor
+around the board instead and press `Enter` to pick a piece up and put it
+down. Either way a whole game can be played from the keyboard - or typed
+into the move box in algebraic notation, which accepts `Nf3`, `exd5`,
+`O-O`, `0-0`, `e8=Q` and `e2e4` alike.
 
 ## Look and feel
 

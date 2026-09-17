@@ -141,6 +141,18 @@ function ChessApp() {
     const [ended, setEnded] = (0, react_1.useState)(null);
     const [engineWhere, setEngineWhere] = (0, react_1.useState)(null);
     const moveBoxRef = (0, react_1.useRef)(null);
+    /** Puts the keyboard back inside the app after a dialog closes. The
+     *  shortcuts live on the root element's own keydown handler - a
+     *  window-level listener would steal keys from every other NextOS app
+     *  sharing this document - so focus landing on <body> would make the
+     *  whole keyboard stop working. */
+    const focusRoot = (0, react_1.useCallback)(() => {
+        const root = rootRef.current;
+        if (!root)
+            return;
+        if (!root.contains(document.activeElement))
+            root.focus({ preventScroll: true });
+    }, []);
     const playEngine = (0, react_1.useRef)(null);
     const analysisEngine = (0, react_1.useRef)(null);
     // The whole-game report gets a worker of its own: it runs dozens of
@@ -164,6 +176,12 @@ function ChessApp() {
     (0, react_1.useEffect)(() => {
         store.saveSettings(settings);
     }, [settings]);
+    // Whenever every dialog is closed, make sure the keyboard has
+    // somewhere inside the app to be.
+    (0, react_1.useEffect)(() => {
+        if (!dialog && !promotion)
+            focusRoot();
+    }, [dialog, promotion, focusRoot]);
     (0, react_1.useEffect)(() => {
         void (0, files_1.listGames)().then(setGames);
     }, []);
@@ -320,26 +338,45 @@ function ChessApp() {
         const engine = playEngine.current;
         if (!engine || thinkingRef.current)
             return;
+        // Two engines shuffling pieces will repeat a position or run the
+        // fifty-move clock out sooner or later, and neither of them is going
+        // to ask for the draw. Claim it for them - a game that could be
+        // drawn by either side is drawn.
+        if (game.mode === 'engine-engine' && status.claimableDraw) {
+            game.tree.result = '1/2-1/2';
+            setEnded({ result: '1/2-1/2', reason: status.claimableDraw });
+            (0, sound_1.playSound)('end', settings.sound);
+            void autoSave(game.tree, '1/2-1/2');
+            return;
+        }
         let cancelled = false;
         thinkingRef.current = true;
         setThinking(true);
         setPlayInfo(null);
         const useBook = (0, game_1.mainLine)(game.tree).length < 16 && game.level < 8;
         const current = (0, game_1.positionAt)(game.tree, game.nodeId);
-        void engine
-            .think({
-            position: current,
-            tree: game.tree,
-            nodeId: game.nodeId,
-            options: { level: game.level, useBook },
-            onInfo: (update) => {
-                if (!cancelled) {
-                    setPlayInfo(update);
-                    setEngineWhere(update.where);
-                }
-            },
-        })
-            .then((update) => {
+        // At the low levels the engine answers in a couple of milliseconds,
+        // which looks like a bug rather than a move; two engines playing each
+        // other would flicker through a hundred moves before you could read
+        // one. A floor on the time taken is the whole fix.
+        const pace = game.mode === 'engine-engine' ? 600 : 220;
+        const paced = new Promise((resolve) => setTimeout(resolve, pace));
+        void Promise.all([
+            engine.think({
+                position: current,
+                tree: game.tree,
+                nodeId: game.nodeId,
+                options: { level: game.level, useBook },
+                onInfo: (update) => {
+                    if (!cancelled) {
+                        setPlayInfo(update);
+                        setEngineWhere(update.where);
+                    }
+                },
+            }),
+            paced,
+        ])
+            .then(([update]) => {
             thinkingRef.current = false;
             if (cancelled)
                 return;
@@ -359,7 +396,7 @@ function ChessApp() {
             setThinking(false);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [engineToMove, game.revision, game.level, dialog, promotion]);
+    }, [engineToMove, game.revision, game.level, dialog, promotion, status.claimableDraw]);
     // --- background analysis ----------------------------------------------
     (0, react_1.useEffect)(() => {
         if (!settings.analysis) {
@@ -732,7 +769,19 @@ function ChessApp() {
             : (0, rules_1.describeStatus)(status, position);
     const whiteName = game.tree.tags.White ?? 'White';
     const blackName = game.tree.tags.Black ?? 'Black';
-    return ((0, jsx_runtime_1.jsxs)("div", { ref: rootRef, className: `chessapp${isDark ? ' dark' : ''}`, onKeyDown: onKeyDown, "data-testid": "chess-root", children: [(0, jsx_runtime_1.jsxs)("div", { className: "chessapp-bar", children: [(0, jsx_runtime_1.jsxs)("button", { type: "button", className: "chessapp-btn is-primary", onClick: () => setDialog('new'), title: "New game (N)", children: [(0, jsx_runtime_1.jsx)(icons_1.Icons.plus, {}), "New game"] }), (0, jsx_runtime_1.jsxs)("button", { type: "button", className: "chessapp-btn", onClick: takeBack, disabled: !!session || liveEnd === 0, title: "Take back (T)", children: [(0, jsx_runtime_1.jsx)(icons_1.Icons.undo, {}), "Take back"] }), (0, jsx_runtime_1.jsx)("span", { className: "chessapp-label", children: "Level" }), (0, jsx_runtime_1.jsx)("select", { className: "chessapp-select", value: game.level, "aria-label": "Engine strength", onChange: (event) => {
+    return ((0, jsx_runtime_1.jsxs)("div", { ref: rootRef, className: `chessapp${isDark ? ' dark' : ''}`, tabIndex: -1, onKeyDown: onKeyDown, onPointerDown: (event) => {
+            // A click on the app's own background must not leave the
+            // keyboard outside it.
+            if (event.target === event.currentTarget)
+                focusRoot();
+        }, "data-testid": "chess-root", children: [(0, jsx_runtime_1.jsxs)("div", { className: "chessapp-bar", children: [(0, jsx_runtime_1.jsxs)("button", { type: "button", className: "chessapp-btn is-primary", onClick: () => setDialog('new'), title: "New game (N)", children: [(0, jsx_runtime_1.jsx)(icons_1.Icons.plus, {}), "New game"] }), (0, jsx_runtime_1.jsxs)("button", { type: "button", className: "chessapp-btn", onClick: takeBack, disabled: !!session || liveEnd === 0, title: "Take back (T)", children: [(0, jsx_runtime_1.jsx)(icons_1.Icons.undo, {}), "Take back"] }), status.claimableDraw && !status.over && !ended && !session ? ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: "chessapp-btn", onClick: () => {
+                            game.tree.result = '1/2-1/2';
+                            setEnded({ result: '1/2-1/2', reason: status.claimableDraw });
+                            (0, sound_1.playSound)('end', settings.sound);
+                            void autoSave(game.tree, '1/2-1/2');
+                        }, title: status.claimableDraw === 'threefold-repetition'
+                            ? 'The position has occurred three times - either player may claim a draw'
+                            : 'Fifty moves without a capture or a pawn move - either player may claim a draw', children: [(0, jsx_runtime_1.jsx)(icons_1.Icons.handshake, {}), "Claim draw"] })) : null, (0, jsx_runtime_1.jsx)("span", { className: "chessapp-label", children: "Level" }), (0, jsx_runtime_1.jsx)("select", { className: "chessapp-select", value: game.level, "aria-label": "Engine strength", onChange: (event) => {
                             const value = Number(event.target.value);
                             store.update({ level: value });
                             setSettings((s) => ({ ...s, level: value }));
@@ -741,7 +790,7 @@ function ChessApp() {
                                     ['report', 'Report'],
                                     ['games', 'Games'],
                                     ['puzzles', 'Puzzles'],
-                                ].map(([id, label]) => ((0, jsx_runtime_1.jsxs)("button", { type: "button", role: "tab", className: "chessapp-tab", "aria-selected": tab === id, onClick: () => setTab(id), children: [label, id === 'puzzles' && puzzles.length ? ` (${puzzles.length})` : ''] }, id))) }), (0, jsx_runtime_1.jsxs)("div", { className: "chessapp-tabpanel", role: "tabpanel", children: [clock ? ((0, jsx_runtime_1.jsxs)("div", { className: "chessapp-section", children: [(0, jsx_runtime_1.jsx)(panels_1.ClockRow, { clock: clock, now: now, color: settings.flipped ? types_1.WHITE : types_1.BLACK, name: settings.flipped ? whiteName : blackName, running: clock.running === (settings.flipped ? types_1.WHITE : types_1.BLACK) }), (0, jsx_runtime_1.jsx)(panels_1.ClockRow, { clock: clock, now: now, color: settings.flipped ? types_1.BLACK : types_1.WHITE, name: settings.flipped ? blackName : whiteName, running: clock.running === (settings.flipped ? types_1.BLACK : types_1.WHITE) })] })) : null, opening ? ((0, jsx_runtime_1.jsxs)("div", { className: "chessapp-section", children: [(0, jsx_runtime_1.jsx)("h3", { className: "chessapp-section-title", children: "Opening" }), (0, jsx_runtime_1.jsxs)("div", { className: "chessapp-row", children: [(0, jsx_runtime_1.jsx)("span", { className: "chessapp-strong", children: opening.name }), (0, jsx_runtime_1.jsx)("span", { className: "chessapp-kv", children: opening.eco })] })] })) : null, settings.analysis || thinking || playInfo ? ((0, jsx_runtime_1.jsx)(panels_1.EngineInfo, { update: shownInfo, thinking: thinking, pvSan: shownLine.san, firstMoveNumber: pvStartNumber, firstIsBlack: position.turn === types_1.BLACK, levelName: settings.analysis && !thinking ? 'Analysis' : `Level ${game.level} · ${level.name}`, note: playEngine.current?.lastError ?? null })) : null, tab === 'moves' ? ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { className: "chessapp-scroll", children: (0, jsx_runtime_1.jsx)(MoveList_1.MoveList, { tree: tree, currentNode: nodeId, onSelect: goTo, quality: quality, showVariations: settings.analysis || !!report }) }), (0, jsx_runtime_1.jsxs)("div", { className: "chessapp-section", style: { borderBottom: 0, borderTop: '1px solid var(--line)' }, children: [(0, jsx_runtime_1.jsxs)("div", { className: "chessapp-row", style: { gap: 6 }, children: [(0, jsx_runtime_1.jsx)("input", { ref: moveBoxRef, className: `chessapp-input${moveError ? ' is-error' : ''}`, value: moveText, placeholder: "Type a move: Nf3, exd5, O-O, e2e4", "aria-label": "Type a move in algebraic notation", "aria-invalid": moveError, onChange: (event) => {
+                                ].map(([id, label]) => ((0, jsx_runtime_1.jsxs)("button", { type: "button", role: "tab", className: "chessapp-tab", "aria-selected": tab === id, onClick: () => setTab(id), children: [label, id === 'puzzles' && puzzles.length ? ` (${puzzles.length})` : ''] }, id))) }), (0, jsx_runtime_1.jsxs)("div", { className: "chessapp-tabpanel", role: "tabpanel", children: [clock ? ((0, jsx_runtime_1.jsxs)("div", { className: "chessapp-section", children: [(0, jsx_runtime_1.jsx)(panels_1.ClockRow, { clock: clock, now: now, color: settings.flipped ? types_1.WHITE : types_1.BLACK, name: settings.flipped ? whiteName : blackName, running: clock.running === (settings.flipped ? types_1.WHITE : types_1.BLACK) }), (0, jsx_runtime_1.jsx)(panels_1.ClockRow, { clock: clock, now: now, color: settings.flipped ? types_1.BLACK : types_1.WHITE, name: settings.flipped ? blackName : whiteName, running: clock.running === (settings.flipped ? types_1.BLACK : types_1.WHITE) })] })) : null, opening ? ((0, jsx_runtime_1.jsxs)("div", { className: "chessapp-section", children: [(0, jsx_runtime_1.jsx)("h3", { className: "chessapp-section-title", children: "Opening" }), (0, jsx_runtime_1.jsxs)("div", { className: "chessapp-row", children: [(0, jsx_runtime_1.jsx)("span", { className: "chessapp-strong", children: opening.name }), (0, jsx_runtime_1.jsx)("span", { className: "chessapp-kv", children: opening.eco })] })] })) : null, settings.analysis || thinking || playInfo ? ((0, jsx_runtime_1.jsx)(panels_1.EngineInfo, { update: shownInfo, thinking: thinking, pvSan: shownLine.san, firstMoveNumber: pvStartNumber, firstIsBlack: position.turn === types_1.BLACK, levelName: settings.analysis && !thinking ? 'Analysis' : `Level ${game.level} · ${level.name}`, note: playEngine.current?.lastError ?? null })) : null, tab === 'moves' ? ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { className: "chessapp-scroll", children: (0, jsx_runtime_1.jsx)(MoveList_1.MoveList, { tree: tree, currentNode: nodeId, onSelect: goTo, quality: quality, showVariations: true }) }), (0, jsx_runtime_1.jsxs)("div", { className: "chessapp-section", style: { borderBottom: 0, borderTop: '1px solid var(--line)' }, children: [(0, jsx_runtime_1.jsxs)("div", { className: "chessapp-row", style: { gap: 6 }, children: [(0, jsx_runtime_1.jsx)("input", { ref: moveBoxRef, className: `chessapp-input${moveError ? ' is-error' : ''}`, value: moveText, placeholder: "Type a move: Nf3, exd5, O-O, e2e4", "aria-label": "Type a move in algebraic notation", "aria-invalid": moveError, onChange: (event) => {
                                                                     setMoveText(event.target.value);
                                                                     setMoveError(false);
                                                                 }, onKeyDown: (event) => {
@@ -863,6 +912,8 @@ function describeEnded(ended, tree) {
         'insufficient-material': 'for want of mating material',
         'fivefold-repetition': 'by fivefold repetition',
         'seventy-five-move': 'by the seventy-five-move rule',
+        'threefold-repetition': 'by a claimed threefold repetition',
+        'fifty-move': 'by the fifty-move rule',
         timeout: 'on time',
         'timeout-vs-insufficient': 'on time, with no mating material left',
         resignation: 'by resignation',
@@ -5689,10 +5740,12 @@ const jsx_runtime_1 = require("react/jsx-runtime");
 //     to the destination and press Enter again.
 //
 // The grid is the accessible-grid pattern: exactly one square is in the
-// tab order at a time and the arrow keys move the cursor, so tabbing
-// through the app does not mean sixty-four stops. Game navigation with
-// the left and right arrows lives in the window, and steps aside while
-// the board has focus.
+// tab order at a time, so tabbing through the app does not mean
+// sixty-four stops. The cursor moves on SHIFT plus an arrow rather than
+// on a bare arrow, because the bare arrows belong to the game - going a
+// move back and forward is the thing people reach for a hundred times a
+// session, and a board that swallowed them whenever it had focus would
+// be wrong far more often than it was right.
 const react_1 = require("react");
 const types_1 = require("../lib/types");
 const themes_1 = require("./themes");
@@ -5811,6 +5864,10 @@ function Board(props) {
         const rank = cursor >> 4;
         const step = flipped ? -1 : 1;
         let next = cursor;
+        if (!event.shiftKey && (event.key.startsWith('Arrow') || event.key === 'Home' || event.key === 'End')) {
+            // Bare arrows are the game's, not the board's.
+            return;
+        }
         switch (event.key) {
             case 'ArrowLeft':
                 next = file - step >= 0 && file - step <= 7 ? cursor - step : cursor;
@@ -6474,6 +6531,8 @@ function PromotionDialog({ color, set, onChoose, onCancel }) {
 exports.SHORTCUTS = [
     ['←  →', 'One move back or forward'],
     ['Home  End', 'The start or the end of the game'],
+    ['⇧ + arrows', 'Move the cursor on the board'],
+    ['Enter', 'Pick the piece up, and put it down'],
     ['F', 'Flip the board'],
     ['N', 'New game'],
     ['T', 'Take back the last move'],
@@ -6497,7 +6556,7 @@ function ShortcutsOverlay({ onClose }) {
     (0, react_1.useEffect)(() => {
         closeRef.current?.focus();
     }, []);
-    return ((0, jsx_runtime_1.jsxs)(Overlay, { onClose: onClose, label: "Keyboard shortcuts", children: [(0, jsx_runtime_1.jsx)("h2", { children: "Keyboard shortcuts" }), (0, jsx_runtime_1.jsx)("p", { className: "chessapp-lede", children: "Every action in the app is on this list. On the board itself, the arrow keys move a cursor and Enter picks a piece up and puts it down." }), (0, jsx_runtime_1.jsx)("div", { className: "chessapp-keys", children: exports.SHORTCUTS.map(([keys, what]) => ((0, jsx_runtime_1.jsxs)("div", { className: "chessapp-key", children: [(0, jsx_runtime_1.jsx)("kbd", { children: keys }), (0, jsx_runtime_1.jsx)("span", { children: what })] }, keys))) }), (0, jsx_runtime_1.jsx)("div", { className: "chessapp-actions", children: (0, jsx_runtime_1.jsx)("button", { ref: closeRef, type: "button", className: "chessapp-btn is-primary", onClick: onClose, children: "Close" }) })] }));
+    return ((0, jsx_runtime_1.jsxs)(Overlay, { onClose: onClose, label: "Keyboard shortcuts", children: [(0, jsx_runtime_1.jsx)("h2", { children: "Keyboard shortcuts" }), (0, jsx_runtime_1.jsx)("p", { className: "chessapp-lede", children: "Every action in the app is on this list. The bare arrow keys always walk through the game; hold Shift to move the cursor around the board instead, and press Enter to pick a piece up and put it down." }), (0, jsx_runtime_1.jsx)("div", { className: "chessapp-keys", children: exports.SHORTCUTS.map(([keys, what]) => ((0, jsx_runtime_1.jsxs)("div", { className: "chessapp-key", children: [(0, jsx_runtime_1.jsx)("kbd", { children: keys }), (0, jsx_runtime_1.jsx)("span", { children: what })] }, keys))) }), (0, jsx_runtime_1.jsx)("div", { className: "chessapp-actions", children: (0, jsx_runtime_1.jsx)("button", { ref: closeRef, type: "button", className: "chessapp-btn is-primary", onClick: onClose, children: "Close" }) })] }));
 }
 function ImportDialog({ onImport, onClose }) {
     const [text, setText] = (0, react_1.useState)('');

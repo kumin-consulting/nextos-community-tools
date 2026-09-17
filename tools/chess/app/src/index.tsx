@@ -116,6 +116,16 @@ export default function ChessApp(): JSX.Element {
   const [engineWhere, setEngineWhere] = useState<'worker' | 'main' | null>(null);
 
   const moveBoxRef = useRef<HTMLInputElement | null>(null);
+  /** Puts the keyboard back inside the app after a dialog closes. The
+   *  shortcuts live on the root element's own keydown handler - a
+   *  window-level listener would steal keys from every other NextOS app
+   *  sharing this document - so focus landing on <body> would make the
+   *  whole keyboard stop working. */
+  const focusRoot = useCallback((): void => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (!root.contains(document.activeElement)) root.focus({ preventScroll: true });
+  }, []);
   const playEngine = useRef<EngineClient | null>(null);
   const analysisEngine = useRef<EngineClient | null>(null);
   // The whole-game report gets a worker of its own: it runs dozens of
@@ -139,6 +149,12 @@ export default function ChessApp(): JSX.Element {
   useEffect(() => {
     store.saveSettings(settings);
   }, [settings]);
+
+  // Whenever every dialog is closed, make sure the keyboard has
+  // somewhere inside the app to be.
+  useEffect(() => {
+    if (!dialog && !promotion) focusRoot();
+  }, [dialog, promotion, focusRoot]);
 
   useEffect(() => {
     void listGames().then(setGames);
@@ -321,14 +337,31 @@ export default function ChessApp(): JSX.Element {
     if (!engineToMove || dialog || promotion) return;
     const engine = playEngine.current;
     if (!engine || thinkingRef.current) return;
+    // Two engines shuffling pieces will repeat a position or run the
+    // fifty-move clock out sooner or later, and neither of them is going
+    // to ask for the draw. Claim it for them - a game that could be
+    // drawn by either side is drawn.
+    if (game.mode === 'engine-engine' && status.claimableDraw) {
+      game.tree.result = '1/2-1/2';
+      setEnded({ result: '1/2-1/2', reason: status.claimableDraw });
+      playSound('end', settings.sound);
+      void autoSave(game.tree, '1/2-1/2');
+      return;
+    }
     let cancelled = false;
     thinkingRef.current = true;
     setThinking(true);
     setPlayInfo(null);
     const useBook = mainLine(game.tree).length < 16 && game.level < 8;
     const current = positionAt(game.tree, game.nodeId);
-    void engine
-      .think({
+    // At the low levels the engine answers in a couple of milliseconds,
+    // which looks like a bug rather than a move; two engines playing each
+    // other would flicker through a hundred moves before you could read
+    // one. A floor on the time taken is the whole fix.
+    const pace = game.mode === 'engine-engine' ? 600 : 220;
+    const paced = new Promise<void>((resolve) => setTimeout(resolve, pace));
+    void Promise.all([
+      engine.think({
         position: current,
         tree: game.tree,
         nodeId: game.nodeId,
@@ -339,8 +372,10 @@ export default function ChessApp(): JSX.Element {
             setEngineWhere(update.where);
           }
         },
-      })
-      .then((update) => {
+      }),
+      paced,
+    ])
+      .then(([update]) => {
         thinkingRef.current = false;
         if (cancelled) return;
         setThinking(false);
@@ -357,7 +392,7 @@ export default function ChessApp(): JSX.Element {
       setThinking(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [engineToMove, game.revision, game.level, dialog, promotion]);
+  }, [engineToMove, game.revision, game.level, dialog, promotion, status.claimableDraw]);
 
   // --- background analysis ----------------------------------------------
   useEffect(() => {
@@ -742,7 +777,13 @@ export default function ChessApp(): JSX.Element {
     <div
       ref={rootRef}
       className={`chessapp${isDark ? ' dark' : ''}`}
+      tabIndex={-1}
       onKeyDown={onKeyDown}
+      onPointerDown={(event) => {
+        // A click on the app's own background must not leave the
+        // keyboard outside it.
+        if (event.target === event.currentTarget) focusRoot();
+      }}
       data-testid="chess-root"
     >
       <div className="chessapp-bar">
@@ -754,6 +795,26 @@ export default function ChessApp(): JSX.Element {
           <Icons.undo />
           Take back
         </button>
+        {status.claimableDraw && !status.over && !ended && !session ? (
+          <button
+            type="button"
+            className="chessapp-btn"
+            onClick={() => {
+              game.tree.result = '1/2-1/2';
+              setEnded({ result: '1/2-1/2', reason: status.claimableDraw as string });
+              playSound('end', settings.sound);
+              void autoSave(game.tree, '1/2-1/2');
+            }}
+            title={
+              status.claimableDraw === 'threefold-repetition'
+                ? 'The position has occurred three times - either player may claim a draw'
+                : 'Fifty moves without a capture or a pawn move - either player may claim a draw'
+            }
+          >
+            <Icons.handshake />
+            Claim draw
+          </button>
+        ) : null}
         <span className="chessapp-label">Level</span>
         <select
           className="chessapp-select"
@@ -983,7 +1044,7 @@ export default function ChessApp(): JSX.Element {
                     currentNode={nodeId}
                     onSelect={goTo}
                     quality={quality}
-                    showVariations={settings.analysis || !!report}
+                    showVariations
                   />
                 </div>
                 <div className="chessapp-section" style={{ borderBottom: 0, borderTop: '1px solid var(--line)' }}>
@@ -1331,6 +1392,8 @@ function describeEnded(ended: { result: Result; reason: string }, tree: GameTree
     'insufficient-material': 'for want of mating material',
     'fivefold-repetition': 'by fivefold repetition',
     'seventy-five-move': 'by the seventy-five-move rule',
+    'threefold-repetition': 'by a claimed threefold repetition',
+    'fifty-move': 'by the fifty-move rule',
     timeout: 'on time',
     'timeout-vs-insufficient': 'on time, with no mating material left',
     resignation: 'by resignation',

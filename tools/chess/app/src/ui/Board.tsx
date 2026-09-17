@@ -10,10 +10,12 @@
 //     to the destination and press Enter again.
 //
 // The grid is the accessible-grid pattern: exactly one square is in the
-// tab order at a time and the arrow keys move the cursor, so tabbing
-// through the app does not mean sixty-four stops. Game navigation with
-// the left and right arrows lives in the window, and steps aside while
-// the board has focus.
+// tab order at a time, so tabbing through the app does not mean
+// sixty-four stops. The cursor moves on SHIFT plus an arrow rather than
+// on a bare arrow, because the bare arrows belong to the game - going a
+// move back and forward is the thing people reach for a hundred times a
+// session, and a board that swallowed them whenever it had focus would
+// be wrong far more often than it was right.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Move, Position } from '../lib/types';
@@ -181,6 +183,10 @@ export function Board(props: BoardProps): JSX.Element {
       const rank = cursor >> 4;
       const step = flipped ? -1 : 1;
       let next = cursor;
+      if (!event.shiftKey && (event.key.startsWith('Arrow') || event.key === 'Home' || event.key === 'End')) {
+        // Bare arrows are the game's, not the board's.
+        return;
+      }
       switch (event.key) {
         case 'ArrowLeft':
           next = file - step >= 0 && file - step <= 7 ? cursor - step : cursor;

@@ -223,6 +223,8 @@ export function PromotionDialog({ color, set, onChoose, onCancel }: PromotionDia
 export const SHORTCUTS: Array<[string, string]> = [
   ['←  →', 'One move back or forward'],
   ['Home  End', 'The start or the end of the game'],
+  ['⇧ + arrows', 'Move the cursor on the board'],
+  ['Enter', 'Pick the piece up, and put it down'],
   ['F', 'Flip the board'],
   ['N', 'New game'],
   ['T', 'Take back the last move'],
@@ -251,8 +253,8 @@ export function ShortcutsOverlay({ onClose }: { onClose: () => void }): JSX.Elem
     <Overlay onClose={onClose} label="Keyboard shortcuts">
       <h2>Keyboard shortcuts</h2>
       <p className="chessapp-lede">
-        Every action in the app is on this list. On the board itself, the arrow keys move a cursor and Enter picks a
-        piece up and puts it down.
+        Every action in the app is on this list. The bare arrow keys always walk through the game; hold Shift to move
+        the cursor around the board instead, and press Enter to pick a piece up and put it down.
       </p>
       <div className="chessapp-keys">
         {SHORTCUTS.map(([keys, what]) => (
