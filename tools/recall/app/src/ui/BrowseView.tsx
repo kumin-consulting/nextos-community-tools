@@ -13,7 +13,7 @@ import { compareCards, matches, parseQuery } from '../lib/search';
 import type { SearchSubject, SortKey } from '../lib/search';
 import { plainText } from '../lib/md';
 import { formatInterval } from '../lib/time';
-import { Button, Empty, IconButton, Modal, Select, TextInput } from './bits';
+import { Button, Empty, Modal, Select, TextInput } from './bits';
 import { CardEditor } from './CardEditor';
 import { ChevronDown, ChevronUp, LayersIcon, PauseIcon, PlayIcon, SearchIcon, StarIcon, TagIcon, TrashIcon } from './Icons';
 
@@ -77,7 +77,7 @@ export function BrowseView(props: { deck: string | null; onPickDeck: (deck: stri
 
   if (!record) {
     return (
-      <div className="recall-page">
+      <div className="recall-page recall-page-wide">
         <DeckPicker decks={order} value={props.deck} onChange={props.onPickDeck} />
       </div>
     );
@@ -112,7 +112,7 @@ export function BrowseView(props: { deck: string | null; onPickDeck: (deck: stri
   const anySuspended = ids.some((id) => record.sidecar.cards[id]?.suspended);
 
   return (
-    <div className="recall-page">
+    <div className="recall-page recall-page-wide">
       <div className="recall-toolbar" ref={searchRef}>
         <DeckPicker decks={order} value={props.deck} onChange={props.onPickDeck} />
         <div className="recall-search">

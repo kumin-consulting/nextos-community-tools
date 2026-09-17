@@ -35,7 +35,7 @@ import {
   NotesDialog,
   RenameDialog,
 } from './ui/dialogs';
-import { Button, IconButton } from './ui/bits';
+import { IconButton } from './ui/bits';
 import { AlertIcon, BrainIcon, CalendarIcon, KeyboardIcon, LayersIcon, SaveIcon, SlidersIcon, TargetIcon } from './ui/Icons';
 import { emptyDeck, serialiseDeck } from './lib/markdown';
 

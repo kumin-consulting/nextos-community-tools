@@ -190,6 +190,11 @@
   padding: 20px 20px 48px;
 }
 
+/* The card table wants every pixel the window has. */
+.recall-page-wide {
+  max-width: 1320px;
+}
+
 /* ------------------------------------------------------------ atoms */
 
 .recall-btn {
@@ -625,9 +630,11 @@
 .recall-blank {
   background: var(--accent-soft);
   color: var(--accent);
+  border: 1px solid var(--accent-line);
   border-radius: 4px;
   padding: 0 6px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .recall-grades {
@@ -809,6 +816,7 @@
 
 .recall-table td {
   padding: 7px 10px;
+  max-width: 260px;
   border-bottom: 1px solid var(--line);
   vertical-align: top;
 }
@@ -834,8 +842,8 @@
   text-decoration: line-through;
 }
 
-.recall-cell-front {
-  max-width: 340px;
+.recall-table td.recall-cell-front {
+  max-width: 420px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

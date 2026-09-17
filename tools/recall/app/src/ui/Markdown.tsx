@@ -25,10 +25,12 @@ function inlineNodes(text: string, blanks: boolean): ReactNode[] {
         return <em key={index}>{token.text}</em>;
       case 'code':
         return <code key={index}>{token.text}</code>;
+      // A gap reads as a gap: the hint the author wrote, or Anki's
+      // own [...] when there is none - an empty box is too easy to miss.
       case 'blank':
         return (
           <span key={index} className="recall-blank">
-            {token.text === '...' ? '    ' : token.text}
+            {token.text === '...' ? '[ ... ]' : token.text}
           </span>
         );
       case 'link':

@@ -41,7 +41,6 @@ import {
   deckFileName,
   deckNameFromFile,
   doneToday,
-  emptySidecar,
   parseSidecar,
   reconcileSidecar,
   renameCardState,

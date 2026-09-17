@@ -6,7 +6,7 @@
 // makes "somebody edited the deck in another editor" a tested case
 // rather than a hope.
 
-import type { Card, CardState, DeckSettings, ParsedDeck, ReviewContext, Sidecar } from './types';
+import type { Card, CardState, DeckSettings, ReviewContext, Sidecar } from './types';
 import { newCardState, resolveSettings } from './scheduler';
 import { dayIndexOf } from './time';
 
