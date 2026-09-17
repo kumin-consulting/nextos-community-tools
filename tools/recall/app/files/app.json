@@ -1,0 +1,19 @@
+{
+  "id": "recall",
+  "name": "Recall",
+  "version": "1.0.0",
+  "description": "Spaced-repetition flashcards whose decks are plain Markdown files you can edit anywhere.",
+  "icon": "🧠",
+  "kind": "native",
+  "source": "src/index.tsx",
+  "entry": "build/app.js",
+  "permissions": ["fs:read:home", "fs:write:home", "storage", "notifications", "clipboard", "intents"],
+  "intents": [
+    { "action": "open", "description": "Show a deck's cards in Recall. Parameters: deck (the deck's name)." },
+    { "action": "study", "description": "Start a review session. Parameters: deck (optional - omit to study everything that is due)." }
+  ],
+  "window": { "width": 1120, "height": 760, "minWidth": 720, "minHeight": 520 },
+  "author": "Kumin Consulting",
+  "homepage": "https://www.jonkum.in/community/recall",
+  "license": "MIT"
+}

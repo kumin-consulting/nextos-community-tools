@@ -76,6 +76,146 @@
       "screenshots": [],
       "readme": "# NextOS Runner\n\nThe bring-your-own-machine companion for NextOS. Start it once on a computer you own and that machine appears under Settings > Agents > Your machines; any scheduled agent, department or one-off run you point at it then executes there instead of in the cloud sandbox.\n\n## What you get\n\n- File tools that work on a real folder you choose, so an agent can read, write and edit the files you actually care about.\n- Your own hardware and no cloud CPU on the bill: a run on your machine never counts against cloud sandbox hours.\n- Shell commands only from an allowlist you set with `--allow`; nothing else runs.\n- Claude Code and Codex jobs on your subscription: with either client installed and signed in on the same machine, NextOS agents can run through it, and the model bill goes to the plan you already pay for.\n- Questions mid-run reach you in NextOS exactly like a cloud run.\n\n## How it works\n\nThe runner registers with your account using a gateway key, then long-polls for jobs assigned to it. Each job arrives with a short-lived token; the runner executes it locally and streams events back so the run feed in NextOS shows every step. Stop the process and the machine simply pauses; start it again and it resumes picking up work.\n\nFull guide: [Bring your own machine](https://www.jonkum.in/docs/your-machine).",
       "page": "https://www.jonkum.in/community/nextos-runner"
+    },
+    {
+      "slug": "recall",
+      "name": "Recall",
+      "kind": "app",
+      "summary": "Spaced-repetition flashcards whose decks are plain Markdown files you can edit anywhere, with an Anki-style scheduler and tools an agent can call.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/recall",
+      "homepage": "https://www.jonkum.in/community/recall",
+      "license": "MIT",
+      "publishedAt": "2026-09-17",
+      "updatedAt": "2026-09-17",
+      "categories": [
+        "productivity",
+        "agents"
+      ],
+      "tags": [
+        "spaced-repetition",
+        "flashcards",
+        "anki",
+        "markdown",
+        "study",
+        "memory",
+        "srs",
+        "cloze",
+        "learning"
+      ],
+      "seo": {
+        "title": "Recall - spaced-repetition flashcards in Markdown",
+        "description": "A NextOS flashcard app with an SM-2 scheduler, cloze deletions, typed answers and a card browser - and decks that are ordinary Markdown files in ~/Recall.",
+        "keywords": [
+          "spaced repetition app",
+          "markdown flashcards",
+          "anki alternative",
+          "sm-2 scheduler",
+          "cloze deletion",
+          "flashcards nextos",
+          "plain text flashcards",
+          "review scheduler",
+          "study app",
+          "flashcard agent tools"
+        ],
+        "ogImage": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/share.png"
+      },
+      "screenshots": [
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/decks-light.png",
+          "alt": "Recall's deck browser: due counts, a six-month review heatmap, streak and retention",
+          "caption": "Every deck with what is due, over a heatmap of the last six months."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/review-light.png",
+          "alt": "A card being reviewed, with Again, Hard, Good and Easy buttons showing their intervals",
+          "caption": "Each grade button shows the interval it will really give you."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/cards-light.png",
+          "alt": "The card browser: a searchable table of every card next to an editor with a live preview",
+          "caption": "Search, sort, select and edit - with a live preview of the Markdown."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/decks-dark.png",
+          "alt": "The same deck browser in the dark theme, heatmap and statistics included",
+          "caption": "Both themes are designed, not inverted."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/review-dark.png",
+          "alt": "A review in the dark theme, showing inline code in the question and the answer",
+          "caption": "Cards carry Markdown: bold, italic, code, lists and fenced blocks."
+        },
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/recall/images/cards-dark.png",
+          "alt": "The card browser in the dark theme with cards selected for a bulk action",
+          "caption": "Select cards and suspend, tag, move or delete them together."
+        }
+      ],
+      "faq": [
+        {
+          "q": "Where are my decks kept?",
+          "a": "In ~/Recall, one Markdown file per deck. A card is a Q: line and an A: line, so a deck stays readable and editable in any editor - Recall picks up outside changes when its window comes back into focus, and keeps the schedule of every card you did not touch."
+        },
+        {
+          "q": "What happens to my scheduling if I edit a deck somewhere else?",
+          "a": "Scheduling lives beside the deck in <deck>.recall.json, keyed by a hash of each card's question. Change an answer, add a card, reorder the file - every unchanged question keeps its interval, ease and history. Rewrite a question and that card starts again, which is usually what you wanted anyway."
+        },
+        {
+          "q": "Which algorithm does it use?",
+          "a": "SM-2 with the refinements everybody ships today: learning steps in minutes, relearning steps after a lapse, graduating and easy intervals, an ease floor of 1.3, an interval modifier, deterministic fuzz, per-deck daily limits and a leech threshold. Every grade button shows the interval it will actually give, because the projection runs the real scheduler."
+        },
+        {
+          "q": "Can it import my Anki deck?",
+          "a": "Yes - export from Anki as tab-separated text (front, back, tags) and paste it in, or point Recall at the file. Export works the same way in both directions: a deck comes out as Markdown or as TSV Anki will read."
+        },
+        {
+          "q": "Does it support cloze deletions?",
+          "a": "Yes. Write {{c1::the hidden part}} inside a line and each cloze number becomes its own card, Anki-style, with an optional hint as {{c1::answer::hint}}."
+        },
+        {
+          "q": "What can an agent do with it?",
+          "a": "List decks, read what is due, add cards, turn a page of notes into a whole deck, read your review statistics and export a deck. Only adding and creating change anything - deleting a deck or a card stays something a person does."
+        },
+        {
+          "q": "Does anything leave my computer?",
+          "a": "No. Recall asks for read and write access to your home folder, local settings storage, notifications for the optional daily reminder, the clipboard for export, and intents. It has no network permission at all."
+        }
+      ],
+      "install": {
+        "kind": "steps",
+        "steps": [
+          "In NextOS, open Settings > Apps > Sources.",
+          "Add the community catalogue: https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/catalog.json",
+          "Open the App Store, find Recall, and install it.",
+          "Approve the permissions it asks for - read and write in your home folder, storage, notifications, clipboard and intents.",
+          "Open Recall and add the sample deck, or start one of your own in ~/Recall."
+        ]
+      },
+      "requires": {
+        "nextos": "Native apps (App Store)",
+        "platforms": [
+          "web"
+        ]
+      },
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "notifications",
+        "clipboard",
+        "intents"
+      ],
+      "related": [],
+      "support": {
+        "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+      },
+      "readme": "# Recall\n\nSpaced-repetition flashcards for NextOS. It schedules like the app you\nalready use, and it keeps your decks as plain Markdown files you can open\nin any editor - no database, no export step, nothing you cannot read\nwithout this app installed.\n\nA deck is one file in `~/Recall`:\n\n```markdown\n# Capitals\n\nThe ones I keep forgetting.\n\nQ: What is the capital of Australia? #geography\nA: Canberra\n\nC: The {{c1::mitochondrion}} is the powerhouse of the {{c2::cell}}.\n```\n\nScheduling lives beside it in `<deck>.recall.json`, so the Markdown stays\nclean. Every card is keyed by a hash of its question, which is what makes\n\"edit the deck in another editor\" an ordinary thing to do: change an\nanswer, add a card, reorder the file, and every question you did not\ntouch keeps its interval, its ease factor and its history. Recall reloads\na deck when its window comes back into focus.\n\n## What it does\n\n**Review.** One card at a time. Space flips it, `1` to `4` grade it, and\neach grade button shows the interval it will really give you - the\nprojection runs the actual scheduler, fuzz included, so the button cannot\npromise one thing and do another. `Z` undoes the last answer completely,\nincluding its entry in your log. `E` edits the card you are looking at\nwithout leaving the session, `S` suspends it, `B` buries it until\ntomorrow, `M` marks it.\n\n**Type the answer.** A deck can ask you to type the answer instead of\ngrading yourself. Recall compares what you typed word by word, forgives\ncapitals, punctuation, accents and a leading \"the\", and highlights\nexactly what was wrong and what was missing.\n\n**The scheduler.** SM-2 with the refinements everybody ships today:\nlearning steps in minutes, relearning steps after a lapse, graduating and\neasy intervals, an ease factor floored at 1.3, an interval modifier,\ndeterministic fuzz so cards learned together do not come back together\nfor ever, a daily new-card and review limit per deck, and a leech\nthreshold that tags and suspends a card you have forgotten too many\ntimes. A \"day\" starts at 4 am local by default - a late night counts as\nthe day you began - and that hour is a per-deck setting.\n\n**The deck browser.** Every deck with its new, learning and due counts, a\nbar showing how much of it is mature, a heatmap of the last six months,\nyour streak, and your retention with a 30-day sparkline. Create, rename,\nduplicate, delete, import and export from here.\n\n**The card browser.** Every card in a table you can search, sort and\nselect. The search box takes plain words, `tag:chapter-3`, `is:due`,\n`is:suspended`, `is:leech`, `due<7`, `prop:lapses>2`, `-excluded` and\n`\"exact phrases\"`. Select cards to suspend, bury, mark, tag, untag, move\nto another deck, reset or delete them together; the panel beside the\ntable edits whichever card has the cursor, with a live preview.\n\n**Today.** Everything due across every deck, one button to study all of\nit, and a forecast of the next seven days so a backlog is visible before\nit arrives.\n\n**Notes to cards.** Paste a page of revision notes and Recall turns\nheadings with a body, bullets separated by a dash, `Term: meaning` lines,\n`Q:`/`A:` pairs and existing cloze text into cards, shows you what it\nfound, and only then writes a deck. If an assistant is available you can\nask it to draft cards from the same text and merge anything new.\n\n**A daily reminder.** Optional, off by default, at a time you choose, and\nonly when something is actually due. Recall has no background process:\nit checks while it is open and reconciles when you open it.\n\n## Keyboard\n\n| Key | What it does |\n| --- | --- |\n| `?` | The shortcut overlay |\n| `1` `2` `3` | Decks, Today, Cards |\n| `N` / `I` / `G` | New deck / import / make a deck from notes |\n| `R` | Reload the decks from disk |\n| `/` | Jump to the card browser's search |\n| `↑` `↓` | Move between decks |\n| `Enter` | Study the selected deck |\n| `E` / `S` / `Backspace` | Browse / settings / delete the selected deck |\n| `Space` | Show the answer; again to grade it Good |\n| `1` `2` `3` `4` | Again, Hard, Good, Easy |\n| `Z` | Undo the last answer |\n| `E` `S` `B` `M` | Edit, suspend, bury, mark the current card |\n| `Escape` | End the session, or close a dialog |\n| `⌘⏎` | Save the card you are editing |\n\n## The file format\n\n- `# Title` on the first line, then anything you like as a description,\n  until the first card.\n- `Q:` opens a card and runs until `A:`; the answer runs to the next\n  card. Both can span lines and carry Markdown - **bold**, *italic*,\n  `code`, fenced blocks, lists, block quotes. An image written as\n  `![alt](path.png)` is shown as a chip naming the file rather than\n  loaded.\n- `C:` opens a cloze card, and so does any line containing a\n  `{{c1::deletion}}`. Each distinct number makes its own card;\n  `{{c1::answer::hint}}` shows the hint in the gap.\n- `#tag` at the end of a question line, or a `tags:` line of its own,\n  tags the card. Recall writes tags back the way you wrote them.\n- A fenced code block is opaque: a ``` block containing `Q:` is answer\n  text, not a new card.\n- Round-tripping is byte-exact for a file Recall wrote, including\n  Windows line endings and whether the file ended with a newline.\n\n## For agents\n\nSix tools, prefixed `recall_`:\n\n| Tool | What it does |\n| --- | --- |\n| `recall_list_decks` | Every deck with its counts, tags and file path. Read-only. |\n| `recall_due` | What is waiting now, per deck, and when the next card comes back. Read-only. |\n| `recall_add_cards` | Append cards to a deck (`create: true` makes it first). Duplicates are skipped, not added twice. |\n| `recall_create_deck_from_text` | Turn notes into a whole deck; `useAssistant: true` also asks the assistant to draft cards and merges what is new. |\n| `recall_review_stats` | Reviews, retention, streak, the make-up of the collection, the seven-day forecast. Read-only. |\n| `recall_export` | A deck as Markdown or as Anki TSV. Read-only. |\n\nNothing an agent can call deletes anything: removing a deck or a card\nstays a thing a person does, because a card's review history cannot be\ngot back. Every tool that writes flushes to disk before it answers.\n\nTwo intents: `kumin://recall/open?deck=Spanish%20verbs` shows a deck's\ncards, `kumin://recall/study?deck=Spanish%20verbs` starts reviewing (omit\nthe deck to study everything that is due).\n\n## Limits, honestly\n\n- **The reminder needs the app open.** NextOS has no background timer an\n  app can book, so the daily reminder fires while Recall is open, and\n  catches up when you next open it.\n- **Images are named, not shown.** A card can reference a picture by a\n  relative path and Recall shows the path; it does not read the file into\n  the card.\n- **A card edited outside Recall is a new card.** Identity is the\n  question's text. Change a question in another editor and that card\n  starts from new - edit it inside Recall and its schedule follows it.\n- **One search language, no `or`.** Every term in the card browser's\n  search has to match. Negation is there; alternation is not.\n- **No shared decks or sync.** Decks are files. Put `~/Recall` wherever\n  your files already sync and Recall will read what turns up.\n\n## Building it\n\n```\nnpm install\nnpm run build:app -- recall     # files/build/app.js + app.css, app.zip, app.lock.json\nnpm run test:apps               # the pure modules' tests\nnpm run typecheck:apps\nnode tools/recall/preview/serve.mjs   # then open http://localhost:4321\n```\n\nThe preview harness runs the built bundle in an ordinary browser tab\nagainst a stubbed SDK, with a few seeded decks and some review history -\nit is how the screenshots in this folder were taken.",
+      "page": "https://www.jonkum.in/community/recall"
     }
   ]
 }
