@@ -1,0 +1,4 @@
+preview/vendor/
+preview/*.js
+!preview/stub-sdk.js
+!preview/serve.mjs

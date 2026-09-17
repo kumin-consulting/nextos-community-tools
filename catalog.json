@@ -47,6 +47,47 @@
         "cloze",
         "learning"
       ]
+    },
+    {
+      "id": "sketch",
+      "name": "Sketch",
+      "version": "1.0.0",
+      "kind": "native",
+      "description": "An infinite canvas for diagrams and thinking: shapes, arrows that stay attached, freehand, sticky notes and frames, exported as clean SVG or PNG.",
+      "icon": "✏️",
+      "homepage": "https://www.jonkum.in/community/sketch",
+      "author": "Kumin Consulting",
+      "license": "MIT",
+      "permissions": [
+        "fs:read:home",
+        "fs:write:home",
+        "storage",
+        "clipboard",
+        "intents"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/app/app.zip",
+        "sha256": "2d1f0840c3280385aa5da9508ff2c1a23d5792b42b8093e63b274fc6545b0311",
+        "bytes": 336906
+      },
+      "screenshots": [
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/board-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/properties-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/export-light.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/board-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/properties-dark.png",
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/sketch/images/shortcuts-light.png"
+      ],
+      "tags": [
+        "whiteboard",
+        "diagrams",
+        "canvas",
+        "drawing",
+        "flowchart",
+        "svg",
+        "excalidraw",
+        "mind-map"
+      ]
     }
   ]
 }
