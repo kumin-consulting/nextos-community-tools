@@ -579,8 +579,8 @@
         "familyUrl": {
           "type": "string",
           "maxLength": 1024,
-          "pattern": "^https://fonts\\.googleapis\\.com/css2(?:\\?|$)",
-          "description": "A Google Fonts stylesheet and nothing else."
+          "pattern": "^https://fonts\\.googleapis\\.com/css2(?:\\?[^\\s]*)?$",
+          "description": "A Google Fonts stylesheet and nothing else: that host exactly, that path exactly, no port, no credentials, no whitespace."
         },
         "mono": {
           "type": "string",
