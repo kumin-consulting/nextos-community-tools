@@ -77,7 +77,7 @@ Three things have to agree, because the listing repeats them: `skin.id` is the f
 
 ## Field reference
 
-See [`schema/tool.schema.json`](schema/tool.schema.json) - it is the single source of truth, and `npm test` checks every tool against it. Skins are checked against [`schema/skin.schema.json`](schema/skin.schema.json) as well. Both go through `scripts/lib/jsonSchema.mjs`, a small dependency-free validator, so the checks need nothing installed.
+See [`schema/tool.schema.json`](schema/tool.schema.json) - it is the single source of truth, and `npm test` checks every tool against it. Skins are checked against [`schema/skin.schema.json`](schema/skin.schema.json) as well. Both go through `scripts/lib/jsonSchema.mjs`, a small dependency-free validator, so the checks need nothing installed. That file is generated from the NextOS repository too - edit it there, not here.
 
 ## Rules
 

@@ -1,19 +1,22 @@
 // scripts/lib/jsonSchema.mjs - a small JSON Schema validator covering
-// exactly the keywords schema/tool.schema.json and schema/skin.schema.json
-// use: type (object, array, string, number, integer, boolean), const,
-// enum, required, properties, additionalProperties, pattern, minLength,
+// exactly the keywords the community repository's schemas use:
+// type (object, array, string, number, integer, boolean), const, enum,
+// required, properties, additionalProperties, pattern, minLength,
 // maxLength, minimum, maximum, minItems, maxItems, uniqueItems, items,
 // and the string formats date, date-time, uri and email.
 //
-// No dependencies, so a contributor needs only Node to check their tool
-// folder, and CI needs no install step. This is deliberately NOT a
-// complete draft-07 implementation: it validates what these two schemas
-// state and reports every problem it finds rather than the first, because
-// a person fixing a tool.json wants the whole list in one pass.
+// No dependencies, on purpose. This file is COPIED into
+// kumin-consulting/nextos-community-tools as scripts/lib/jsonSchema.mjs
+// by `node --experimental-transform-types scripts/build-skin-schema.mjs
+// --validator <path>`, alongside the generated schema/skin.schema.json,
+// so a contributor there needs only Node to check a tool folder and CI
+// needs no install step. Edit it here, never there.
 //
-// The schemas are written by hand (tool) and generated (skin, from
-// lib/os/skins/types.ts in the NextOS repository by its
-// scripts/build-skin-schema.mjs). Keep this file able to read both.
+// Deliberately NOT a complete draft-07 implementation: it validates what
+// those schemas state and reports every problem it finds rather than the
+// first, because a person fixing a tool.json wants the whole list in one
+// pass. scripts/test-community-skins.mjs is what holds it to
+// lib/os/skins/validate.ts over a corpus.
 
 const typeOf = (value) => {
   if (value === null) return 'null';
