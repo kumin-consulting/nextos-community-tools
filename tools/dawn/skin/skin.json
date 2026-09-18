@@ -1,0 +1,120 @@
+{
+  "format": "nextos-skin",
+  "version": 1,
+  "id": "dawn",
+  "name": "Dawn",
+  "description": "The twenty minutes before sunrise: deep indigo with peach and periwinkle drifting across it, generous spacing, and the strip up at the top.",
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "base": "dark",
+  "tokens": {
+    "ground": "#16112f",
+    "ground2": "#221a46",
+    "panel": "#251d4c",
+    "panelSolid": "#251d4c",
+    "line": "rgba(244, 236, 255, 0.11)",
+    "lineStrong": "rgba(244, 236, 255, 0.22)",
+    "ink": "#f4ecff",
+    "ink2": "rgba(244, 236, 255, 0.72)",
+    "ink3": "rgba(244, 236, 255, 0.48)",
+    "accent": "#ffb4a2",
+    "agent": "#b8c0ff",
+    "agentSoft": "rgba(184, 192, 255, 0.2)",
+    "warn": "#ffd6a5",
+    "ok": "#a0e7c5",
+    "radius": 20,
+    "blur": 26,
+    "transparency": 0.72
+  },
+  "cell": {
+    "chrome": "rgba(255, 251, 249, 0.93)",
+    "chromeInk": "#2c2450",
+    "chromeInk2": "rgba(44, 36, 80, 0.62)",
+    "edge": "rgba(255, 255, 255, 0.6)",
+    "body": "#fffcfa",
+    "darkChrome": "rgba(37, 29, 76, 0.93)",
+    "darkEdge": "rgba(244, 236, 255, 0.14)",
+    "darkBody": "#1c1540"
+  },
+  "app": {
+    "light": {
+      "bg": "#fffcfa",
+      "ink": "#2c2450",
+      "line": "rgba(44, 36, 80, 0.1)",
+      "hover": "rgba(44, 36, 80, 0.05)",
+      "active": "rgba(44, 36, 80, 0.09)",
+      "scrim": "rgba(28, 21, 64, 0.95)",
+      "danger": {
+        "bg": "#fdeeea",
+        "line": "#f4c8bd",
+        "ink": "#973521"
+      },
+      "warn": {
+        "bg": "#fdf3e6",
+        "line": "#f0d6ac",
+        "ink": "#8a5a13"
+      },
+      "info": {
+        "bg": "#eeeffc",
+        "line": "#ccd0f2",
+        "ink": "#39428f"
+      },
+      "ok": {
+        "bg": "#e9f7f0",
+        "line": "#bde2d1",
+        "ink": "#1f6047"
+      }
+    },
+    "dark": {
+      "bg": "#1c1540",
+      "ink": "#f4ecff",
+      "line": "rgba(244, 236, 255, 0.1)",
+      "hover": "rgba(244, 236, 255, 0.07)",
+      "active": "rgba(244, 236, 255, 0.13)",
+      "scrim": "rgba(20, 14, 46, 0.95)",
+      "danger": {
+        "bg": "rgba(255, 150, 130, 0.14)",
+        "line": "rgba(255, 150, 130, 0.3)",
+        "ink": "#ffb4a2"
+      },
+      "warn": {
+        "bg": "rgba(255, 214, 165, 0.14)",
+        "line": "rgba(255, 214, 165, 0.3)",
+        "ink": "#ffd6a5"
+      },
+      "info": {
+        "bg": "rgba(184, 192, 255, 0.14)",
+        "line": "rgba(184, 192, 255, 0.3)",
+        "ink": "#b8c0ff"
+      },
+      "ok": {
+        "bg": "rgba(160, 231, 197, 0.14)",
+        "line": "rgba(160, 231, 197, 0.3)",
+        "ink": "#a0e7c5"
+      }
+    }
+  },
+  "type": {
+    "family": "Avenir Next, Avenir, Segoe UI, sans-serif",
+    "mono": "ui-monospace, Menlo, Consolas, monospace",
+    "size": "large"
+  },
+  "sky": {
+    "style": "aurora",
+    "colors": [
+      "#ffb4a2",
+      "#cdb4db",
+      "#b8c0ff",
+      "#a0e7c5"
+    ],
+    "grain": 0.05,
+    "vignette": 0.3
+  },
+  "layout": {
+    "strip": "top",
+    "chrome": "glass",
+    "density": "spacious",
+    "glyphs": "round"
+  },
+  "wallpaper": "linear-gradient(160deg, #16112f 0%, #3f2a63 45%, #ffb4a2 100%)"
+}

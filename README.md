@@ -1,6 +1,6 @@
 # NextOS community tools
 
-Community-built tools for [NextOS](https://www.jonkum.in/nextos): apps, agents, skills, MCP servers, CLIs, templates and whole departments. One folder per tool, one `tool.json` each, and a generated `manifest.json` the NextOS website reads to publish a page for every tool at `https://www.jonkum.in/community/<slug>`.
+Community-built tools for [NextOS](https://www.jonkum.in/nextos): apps, agents, skills, MCP servers, CLIs, templates, skins and whole departments. One folder per tool, one `tool.json` each, and a generated `manifest.json` the NextOS website reads to publish a page for every tool at `https://www.jonkum.in/community/<slug>`.
 
 ## Add your tool
 
@@ -52,9 +52,34 @@ The build is the same module linker NextOS uses inside the OS (`scripts/lib/modu
 https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/catalog.json
 ```
 
+## Sharing a skin
+
+A **skin** is what NextOS looks like, written down: one JSON file saying what the ground, the sky, every window, the command strip, the app glyphs, the wallpaper and every app's palette should be, plus the typeface and a few layout knobs. It is data, never code - it cannot run script and it cannot load anything from the network except one Google Fonts stylesheet.
+
+You almost never have to assemble the folder yourself. Make a skin in the Skins app inside NextOS, press **Share**, and it opens the pull request here for you: the folder below, on a branch, crediting you, with the pictures rendered from the skin rather than screenshotted. The daily limit is five.
+
+To do it by hand, the folder is:
+
+```
+tools/<slug>/
+  tool.json           kind "skin", install { "kind": "skin" }, categories ["design"]
+  README.md           the long description on your page
+  skin/skin.json      the skin itself - validated against schema/skin.schema.json
+  images/preview.svg  1200x630, rendered from the skin
+  images/swatch.svg   96x64, the listing thumbnail
+```
+
+Three things have to agree, because the listing repeats them: `skin.id` is the folder name, `skin.name` is `tool.name`, and `skin.description` is `tool.summary` (60 to 160 characters, the sentence people read on the card). `npm test` checks all of that.
+
+[`schema/skin.schema.json`](schema/skin.schema.json) is GENERATED from the NextOS source of truth (`lib/os/skins/types.ts` in `kumin-consulting/jonkum.in`, by its `scripts/build-skin-schema.mjs`). Do not edit it here: what it accepts is exactly what the running OS accepts, and the two are kept in lockstep by a test on the NextOS side. NextOS installs a skin straight out of `manifest.json` - the build inlines the whole spec as `skin` and the absolute preview URL as `preview` - so there is no second download and nothing to host.
+
+`tools/dawn` is a worked example: the `dawn` skin that ships with NextOS, in exactly the shape the Share button produces.
+
+A shared skin's pull request deliberately does NOT regenerate `manifest.json` - two people sharing on the same day would otherwise conflict over a generated file. `npm run check-manifest` knows this: a tool folder that is not in the manifest at all is reported as new and passes, while a tool the manifest already lists is still held to its folder. Run `npm run build` and commit the manifest when you merge.
+
 ## Field reference
 
-See [`schema/tool.schema.json`](schema/tool.schema.json) - it is the single source of truth, and `npm test` checks every tool against it.
+See [`schema/tool.schema.json`](schema/tool.schema.json) - it is the single source of truth, and `npm test` checks every tool against it. Skins are checked against [`schema/skin.schema.json`](schema/skin.schema.json) as well. Both go through `scripts/lib/jsonSchema.mjs`, a small dependency-free validator, so the checks need nothing installed. That file is generated from the NextOS repository too - edit it there, not here.
 
 ## Rules
 

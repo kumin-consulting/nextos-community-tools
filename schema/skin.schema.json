@@ -1,0 +1,711 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/schema/skin.schema.json",
+  "title": "NextOS skin",
+  "description": "A skin: one JSON object saying what the whole of NextOS should look like. Generated from lib/os/skins/types.ts in kumin-consulting/jonkum.in by scripts/build-skin-schema.mjs - edit that, not this.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "id",
+    "name",
+    "description",
+    "createdAt",
+    "updatedAt",
+    "base",
+    "tokens",
+    "cell",
+    "app",
+    "type",
+    "sky",
+    "layout",
+    "wallpaper"
+  ],
+  "properties": {
+    "format": {
+      "const": "nextos-skin"
+    },
+    "version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 2,
+      "maxLength": 64,
+      "description": "The slug. In the community repository it also has to equal the tool folder name."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 60
+    },
+    "description": {
+      "type": "string",
+      "minLength": 60,
+      "maxLength": 160,
+      "description": "One plain sentence: this is the listing's summary, so it has to say something rather than repeat the name."
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://"
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "base": {
+      "type": "string",
+      "enum": [
+        "dark",
+        "light"
+      ],
+      "description": "Which app theme the skin paints. Drives <html data-theme> while the skin is active."
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ground",
+        "ground2",
+        "panel",
+        "panelSolid",
+        "line",
+        "lineStrong",
+        "ink",
+        "ink2",
+        "ink3",
+        "accent",
+        "agent",
+        "agentSoft",
+        "warn",
+        "ok",
+        "radius",
+        "blur",
+        "transparency"
+      ],
+      "properties": {
+        "ground": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "ground2": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "panel": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "panelSolid": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "line": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "lineStrong": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "ink": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "ink2": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "ink3": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "accent": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "agent": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "agentSoft": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "warn": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "ok": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "err": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$",
+          "description": "Optional. The error hue. Without it the shell derives one from the danger ink."
+        },
+        "radius": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 28,
+          "description": "Corner radius in px."
+        },
+        "blur": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 40,
+          "description": "Backdrop blur in px. 0 reads as flat."
+        },
+        "transparency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chrome",
+        "chromeInk",
+        "chromeInk2",
+        "edge",
+        "body",
+        "darkChrome",
+        "darkEdge",
+        "darkBody"
+      ],
+      "properties": {
+        "chrome": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "chromeInk": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "chromeInk2": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "edge": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "darkChrome": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "darkEdge": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        },
+        "darkBody": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+        }
+      }
+    },
+    "app": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "light",
+        "dark"
+      ],
+      "properties": {
+        "light": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bg",
+            "ink",
+            "line",
+            "hover",
+            "active",
+            "scrim",
+            "danger",
+            "warn",
+            "info",
+            "ok"
+          ],
+          "properties": {
+            "bg": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "ink": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "line": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "hover": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "active": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "scrim": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "danger": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            },
+            "warn": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            },
+            "info": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            },
+            "ok": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            }
+          }
+        },
+        "dark": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bg",
+            "ink",
+            "line",
+            "hover",
+            "active",
+            "scrim",
+            "danger",
+            "warn",
+            "info",
+            "ok"
+          ],
+          "properties": {
+            "bg": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "ink": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "line": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "hover": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "active": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "scrim": {
+              "type": "string",
+              "maxLength": 64,
+              "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+            },
+            "danger": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            },
+            "warn": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            },
+            "info": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            },
+            "ok": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "bg",
+                "line",
+                "ink"
+              ],
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "line": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                },
+                "ink": {
+                  "type": "string",
+                  "maxLength": 64,
+                  "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family",
+        "size"
+      ],
+      "properties": {
+        "family": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^(?=[-A-Za-z0-9 _,'\"]{1,200}$)[^'\"]*(?:(?:\"[^\"]*\"|'[^']*')[^'\"]*)*$"
+        },
+        "familyUrl": {
+          "type": "string",
+          "maxLength": 1024,
+          "pattern": "^https://fonts\\.googleapis\\.com/css2(?:\\?[^\\s\\u0000-\\u001f\\u007f]*)?$",
+          "description": "A Google Fonts stylesheet and nothing else: that host exactly, that path exactly, no port, no credentials, no whitespace or control characters."
+        },
+        "mono": {
+          "type": "string",
+          "maxLength": 200,
+          "pattern": "^(?=[-A-Za-z0-9 _,'\"]{1,200}$)[^'\"]*(?:(?:\"[^\"]*\"|'[^']*')[^'\"]*)*$"
+        },
+        "size": {
+          "type": "string",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ]
+        }
+      }
+    },
+    "sky": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "style",
+        "colors",
+        "grain",
+        "vignette"
+      ],
+      "properties": {
+        "style": {
+          "type": "string",
+          "enum": [
+            "blobs",
+            "aurora",
+            "grid",
+            "solid",
+            "image",
+            "none"
+          ]
+        },
+        "colors": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "string",
+            "maxLength": 64,
+            "pattern": "^(?:transparent|#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|(?:[rR][gG][bB][aA]?|[hH][sS][lL][aA]?)\\(\\s*[-0-9.]+(?:deg|%)?\\s*[, ]\\s*[-0-9.]+%?\\s*[, ]\\s*[-0-9.]+%?\\s*(?:[,/]\\s*[-0-9.]+%?\\s*)?\\))$"
+          }
+        },
+        "grain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "vignette": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "image": {
+          "type": "string",
+          "maxLength": 98304,
+          "pattern": "^data:image/(?:svg\\+xml|png|jpeg|webp);base64,[A-Za-z0-9+/=]+$",
+          "description": "Inline only. The OS also decodes an SVG and refuses one carrying script, an event handler or a foreignObject."
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strip",
+        "chrome",
+        "density",
+        "glyphs"
+      ],
+      "properties": {
+        "strip": {
+          "type": "string",
+          "enum": [
+            "bottom",
+            "top"
+          ]
+        },
+        "chrome": {
+          "type": "string",
+          "enum": [
+            "glass",
+            "solid",
+            "flat"
+          ]
+        },
+        "density": {
+          "type": "string",
+          "enum": [
+            "compact",
+            "comfortable",
+            "spacious"
+          ]
+        },
+        "glyphs": {
+          "type": "string",
+          "enum": [
+            "round",
+            "square",
+            "circle"
+          ]
+        }
+      }
+    },
+    "wallpaper": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?![\\s\\S]*(?:[uU][rR][lL]\\(|[iI][mM][aA][gG][eE]-[sS][eE][tT]|[eE][xX][pP][rR][eE][sS][sS][iI][oO][nN]|[jJ][aA][vV][aA][sS][cC][rR][iI][pP][tT]:|/\\*|\\*/))[^;{}<>@\\\\]{1,512}$",
+      "description": "A CSS gradient or a flat colour for the classic desktop. No url(), image-set(), at-rule, comment, escape or angle bracket."
+    },
+    "css": {
+      "type": "string",
+      "maxLength": 32768,
+      "description": "Optional extra CSS. The OS sanitises it on the way in and scopes it to the shell, dropping anything else."
+    }
+  }
+}

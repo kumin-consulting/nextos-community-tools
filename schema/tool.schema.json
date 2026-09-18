@@ -9,7 +9,7 @@
   "properties": {
     "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 2, "maxLength": 64, "description": "The page address segment and the folder name. Lowercase letters, digits, single hyphens." },
     "name": { "type": "string", "minLength": 2, "maxLength": 60, "description": "The tool's name as people say it." },
-    "kind": { "type": "string", "enum": ["app", "agent", "skill", "mcp-server", "cli", "template", "department", "integration"], "description": "What kind of thing this is inside NextOS." },
+    "kind": { "type": "string", "enum": ["app", "agent", "skill", "mcp-server", "cli", "template", "department", "integration", "skin"], "description": "What kind of thing this is inside NextOS. A \"skin\" also needs skin/skin.json and images/preview.svg in its folder." },
     "summary": { "type": "string", "minLength": 60, "maxLength": 160, "description": "One plain sentence: the meta description and the listing card." },
     "version": { "type": "string", "minLength": 1, "maxLength": 32 },
     "author": {
@@ -21,7 +21,7 @@
     "license": { "type": "string", "minLength": 1, "maxLength": 40, "description": "An SPDX identifier where one exists (MIT, Apache-2.0, ...)." },
     "publishedAt": { "type": "string", "format": "date", "description": "YYYY-MM-DD, the day the tool first appeared here." },
     "updatedAt": { "type": "string", "format": "date", "description": "YYYY-MM-DD, bumped whenever the tool or its page changes. Drives the sitemap." },
-    "categories": { "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true, "items": { "type": "string", "enum": ["productivity", "developer-tools", "agents", "automation", "data", "communication", "media", "business", "sites", "infrastructure", "security", "fun"] } },
+    "categories": { "type": "array", "minItems": 1, "maxItems": 3, "uniqueItems": true, "items": { "type": "string", "enum": ["productivity", "developer-tools", "agents", "automation", "data", "communication", "media", "business", "sites", "infrastructure", "security", "fun", "design"] } },
     "tags": { "type": "array", "maxItems": 12, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "maxLength": 32 } },
     "seo": {
       "type": "object", "additionalProperties": false,
@@ -43,7 +43,7 @@
     "install": {
       "type": "object", "additionalProperties": false, "required": ["kind"],
       "properties": {
-        "kind": { "type": "string", "enum": ["command", "url", "steps", "app-store"] },
+        "kind": { "type": "string", "enum": ["command", "url", "steps", "app-store", "skin"] },
         "command": { "type": "string", "maxLength": 300, "description": "For kind 'command': the one line to run." },
         "url": { "type": "string", "format": "uri", "pattern": "^https://", "description": "For kind 'url': where to get it." },
         "steps": { "type": "array", "minItems": 1, "maxItems": 10, "items": { "type": "string", "minLength": 4, "maxLength": 300 } },

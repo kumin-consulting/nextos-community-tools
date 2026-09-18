@@ -1,7 +1,7 @@
 {
   "format": "nextos-community-tools",
   "version": 1,
-  "generatedAt": "2026-09-17",
+  "generatedAt": "2026-09-18",
   "source": "https://github.com/kumin-consulting/nextos-community-tools",
   "tools": [
     {
@@ -148,6 +148,179 @@
       },
       "readme": "# Chess\n\nA complete chess program that happens to run in a browser tab. Its own\nrules, its own engine, its own opening book, its own analysis - nothing\nis fetched, nothing is a service, and none of it leaves your machine.\n\nPlay against the engine at eight strengths, play someone else across the\nsame board, or set the engine against itself and watch. Then go back\nthrough the game and find out where it actually went wrong.\n\n## The rules, in full\n\nLegal move generation with castling on both sides under every condition,\nen passant, promotion to any of the four pieces, check, checkmate,\nstalemate, insufficient material, threefold repetition, the fifty-move\nrule, and the fivefold-repetition and seventy-five-move rules that end a\ngame whether anyone claims them or not. The two kinds of draw are kept\napart: a third repetition offers a claim, a fifth one ends the game.\n\nThe proof is `perft`. The move generator reproduces every published node\ncount for the standard test positions exactly - the initial position to\ndepth 5 (4,865,609 nodes), Kiwipete to depth 4 (4,085,603), and five\nmore - in under three seconds. Those numbers are in the test suite, and\nthey are the reason you can trust the rest.\n\n## The engine\n\n`src/lib/engine.ts`: iterative deepening over a principal-variation\nalpha-beta search with quiescence at the leaves, MVV-LVA capture\nordering, killer moves and a history heuristic, a transposition table\nkeyed by a Zobrist hash, null-move pruning, late move reductions, check\nextensions, and mate scores that shrink with distance so a mate in two is\npreferred to a mate in four. The evaluation is tapered - every term is\nscored for the middlegame and for the endgame and blended by the material\nleft - and covers material, piece-square tables, mobility, the bishop\npair, rooks on open files, doubled, isolated and passed pawns, a pawn\nshield around the king, and a tempo bonus.\n\nIt reaches depth 11 from the starting position inside a two-second move\nbudget on a laptop, at roughly 700,000 nodes a second, and finds every\nmate-in-one, -two and -three in the test suite in milliseconds.\n\nThe search runs in a **Web Worker**, so the board never stutters while\nthe engine thinks; a \"thinking\" line shows the depth, the node count and\nthe rate. The worker is built at run time from this app's own compiled\nbundle, so the worker and the window run the identical code. Where a\nWorker cannot be created at all, the same iterative deepening runs on the\nmain thread one depth at a time, yielding between them - slower, never\nfrozen. The status bar says which of the two you are getting.\n\n**Strength 1-8.** The lower levels limit the depth, add scaled noise to\nthe root scores and sometimes simply play a random legal move, so a\nbeginner can win at level 1 and has a real game at level 3. From level 5\nup the noise is gone and it plays the best move it found.\n\n## Openings\n\nA 350-line ECO book names what you are playing as you play it (\"C65 Ruy\nLopez, Berlin Defence\") and gives the engine something human to play in\nthe first dozen moves instead of grinding out the same search every game.\nEvery line in the book is replayed from the initial position by the test\nsuite, so a typo in the data cannot ship.\n\n## Analysis\n\nTurn analysis on and an evaluation bar, the engine's expected line and a\nbest-move arrow follow you through any position, including deep inside a\nvariation.\n\n**The report** looks at every move of the game and says where it went\nwrong: blunders, mistakes and inaccuracies at half a pawn, a pawn and two\npawns of evaluation lost, an average centipawn loss and an accuracy\npercentage per side, the three costliest moves, and a short paragraph in\nplain words. A finished position is scored as the result rather than as a\nzero, so delivering checkmate is not reported as a ten-pawn blunder.\n\n**Puzzles** are the positions from that report where you had something\ntwo pawns better and played something else - your own missed tactics,\nwhich are worth a hundred generic ones. Find the move; the app tells you\nwhether you got it.\n\n## Files\n\nGames are PGN, and nothing else.\n\n- Saved to `~/Chess/games/<date>-<white>-<black>.pgn`, one game per file,\n  automatically when a game ends and whenever you press Save.\n- The games list reads each file's tags - players, date, result, opening\n  - without replaying the moves.\n- The game in progress is written to `~/Chess/current.pgn` after every\n  move and comes back when you open the app again.\n- Import by pasting PGN or choosing a `.pgn` file: tags, comments,\n  variations and numeric annotation glyphs all come in, and anything that\n  does not parse is reported rather than swallowed.\n- Copy the game as PGN or the position as FEN to the clipboard.\n\n## Keyboard\n\nEverything is reachable without a mouse. Press `?` in the app for the\nlist.\n\n| Key | What it does |\n| --- | --- |\n| `←` `→` | One move back or forward |\n| `Home` `End` | The start or the end of the game |\n| `⇧` + arrows | Move the cursor around the board |\n| `Enter` | Pick the piece under the cursor up, and put it down |\n| `Space` | Play through the game, or stop |\n| `F` | Flip the board |\n| `N` | New game |\n| `T` | Take back the last move |\n| `A` | Engine analysis on or off |\n| `E` | Ask the engine to move now |\n| `M` or `/` | Type a move in algebraic notation |\n| `S` | Sound on or off |\n| `C` | Coordinates on or off |\n| `P` | Next piece set |\n| `B` | Next board theme |\n| `R` | Analyse the whole game |\n| `1`-`8` | Set the engine strength |\n| `Ctrl`/`⌘` `S` | Save this game as a PGN file |\n| `Ctrl`/`⌘` `C` | Copy the game as PGN |\n| `?` | The shortcut list |\n| `Esc` | Close whatever is open |\n\nThe bare arrow keys always walk through the game, because that is what\npeople reach for a hundred times a session; hold `Shift` to move a cursor\naround the board instead and press `Enter` to pick a piece up and put it\ndown. Either way a whole game can be played from the keyboard - or typed\ninto the move box in algebraic notation, which accepts `Nf3`, `exd5`,\n`O-O`, `0-0`, `e8=Q` and `e2e4` alike.\n\n## Look and feel\n\nTwo piece sets (Classic, solid; Line, outlined) and three board themes\n(Walnut, Sea glass, Slate), all drawn as inline SVG - no image files.\nBoth the light and the dark theme are designed rather than inverted.\nCoordinates, last-move and check highlights, legal-move dots, and small\nsynthesised click sounds through WebAudio that can be turned off.\nOptional clocks with a Fischer increment, including the rule that a flag\nfall against a king that cannot mate is a draw.\n\n## Tools for agents\n\nEvery tool works whether or not the window is open, and acts on the same\ngame the window shows.\n\n| Tool | What it does |\n| --- | --- |\n| `chess_new_game` | Start a game: the opponent (engine, another person, or engine vs engine), the colour, the strength 1-8, an optional starting FEN and an optional clock. |\n| `chess_play_move` | Play one move in algebraic or coordinate notation, and get the engine's reply when it is the engine's turn. An illegal move changes nothing and comes back with the legal list. |\n| `chess_position` | Read-only: FEN, a plain-text board, the side to move, every legal move in algebraic notation, check and mate status, the opening's name, the moves so far and the game as PGN. |\n| `chess_analyze` | Read-only: the engine's view of a FEN, a PGN or the game in progress - evaluation, best move, expected line, and a sentence saying what that means. With `everyMove`, judges every move and reports the blunders. |\n| `chess_list_games` | Read-only: the saved games, newest first, with players, date, result and opening. |\n| `chess_import_pgn` | Load a game from PGN text or a `.pgn` file, replacing the game in progress; optionally saves a copy. |\n\nIntents: `open` (`{ file }`) opens a `.pgn` file, `analyze` (`{ fen }`)\nsets the board to a position and analyses it.\n\n## Permissions\n\n- `fs:read:home`, `fs:write:home` - the `~/Chess` folder: saved games,\n  the game in progress, and the app's own compiled bundle, which the\n  engine worker reads to run.\n- `storage` - settings and a copy of the game in progress.\n- `clipboard` - the Copy PGN and Copy FEN buttons.\n- `intents` - the `open` and `analyze` intents above.\n\nThere is no `network` permission, and nothing here makes a network\nrequest.\n\n## Limits, honestly\n\n- The engine is a strong club player, not a modern top engine: single\n  threaded, no endgame tablebases, no neural evaluation, a plain\n  hand-written evaluation. Level 8 thinks for about two seconds a move.\n- The transposition table is fixed at half a million entries (about 10\n  MB). It is not configurable.\n- The whole-game report searches each position for about a third of a\n  second, so a fifty-move game takes roughly half a minute. It runs in\n  its own worker and the board stays usable while it does.\n- Puzzles come only from games you have analysed in this app; there is no\n  puzzle database.\n- A move played while you are browsing an earlier position starts a\n  variation rather than changing the game, and the engine does not answer\n  it. That is deliberate - it is how you try things out - but it can\n  surprise you the first time.\n- PGN import reads one game at a time into the board; a file with many\n  games loads the first, and `chess_analyze` can be given the rest.\n\n## Building it\n\n```\nnpm run build:app -- chess      # compile src/ to files/build/app.js and zip it\nnpm run test:apps               # the rules, the engine, the book, the parsers\nnpm run typecheck:apps\nnode tools/chess/app/preview/serve.mjs   # look at it in a browser at :4173\n```\n\nThe tests are the interesting part: `perft.test.mjs` is the proof the\nrules are right, `engine.test.mjs` checks known mates and then asks the\nengine for a move in every position of two hundred random games and\nverifies each one is legal, and `openings.test.mjs` replays all 350 book\nlines.\n\nMIT licensed.",
       "page": "https://www.jonkum.in/community/chess"
+    },
+    {
+      "slug": "dawn",
+      "name": "Dawn",
+      "kind": "skin",
+      "summary": "The twenty minutes before sunrise: deep indigo with peach and periwinkle drifting across it, generous spacing, and the strip up at the top.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/dawn",
+      "license": "CC0-1.0",
+      "publishedAt": "2026-09-17",
+      "updatedAt": "2026-09-17",
+      "categories": [
+        "design"
+      ],
+      "tags": [
+        "skin",
+        "theme",
+        "dark",
+        "aurora",
+        "glass",
+        "spacious",
+        "dawn"
+      ],
+      "seo": {
+        "title": "Dawn - a NextOS skin",
+        "keywords": [
+          "dawn skin",
+          "nextos skin",
+          "nextos theme",
+          "dark theme"
+        ]
+      },
+      "screenshots": [
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/dawn/images/preview.svg",
+          "alt": "The Dawn skin: the sky, one window and the command strip in its own colours."
+        }
+      ],
+      "install": {
+        "kind": "skin"
+      },
+      "requires": {
+        "platforms": [
+          "web"
+        ]
+      },
+      "skin": {
+        "format": "nextos-skin",
+        "version": 1,
+        "id": "dawn",
+        "name": "Dawn",
+        "description": "The twenty minutes before sunrise: deep indigo with peach and periwinkle drifting across it, generous spacing, and the strip up at the top.",
+        "createdAt": "2026-01-01T00:00:00.000Z",
+        "updatedAt": "2026-01-01T00:00:00.000Z",
+        "base": "dark",
+        "tokens": {
+          "ground": "#16112f",
+          "ground2": "#221a46",
+          "panel": "#251d4c",
+          "panelSolid": "#251d4c",
+          "line": "rgba(244, 236, 255, 0.11)",
+          "lineStrong": "rgba(244, 236, 255, 0.22)",
+          "ink": "#f4ecff",
+          "ink2": "rgba(244, 236, 255, 0.72)",
+          "ink3": "rgba(244, 236, 255, 0.48)",
+          "accent": "#ffb4a2",
+          "agent": "#b8c0ff",
+          "agentSoft": "rgba(184, 192, 255, 0.2)",
+          "warn": "#ffd6a5",
+          "ok": "#a0e7c5",
+          "radius": 20,
+          "blur": 26,
+          "transparency": 0.72
+        },
+        "cell": {
+          "chrome": "rgba(255, 251, 249, 0.93)",
+          "chromeInk": "#2c2450",
+          "chromeInk2": "rgba(44, 36, 80, 0.62)",
+          "edge": "rgba(255, 255, 255, 0.6)",
+          "body": "#fffcfa",
+          "darkChrome": "rgba(37, 29, 76, 0.93)",
+          "darkEdge": "rgba(244, 236, 255, 0.14)",
+          "darkBody": "#1c1540"
+        },
+        "app": {
+          "light": {
+            "bg": "#fffcfa",
+            "ink": "#2c2450",
+            "line": "rgba(44, 36, 80, 0.1)",
+            "hover": "rgba(44, 36, 80, 0.05)",
+            "active": "rgba(44, 36, 80, 0.09)",
+            "scrim": "rgba(28, 21, 64, 0.95)",
+            "danger": {
+              "bg": "#fdeeea",
+              "line": "#f4c8bd",
+              "ink": "#973521"
+            },
+            "warn": {
+              "bg": "#fdf3e6",
+              "line": "#f0d6ac",
+              "ink": "#8a5a13"
+            },
+            "info": {
+              "bg": "#eeeffc",
+              "line": "#ccd0f2",
+              "ink": "#39428f"
+            },
+            "ok": {
+              "bg": "#e9f7f0",
+              "line": "#bde2d1",
+              "ink": "#1f6047"
+            }
+          },
+          "dark": {
+            "bg": "#1c1540",
+            "ink": "#f4ecff",
+            "line": "rgba(244, 236, 255, 0.1)",
+            "hover": "rgba(244, 236, 255, 0.07)",
+            "active": "rgba(244, 236, 255, 0.13)",
+            "scrim": "rgba(20, 14, 46, 0.95)",
+            "danger": {
+              "bg": "rgba(255, 150, 130, 0.14)",
+              "line": "rgba(255, 150, 130, 0.3)",
+              "ink": "#ffb4a2"
+            },
+            "warn": {
+              "bg": "rgba(255, 214, 165, 0.14)",
+              "line": "rgba(255, 214, 165, 0.3)",
+              "ink": "#ffd6a5"
+            },
+            "info": {
+              "bg": "rgba(184, 192, 255, 0.14)",
+              "line": "rgba(184, 192, 255, 0.3)",
+              "ink": "#b8c0ff"
+            },
+            "ok": {
+              "bg": "rgba(160, 231, 197, 0.14)",
+              "line": "rgba(160, 231, 197, 0.3)",
+              "ink": "#a0e7c5"
+            }
+          }
+        },
+        "type": {
+          "family": "Avenir Next, Avenir, Segoe UI, sans-serif",
+          "mono": "ui-monospace, Menlo, Consolas, monospace",
+          "size": "large"
+        },
+        "sky": {
+          "style": "aurora",
+          "colors": [
+            "#ffb4a2",
+            "#cdb4db",
+            "#b8c0ff",
+            "#a0e7c5"
+          ],
+          "grain": 0.05,
+          "vignette": 0.3
+        },
+        "layout": {
+          "strip": "top",
+          "chrome": "glass",
+          "density": "spacious",
+          "glyphs": "round"
+        },
+        "wallpaper": "linear-gradient(160deg, #16112f 0%, #3f2a63 45%, #ffb4a2 100%)"
+      },
+      "preview": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/dawn/images/preview.svg",
+      "readme": "# Dawn\n\nThe twenty minutes before sunrise: deep indigo with peach and periwinkle drifting across it, generous spacing, and the strip up at the top.\n\n## Apply it\n\nOpen [jonkum.in/os?skin=dawn](https://www.jonkum.in/os?skin=dawn) and NextOS installs the skin and puts it on. The Skins app keeps it with the rest of yours, so you can switch back whenever you like.\n\n## The palette\n\n| Surface | Colour |\n| --- | --- |\n| Ground | `#16112f` |\n| Panel | `#251d4c` |\n| Ink | `#f4ecff` |\n| Accent | `#ffb4a2` |\n| Window chrome | `rgba(255, 251, 249, 0.93)` |\n| App body | `#1c1540` |\n\n## Type and layout\n\nTypeface: `Avenir Next, Avenir, Segoe UI, sans-serif`, at the large text size.\n\n- Strip at the top\n- glass chrome\n- spacious spacing\n- round glyphs\n- aurora sky\n\n## What a skin is\n\nA skin is data, not code: one JSON file saying what the ground, the windows, the strip, the glyphs, the wallpaper and every app palette should look like. It cannot run script and it cannot load anything from the network except one Google Fonts stylesheet. See [the skins guide](https://www.jonkum.in/docs/skins).\n\nPublished by Kumin Consulting on 2026-09-17, released under CC0-1.0.",
+      "page": "https://www.jonkum.in/community/dawn"
     },
     {
       "slug": "nextos-runner",
