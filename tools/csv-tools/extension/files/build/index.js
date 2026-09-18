@@ -9,7 +9,7 @@ var __appExports = (function () {
     "react-dom": function () { return window.__kuminSdk && window.__kuminSdk.reactDom; },
     "react/jsx-runtime": function () { return window.__kuminSdk && window.__kuminSdk.reactJsxRuntime; },
     "zustand": function () { return window.__kuminSdk && window.__kuminSdk.zustand; },
-    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g("csv-tools"); }
+    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g.sdk("csv-tools"); }
   };
   function req(fromPath, spec) {
     if (Object.prototype.hasOwnProperty.call(bareMap, spec)) return bareMap[spec]();

@@ -57,8 +57,8 @@
       ],
       "download": {
         "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/csv-tools/extension/extension.zip",
-        "sha256": "f37dae6500cef5f01b2a48cff567e2041323e270ff25bcd4ce3fb1849e70c2d7",
-        "bytes": 7532
+        "sha256": "eaff73ff8f89d74d0c03e87fce12466cf5e27c026f953d6bde283d13563a0020",
+        "bytes": 7536
       },
       "tags": [
         "extension",
@@ -83,8 +83,8 @@
       ],
       "download": {
         "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/hello-script/script/script.zip",
-        "sha256": "baa36bd8df8ca1286abf4ff1699d4f934d75433abed0157109225bc1c12576cb",
-        "bytes": 2623
+        "sha256": "b68bef27744d89aebcd2b3d3106660743a7b7a61665b6154c20c5946a0295dd5",
+        "bytes": 2627
       },
       "tags": [
         "script",

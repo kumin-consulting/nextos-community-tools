@@ -44,15 +44,23 @@
 // (verified by re-running `build-app.mjs --check` on chess/recall/sketch/
 // nextos-runner after this edit - see the E3 handoff).
 //
-// `@kumin/script` resolves at RUN time to `self.__kuminScript(id)` (a
-// worker has no `window`) with a `window.__kuminScript(id)` fallback for
-// a non-worker host - this is a PLACEHOLDER naming, not a contract: E2
-// (lib/os/scripts, the actual worker sandbox) owns the real global and
-// may name it differently. This vendored copy of moduleGraph.ts is kept
-// in sync with lib/apps/native/moduleGraph.ts in kumin-consulting/
-// jonkum.in by hand (see build-tool.mjs's header); the E3 handoff says to
-// re-vendor from the site's own file once E2 lands its `@kumin/script`
-// specifier on develop, rather than trust this guess indefinitely.
+// `@kumin/script` resolves at RUN time to `self.__kuminScript.sdk(id)`
+// (a worker has no `window`) with a `window.__kuminScript.sdk(id)`
+// fallback for a non-worker host - RE-VENDORED at wave-1 integration
+// from the site's real lib/apps/native/moduleGraph.ts now that E2's
+// worker runtime (lib/os/scripts/worker.ts) has landed and its
+// self.__kuminScript global is a real, shipped contract: an object with
+// an `sdk(scriptId)` method, not a callable function (the previous
+// placeholder here called the global directly - self.__kuminScript(id) -
+// which would have thrown "is not a function" against the real runtime;
+// caught and fixed by the wave-1 checker, not exercised by either seed's
+// own test suite since neither hello-script nor csv-tools happens to
+// import `@kumin/script` from a helper module rather than just using the
+// `ctx` parameter every trigger/hook/command already receives). This
+// vendored copy is kept in sync with lib/apps/native/moduleGraph.ts in
+// kumin-consulting/jonkum.in by hand (see build-tool.mjs's header) -
+// diff the two files at the next integration to catch drift early,
+// rather than waiting for another silent runtime mismatch like this one.
 
 import ts from 'typescript';
 
@@ -305,14 +313,21 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
 
   // `@kumin/sdk` (app) reads window.__kuminSdk (a native app is trusted
   // OS-origin code with a DOM). `@kumin/script` (script/extension) reads
-  // self.__kuminScript first - the worker sandbox has no `window` - with
-  // a window fallback for a host that runs it off the main thread
-  // instead; see this file's header on why this global's name is a
-  // placeholder pending E2's real worker runtime.
+  // self.__kuminScript.sdk(id) - a worker has no `window`, and the
+  // global is an object with an `sdk(scriptId)` METHOD, not a callable
+  // function itself (self.__kuminScript(id) throws "is not a function").
+  //
+  // Re-vendored from the site's real lib/apps/native/moduleGraph.ts at
+  // wave-1 integration (was a placeholder guess - self.__kuminScript(id),
+  // calling the global directly - that never matched E2's actual worker
+  // runtime, which installs { sdk: (scriptId) => ScriptContext }; see
+  // lib/os/scripts/worker.ts's self.__kuminScript assignment on the
+  // site). A window fallback is kept for symmetry with the app branch
+  // even though no real script ever runs outside a worker.
   const sdkBareLine =
     kind === 'app'
       ? `    "@kumin/sdk": function () { return window.__kuminSdk && window.__kuminSdk.sdk(${appIdJson}); }`
-      : `    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g(${appIdJson}); }`;
+      : `    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g.sdk(${appIdJson}); }`;
   const exportTail =
     kind === 'app'
       ? ['export default __appExports.default;', 'export const tools = __appExports.tools;', 'export const intents = __appExports.intents;', 'export const onInstall = __appExports.onInstall;', 'export const onUninstall = __appExports.onUninstall;']
