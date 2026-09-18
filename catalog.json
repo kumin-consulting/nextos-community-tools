@@ -60,8 +60,8 @@
       "permissions": [],
       "download": {
         "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/skin/skin.zip",
-        "sha256": "d429a261d4a14c2ae86016a365291dc2b17c70665f8a82ddaf0d6aad5e598f1c",
-        "bytes": 13234
+        "sha256": "10cb72a46b7e601433b2c41513c0e47c87248471e9b196915ab71190e9e7ca7a",
+        "bytes": 15912
       },
       "screenshots": [
         "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/images/preview.svg"
