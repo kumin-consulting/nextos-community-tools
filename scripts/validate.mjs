@@ -1,47 +1,21 @@
 // scripts/validate.mjs - checks every tools/<slug>/tool.json against
-// schema/tool.schema.json (a small validator covering exactly what that
-// schema uses: type, required, enum, pattern, min/max, uniqueItems,
-// additionalProperties, format date/uri/email), the folder/slug match, the
-// README, and cross-tool rules (unique slugs, `related` slugs exist).
+// schema/tool.schema.json (scripts/lib/jsonSchema.mjs is the small
+// dependency-free validator both schemas go through), the folder/slug
+// match, the README, and cross-tool rules (unique slugs, `related` slugs
+// exist). A tool with kind "skin" is checked further: its skin/skin.json
+// against schema/skin.schema.json, its rendered pictures, and that the
+// three things a listing repeats about a skin (id, name, description)
+// agree with the tool.json around it.
 // No dependencies, so a contributor needs only Node.
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { validateAgainst } from './lib/jsonSchema.mjs';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const schema = JSON.parse(readFileSync(join(ROOT, 'schema/tool.schema.json'), 'utf8'));
+const skinSchema = JSON.parse(readFileSync(join(ROOT, 'schema/skin.schema.json'), 'utf8'));
 
-export function validateAgainst(node, value, path, errors) {
-  if (node.type === 'object') {
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return errors.push(`${path}: must be an object`);
-    for (const key of node.required ?? []) if (!(key in value)) errors.push(`${path}.${key}: required`);
-    for (const [key, v] of Object.entries(value)) {
-      const prop = node.properties?.[key];
-      if (!prop) { if (node.additionalProperties === false) errors.push(`${path}.${key}: not a known field`); continue; }
-      validateAgainst(prop, v, `${path}.${key}`, errors);
-    }
-    return;
-  }
-  if (node.type === 'array') {
-    if (!Array.isArray(value)) return errors.push(`${path}: must be an array`);
-    if (node.minItems !== undefined && value.length < node.minItems) errors.push(`${path}: at least ${node.minItems} item(s)`);
-    if (node.maxItems !== undefined && value.length > node.maxItems) errors.push(`${path}: at most ${node.maxItems} item(s)`);
-    if (node.uniqueItems && new Set(value.map((x) => JSON.stringify(x))).size !== value.length) errors.push(`${path}: items must be unique`);
-    value.forEach((item, i) => validateAgainst(node.items, item, `${path}[${i}]`, errors));
-    return;
-  }
-  if (node.type === 'string') {
-    if (typeof value !== 'string') return errors.push(`${path}: must be a string`);
-    if (node.minLength !== undefined && value.length < node.minLength) errors.push(`${path}: at least ${node.minLength} characters (got ${value.length})`);
-    if (node.maxLength !== undefined && value.length > node.maxLength) errors.push(`${path}: at most ${node.maxLength} characters (got ${value.length})`);
-    if (node.enum && !node.enum.includes(value)) errors.push(`${path}: must be one of ${node.enum.join(', ')}`);
-    if (node.pattern && !new RegExp(node.pattern).test(value)) errors.push(`${path}: does not match ${node.pattern}`);
-    if (node.format === 'date' && !/^\d{4}-\d{2}-\d{2}$/.test(value)) errors.push(`${path}: must be YYYY-MM-DD`);
-    if (node.format === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isNaN(Date.parse(value))) errors.push(`${path}: not a real date`);
-    if (node.format === 'uri') { try { new URL(value); } catch { errors.push(`${path}: must be a URL`); } }
-    if (node.format === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) errors.push(`${path}: must be an email address`);
-    return;
-  }
-}
+export { validateAgainst };
 
 export function validateTool(tool) {
   const errors = [];
@@ -59,6 +33,38 @@ export function validateTool(tool) {
     if (tool.seo?.ogImage && !/^https:\/\//.test(tool.seo.ogImage) && (tool.seo.ogImage.startsWith('/') || tool.seo.ogImage.includes('..'))) errors.push('tool.seo.ogImage: a local path is a file inside this tool folder');
   }
   return errors;
+}
+
+/** Everything a `kind: "skin"` folder has to hold beyond the usual, and
+ *  everything its skin.json has to agree with. The skin is the payload
+ *  the website inlines in manifest.json and NextOS installs from, so it
+ *  is validated here rather than trusted. */
+export function validateSkinFolder(folder, tool) {
+  const problems = [];
+  const skinFile = join(folder, 'skin/skin.json');
+  if (!existsSync(skinFile)) {
+    problems.push('skin/skin.json is missing (a tool with kind "skin" carries the skin itself)');
+    return problems;
+  }
+  let skin = null;
+  try {
+    skin = JSON.parse(readFileSync(skinFile, 'utf8'));
+  } catch (e) {
+    problems.push(`skin/skin.json is not valid JSON: ${e.message}`);
+    return problems;
+  }
+  validateAgainst(skinSchema, skin, 'skin', problems);
+  if (skin && typeof skin === 'object') {
+    if (skin.id !== tool.slug) problems.push(`skin.id "${skin.id}" must equal the tool slug "${tool.slug}"`);
+    if (skin.name !== tool.name) problems.push(`skin.name "${skin.name}" must equal tool.name "${tool.name}"`);
+    if (skin.description !== tool.summary) problems.push('skin.description must be the same sentence as tool.summary');
+    if (skin.sky?.style === 'image' && skin.sky?.image === undefined) problems.push('skin.sky.image: required when skin.sky.style is "image"');
+  }
+  for (const picture of ['images/preview.svg', 'images/swatch.svg']) {
+    if (!existsSync(join(folder, picture))) problems.push(`${picture} is missing (rendered from the skin, not a screenshot)`);
+  }
+  if (tool.install?.kind !== 'skin') problems.push('tool.install.kind: must be "skin" for a skin');
+  return problems;
 }
 
 export function loadTools() {
@@ -81,8 +87,19 @@ export function loadTools() {
       if (!existsSync(join(folder, 'README.md'))) problems.push('README.md is missing (the long description)');
       for (const s of tool.screenshots ?? []) if (typeof s?.src === 'string' && !/^https:\/\//.test(s.src) && !existsSync(join(folder, s.src))) problems.push(`screenshot ${s.src} is not in the tool folder`);
       if (tool.seo?.ogImage && !/^https:\/\//.test(tool.seo.ogImage) && !existsSync(join(folder, tool.seo.ogImage))) problems.push(`seo.ogImage ${tool.seo.ogImage} is not in the tool folder`);
+      if (tool.kind === 'skin') problems.push(...validateSkinFolder(folder, tool));
     }
-    out.push({ slug: entry, tool, problems, readme: existsSync(join(folder, 'README.md')) ? readFileSync(join(folder, 'README.md'), 'utf8') : '' });
+      // The skin is read back here so build-manifest.mjs can inline it
+    // without opening the folder again. A folder whose skin.json does not
+    // parse has already collected a problem above, so `null` here is not a
+    // silent failure - the build refuses to run at all while any tool has
+    // problems.
+    let skin = null;
+    const skinFile = join(folder, 'skin/skin.json');
+    if (tool?.kind === 'skin' && existsSync(skinFile)) {
+      try { skin = JSON.parse(readFileSync(skinFile, 'utf8')); } catch { skin = null; }
+    }
+    out.push({ slug: entry, tool, problems, skin, readme: existsSync(join(folder, 'README.md')) ? readFileSync(join(folder, 'README.md'), 'utf8') : '' });
   }
   const slugs = new Set(out.map((t) => t.slug));
   for (const t of out) for (const rel of t.tool?.related ?? []) if (!slugs.has(rel)) t.problems.push(`related slug "${rel}" is not a tool in this repository`);

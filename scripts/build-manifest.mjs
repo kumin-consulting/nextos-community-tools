@@ -2,6 +2,11 @@
 // folder (README.md inlined as `readme`, local image paths rewritten to
 // their raw GitHub URLs so the website can show them). `--check` fails
 // when the committed manifest.json differs from a fresh build.
+//
+// A skin carries more than a link: `skin` is the whole spec out of
+// skin/skin.json and `preview` is the absolute URL of its rendered
+// preview.svg. NextOS installs a skin straight from this file, so the
+// manifest is the distribution channel rather than an index of one.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadTools } from './validate.mjs';
@@ -19,8 +24,9 @@ const manifest = {
   version: 1,
   generatedAt: new Date().toISOString().slice(0, 10),
   source: 'https://github.com/kumin-consulting/nextos-community-tools',
-  tools: tools.map(({ slug, tool, readme }) => ({
+  tools: tools.map(({ slug, tool, readme, skin }) => ({
     ...tool,
+    ...(tool.kind === 'skin' && skin ? { skin, preview: absolute(slug, 'images/preview.svg') } : {}),
     seo: tool.seo ? { ...tool.seo, ...(tool.seo.ogImage ? { ogImage: absolute(slug, tool.seo.ogImage) } : {}) } : undefined,
     screenshots: (tool.screenshots ?? []).map((s) => ({ ...s, src: absolute(slug, s.src) })),
     readme: readme.trim(),

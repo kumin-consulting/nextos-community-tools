@@ -1,0 +1,50 @@
+{
+  "slug": "dawn",
+  "name": "Dawn",
+  "kind": "skin",
+  "summary": "The twenty minutes before sunrise: deep indigo with peach and periwinkle drifting across it, generous spacing, and the strip up at the top.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
+  "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/dawn",
+  "license": "CC0-1.0",
+  "publishedAt": "2026-09-17",
+  "updatedAt": "2026-09-17",
+  "categories": [
+    "design"
+  ],
+  "tags": [
+    "skin",
+    "theme",
+    "dark",
+    "aurora",
+    "glass",
+    "spacious",
+    "dawn"
+  ],
+  "seo": {
+    "title": "Dawn - a NextOS skin",
+    "keywords": [
+      "dawn skin",
+      "nextos skin",
+      "nextos theme",
+      "dark theme"
+    ]
+  },
+  "screenshots": [
+    {
+      "src": "images/preview.svg",
+      "alt": "The Dawn skin: the sky, one window and the command strip in its own colours."
+    }
+  ],
+  "install": {
+    "kind": "skin"
+  },
+  "requires": {
+    "platforms": [
+      "web"
+    ]
+  }
+}
