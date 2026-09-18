@@ -92,10 +92,10 @@ function css() {
  *  ctx.raf again from inside the callback would start a second loop per
  *  frame, doubling the number of live loops on every frame until the tab
  *  stops responding. */
-function startFlicker(ctx, root) {
+function startFlicker(ctx, overlay) {
     ctx.raf(() => {
         const wobble = 1 - 0.02 - Math.random() * 0.03;
-        root.style.setProperty('--crt-flicker', wobble.toFixed(3));
+        overlay.style.setProperty('--crt-flicker', wobble.toFixed(3));
     });
 }
 async function activate(ctx) {
@@ -114,7 +114,13 @@ async function activate(ctx) {
     overlay.className = 'crt-overlay';
     overlay.setAttribute('aria-hidden', 'true');
     ctx.root.appendChild(overlay);
-    startFlicker(ctx, ctx.root);
+    // The custom property is written on the OVERLAY, not on <html>. It is
+    // read by exactly one rule, on exactly one element, and a custom
+    // property set on the root element invalidates style for everything
+    // that inherits it - sixty times a second, on a phone too. Setting it
+    // where it is read keeps the per-frame work to the one node that
+    // actually changes.
+    startFlicker(ctx, overlay);
     // A late-mounted shell (the field strip, a window that opens after
     // activation) never needs anything from this program directly - the
     // overlay sits above everything by z-index alone - but `ctx.observe`
@@ -124,11 +130,9 @@ async function activate(ctx) {
     skin_1.skin.log('crt: scanline + flicker overlay attached');
     return () => {
         removeCss();
+        // The custom property lived on the overlay, so removing the node
+        // takes it with it - there is nothing else this program left behind.
         overlay.remove();
-        // The custom property this program set on <html> is its own doing
-        // too - a skin that leaves --crt-flicker behind has not fully
-        // deactivated, even if nothing else reads it.
-        ctx.root.style.removeProperty('--crt-flicker');
     };
 }
 
