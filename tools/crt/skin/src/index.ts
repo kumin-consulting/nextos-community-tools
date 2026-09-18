@@ -26,7 +26,11 @@ function css(): string {
     .crt-overlay {
       position: fixed;
       inset: 0;
-      z-index: 2147483000;
+      /* Above the shell and every window, and deliberately BELOW the
+         OS's own modal layers (the approval modal at z-200, the confirm
+         dialog at z-300): a skin's overlay never gets to tint - let
+         alone hide - the dialog that asks whether to trust it. */
+      z-index: 40;
       pointer-events: none;
       mix-blend-mode: screen;
       opacity: var(--crt-flicker, 1);
@@ -53,14 +57,19 @@ function css(): string {
  *  bare `setInterval`, exactly the rule the designer prompt states. The
  *  amplitude is deliberately tiny (±3%) so the strip stays perfectly
  *  usable; a CRT that actually strobed would be a worse skin, not a
- *  better one. */
+ *  better one.
+ *
+ *  `ctx.raf` is a LOOP, not a one-shot: the runtime re-schedules the
+ *  callback itself every frame and cancels it on deactivate. So this
+ *  registers exactly once and the callback never re-registers - calling
+ *  ctx.raf again from inside the callback would start a second loop per
+ *  frame, doubling the number of live loops on every frame until the tab
+ *  stops responding. */
 function startFlicker(ctx: SkinScriptContext, root: HTMLElement): void {
-  const tick = (): void => {
+  ctx.raf((): void => {
     const wobble = 1 - 0.02 - Math.random() * 0.03;
     root.style.setProperty('--crt-flicker', wobble.toFixed(3));
-    ctx.raf(tick);
-  };
-  ctx.raf(tick);
+  });
 }
 
 export default async function activate(ctx: SkinScriptContext): Promise<() => void> {
@@ -70,15 +79,16 @@ export default async function activate(ctx: SkinScriptContext): Promise<() => vo
   // (a hot-reload during development, a double activation), reuse it
   // rather than stacking a second one - `activate must be idempotent` is
   // the designer prompt's first rule.
-  let overlay = ctx.root.querySelector<HTMLDivElement>('.crt-overlay');
-  let ownsOverlay = false;
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'crt-overlay';
-    overlay.setAttribute('aria-hidden', 'true');
-    ctx.root.appendChild(overlay);
-    ownsOverlay = true;
-  }
+  const existing = ctx.root.querySelector<HTMLDivElement>('.crt-overlay');
+  // A stray overlay from an earlier instance is REMOVED rather than
+  // adopted: leaving it and declining to own it would leak one node per
+  // activation, and this program is the only thing that ever creates
+  // `.crt-overlay`, so whatever is there belongs to it.
+  existing?.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'crt-overlay';
+  overlay.setAttribute('aria-hidden', 'true');
+  ctx.root.appendChild(overlay);
 
   startFlicker(ctx, ctx.root);
 
@@ -92,6 +102,10 @@ export default async function activate(ctx: SkinScriptContext): Promise<() => vo
 
   return () => {
     removeCss();
-    if (ownsOverlay) overlay?.remove();
+    overlay.remove();
+    // The custom property this program set on <html> is its own doing
+    // too - a skin that leaves --crt-flicker behind has not fully
+    // deactivated, even if nothing else reads it.
+    ctx.root.style.removeProperty('--crt-flicker');
   };
 }
