@@ -1,0 +1,157 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/schema/extension.schema.json",
+  "title": "NextOS extension manifest",
+  "description": "A NextOS Extension's extension.json - a lazily activated bundle of contributions (commands, context actions, file handlers, preview renderers, panels, settings sections, rail cards, before-hooks, after-hooks) onto NextOS's built-in apps and shell. Hand-written from the Extend series' MASTER brief (lib/os/extensions owns the runtime). Every `contributes` list is optional (an extension may contribute nothing but a command, say) but at least one must be present.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "version", "description", "permissions", "tools", "contributes"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 2, "maxLength": 64, "description": "Must equal the tool slug." },
+    "name": { "type": "string", "minLength": 2, "maxLength": 60 },
+    "version": { "type": "string", "minLength": 1, "maxLength": 32 },
+    "description": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "main": { "type": "string", "pattern": "^src/(?!.*\\.\\.)[A-Za-z0-9_./-]+\\.(ts|tsx|js|jsx)$", "minLength": 5, "maxLength": 200, "description": "Optional: a path under src/, no leading slash, no \"..\" segment." },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(fs:(read|write):.+|intents|events|notifications|clipboard|agents|network|storage|windows|db:read|db:write)$",
+        "description": "NextOS's AppPermission union, verbatim (lib/apps/manifest.ts)."
+      }
+    },
+    "tools": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 80 } },
+    "contributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "keybinding": { "type": "string", "minLength": 1, "maxLength": 40, "pattern": "^(Mod|Ctrl|Alt|Shift|Meta)(\\+(Mod|Ctrl|Alt|Shift|Meta|[A-Za-z0-9]))*\\+[A-Za-z0-9]$" }
+            }
+          }
+        },
+        "contextActions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "appId", "label"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "appId": { "type": "string", "minLength": 1, "maxLength": 40 },
+              "label": { "type": "string", "minLength": 1, "maxLength": 60 },
+              "icon": { "type": "string", "minLength": 1, "maxLength": 40 },
+              "when": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": { "extensions": { "type": "array", "items": { "type": "string", "pattern": "^\\.[a-z0-9]+$", "maxLength": 12 } } }
+              }
+            }
+          }
+        },
+        "fileHandlers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "panel"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "label": { "type": "string", "minLength": 1, "maxLength": 60 },
+              "panel": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "extensions": { "type": "array", "items": { "type": "string", "pattern": "^\\.[a-z0-9]+$", "maxLength": 12 } },
+              "mimeTypes": { "type": "array", "items": { "type": "string", "maxLength": 80 } }
+            }
+          }
+        },
+        "previewRenderers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "handler"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "handler": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "extensions": { "type": "array", "items": { "type": "string", "pattern": "^\\.[a-z0-9]+$", "maxLength": 12 } }
+            }
+          }
+        },
+        "panels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "html", "where"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "html": { "type": "string", "pattern": "^panels/(?!.*\\.\\.)[A-Za-z0-9_./-]+\\.html$", "maxLength": 200 },
+              "where": { "type": "string", "enum": ["window", "rail"] }
+            }
+          }
+        },
+        "settingsSections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "html"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "label": { "type": "string", "minLength": 1, "maxLength": 60 },
+              "html": { "type": "string", "pattern": "^panels/(?!.*\\.\\.)[A-Za-z0-9_./-]+\\.html$", "maxLength": 200 },
+              "keywords": { "type": "array", "items": { "type": "string", "maxLength": 40 } }
+            }
+          }
+        },
+        "railCards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "section", "html"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "section": { "type": "string", "enum": ["attention", "main", "stream"] },
+              "html": { "type": "string", "pattern": "^panels/(?!.*\\.\\.)[A-Za-z0-9_./-]+\\.html$", "maxLength": 200 }
+            }
+          }
+        },
+        "hooks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["action", "handler"],
+            "properties": {
+              "action": { "type": "string", "enum": ["notes.note.save", "notes.note.create", "finder.folder.create", "mail.message.send", "calendar.event.create", "settings.update"] },
+              "handler": { "type": "string", "minLength": 1, "maxLength": 80 }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["pattern", "handler"],
+            "properties": {
+              "pattern": { "type": "string", "minLength": 1, "maxLength": 120 },
+              "handler": { "type": "string", "minLength": 1, "maxLength": 80 }
+            }
+          }
+        }
+      }
+    }
+  }
+}
