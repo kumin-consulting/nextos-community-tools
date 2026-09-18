@@ -1,0 +1,60 @@
+{
+  "slug": "csv-tools",
+  "name": "CSV tools",
+  "kind": "extension",
+  "summary": "A NextOS Extension that opens any .csv file as a sortable table, straight from a Finder context action.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
+  "repository": "https://github.com/kumin-consulting/nextos-community-tools",
+  "homepage": "https://www.jonkum.in/community/csv-tools",
+  "license": "MIT",
+  "publishedAt": "2026-09-18",
+  "updatedAt": "2026-09-18",
+  "categories": [
+    "productivity",
+    "data"
+  ],
+  "tags": [
+    "extension",
+    "csv",
+    "finder",
+    "sample"
+  ],
+  "seo": {
+    "title": "CSV tools - a NextOS Extension example",
+    "description": "Open any .csv as a sortable table from Finder or the Preview pane - a small extension: a context action, a file handler, a preview renderer, one panel.",
+    "keywords": [
+      "nextos extension",
+      "csv viewer",
+      "sample extension",
+      "extension sdk"
+    ]
+  },
+  "faq": [
+    {
+      "q": "What does it contribute?",
+      "a": "Four things: a Finder context action (\"Open as table\") on .csv files, a file handler that opens the same table panel, a preview renderer so Finder's Preview pane shows the parsed table instead of raw text, and the panel itself (panels/table.html, a sandboxed webview)."
+    },
+    {
+      "q": "What permission does it ask for?",
+      "a": "fs:read:home, so its worker code can read the .csv file the panel is opened for. It writes nothing and reaches no network."
+    }
+  ],
+  "install": {
+    "kind": "extension"
+  },
+  "requires": {
+    "platforms": [
+      "web"
+    ]
+  },
+  "permissions": [
+    "fs:read:home"
+  ],
+  "support": {
+    "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+  }
+}

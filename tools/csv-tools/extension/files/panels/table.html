@@ -1,0 +1,79 @@
+<!--
+  tools/csv-tools/extension/files/panels/table.html
+
+  The "table" panel from extension.json's contributes.panels - a
+  sandboxed webview (srcDoc, window.kumin bridge, this extension's own
+  permissions) opened by the fileHandler and the context action, both
+  with { path } as window.kumin.panel.params. Reads the file over the
+  bridge's fs.readText (gated by the fs:read:home permission this
+  extension asks for), parses it client-side and renders a sortable
+  table - clicking a header re-sorts by that column, ascending then
+  descending.
+
+  No framework: an extension panel is small on purpose, and NextOS's
+  bridge script (window.kumin.*) is already the whole SDK a panel needs.
+-->
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body { margin: 0; font: 13px -apple-system, sans-serif; color: #1a1a1a; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { padding: 6px 10px; border-bottom: 1px solid #e5e5e5; text-align: left; white-space: nowrap; }
+      th { cursor: pointer; user-select: none; position: sticky; top: 0; background: #fafafa; }
+      th:hover { background: #f0f0f0; }
+      #status { padding: 12px; color: #666; }
+    </style>
+  </head>
+  <body>
+    <div id="status">Loading…</div>
+    <table id="grid" hidden><thead></thead><tbody></tbody></table>
+    <script>
+      function parseCsv(text) {
+        return text
+          .split(/\r\n|\r|\n/)
+          .filter((line) => line.length > 0)
+          .map((line) => line.split(',').map((cell) => cell.trim()));
+      }
+      function render(rows) {
+        var grid = document.getElementById('grid');
+        var thead = grid.querySelector('thead');
+        var tbody = grid.querySelector('tbody');
+        var header = rows[0] || [];
+        var body = rows.slice(1);
+        var sortCol = -1, sortDir = 1;
+        function draw() {
+          thead.innerHTML = '<tr>' + header.map(function (h, i) { return '<th data-i="' + i + '">' + h.replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }) + (sortCol === i ? (sortDir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr>';
+          var shown = body.slice();
+          if (sortCol >= 0) shown.sort(function (a, b) { return sortDir * String(a[sortCol] || '').localeCompare(String(b[sortCol] || '')); });
+          tbody.innerHTML = shown.map(function (row) { return '<tr>' + row.map(function (cell) { return '<td>' + String(cell).replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }) + '</td>'; }).join('') + '</tr>'; }).join('');
+        }
+        thead.addEventListener('click', function (e) {
+          var th = e.target.closest('th');
+          if (!th) return;
+          var i = Number(th.dataset.i);
+          sortDir = sortCol === i ? -sortDir : 1;
+          sortCol = i;
+          draw();
+        });
+        draw();
+        grid.hidden = false;
+      }
+      window.kumin.ready(function () {
+        var path = (window.kumin.panel && window.kumin.panel.params && window.kumin.panel.params.path) || '';
+        var status = document.getElementById('status');
+        if (!path) { status.textContent = 'No file to show.'; return; }
+        window.kumin.fs
+          .readText(path)
+          .then(function (text) {
+            status.hidden = true;
+            render(parseCsv(text));
+          })
+          .catch(function (err) {
+            status.textContent = 'Could not read ' + path + ': ' + (err && err.message ? err.message : err);
+          });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "id": "hello-script",
+  "name": "Hello script",
+  "version": "1.0.0",
+  "description": "Writes a friendly, timestamped note to ~/Notes/hello.md - the smallest possible NextOS Script.",
+  "main": "src/index.ts",
+  "permissions": ["fs:write:~/Notes"],
+  "tools": [],
+  "triggers": [
+    { "kind": "command", "title": "Say hello", "keybinding": "Mod+Shift+H" }
+  ],
+  "author": { "name": "Kumin Consulting", "url": "https://www.jonkum.in" }
+}

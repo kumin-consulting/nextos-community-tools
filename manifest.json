@@ -150,6 +150,126 @@
       "page": "https://www.jonkum.in/community/chess"
     },
     {
+      "slug": "csv-tools",
+      "name": "CSV tools",
+      "kind": "extension",
+      "summary": "A NextOS Extension that opens any .csv file as a sortable table, straight from a Finder context action.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools",
+      "homepage": "https://www.jonkum.in/community/csv-tools",
+      "license": "MIT",
+      "publishedAt": "2026-09-18",
+      "updatedAt": "2026-09-18",
+      "categories": [
+        "productivity",
+        "data"
+      ],
+      "tags": [
+        "extension",
+        "csv",
+        "finder",
+        "sample"
+      ],
+      "seo": {
+        "title": "CSV tools - a NextOS Extension example",
+        "description": "Open any .csv as a sortable table from Finder or the Preview pane - a small extension: a context action, a file handler, a preview renderer, one panel.",
+        "keywords": [
+          "nextos extension",
+          "csv viewer",
+          "sample extension",
+          "extension sdk"
+        ]
+      },
+      "faq": [
+        {
+          "q": "What does it contribute?",
+          "a": "Four things: a Finder context action (\"Open as table\") on .csv files, a file handler that opens the same table panel, a preview renderer so Finder's Preview pane shows the parsed table instead of raw text, and the panel itself (panels/table.html, a sandboxed webview)."
+        },
+        {
+          "q": "What permission does it ask for?",
+          "a": "fs:read:home, so its worker code can read the .csv file the panel is opened for. It writes nothing and reaches no network."
+        }
+      ],
+      "install": {
+        "kind": "extension"
+      },
+      "requires": {
+        "platforms": [
+          "web"
+        ]
+      },
+      "permissions": [
+        "fs:read:home"
+      ],
+      "support": {
+        "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+      },
+      "extension": {
+        "id": "csv-tools",
+        "name": "CSV tools",
+        "version": "1.0.0",
+        "description": "Open any .csv as a sortable table - a Finder context action, a file handler, a preview renderer and one panel.",
+        "main": "src/index.ts",
+        "permissions": [
+          "fs:read:home"
+        ],
+        "tools": [],
+        "contributes": {
+          "contextActions": [
+            {
+              "id": "csv.open",
+              "appId": "finder",
+              "label": "Open as table",
+              "when": {
+                "extensions": [
+                  ".csv"
+                ]
+              }
+            }
+          ],
+          "fileHandlers": [
+            {
+              "id": "csv",
+              "extensions": [
+                ".csv"
+              ],
+              "label": "CSV table",
+              "panel": "table"
+            }
+          ],
+          "previewRenderers": [
+            {
+              "id": "csv.preview",
+              "extensions": [
+                ".csv"
+              ],
+              "handler": "previewCsv"
+            }
+          ],
+          "panels": [
+            {
+              "id": "table",
+              "title": "CSV table",
+              "html": "panels/table.html",
+              "where": "window"
+            }
+          ]
+        }
+      },
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/csv-tools/extension/extension.zip",
+        "sha256": "f37dae6500cef5f01b2a48cff567e2041323e270ff25bcd4ce3fb1849e70c2d7",
+        "bytes": 7532
+      },
+      "screenshots": [],
+      "readme": "# CSV tools\n\nA small [NextOS Extension](https://www.jonkum.in/nextos): open any `.csv` file as a sortable table, from Finder's context menu or straight in the Preview pane. Built as a reference for the four kinds of UI an extension can contribute - a context action, a file handler, a preview renderer, and the panel itself.\n\n## Install it\n\nIn NextOS, open the App Store, add this repository as a source (see the root [README](https://github.com/kumin-consulting/nextos-community-tools#add-your-tool)), and install \"CSV tools\" - or open [jonkum.in/os?install=extension:csv-tools](https://www.jonkum.in/os?install=extension:csv-tools) and NextOS installs and approves it for you.\n\n## What it contributes\n\n- **A Finder context action**, \"Open as table\", on any `.csv` file.\n- **A file handler**, so a `.csv` opens the table panel by default.\n- **A preview renderer**, so Finder's Preview pane parses and shows the table instead of raw text.\n- **One panel**, `panels/table.html` - a sandboxed webview rendering the parsed rows.\n\n## What it asks for\n\nOne permission, `fs:read:home`, so its worker code (`extension/files/src/index.ts`) can read the file a panel or preview was opened for. It writes nothing and reaches no network.",
+      "page": "https://www.jonkum.in/community/csv-tools"
+    },
+    {
       "slug": "dawn",
       "name": "Dawn",
       "kind": "skin",
@@ -321,6 +441,96 @@
       "preview": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/dawn/images/preview.svg",
       "readme": "# Dawn\n\nThe twenty minutes before sunrise: deep indigo with peach and periwinkle drifting across it, generous spacing, and the strip up at the top.\n\n## Apply it\n\nOpen [jonkum.in/os?skin=dawn](https://www.jonkum.in/os?skin=dawn) and NextOS installs the skin and puts it on. The Skins app keeps it with the rest of yours, so you can switch back whenever you like.\n\n## The palette\n\n| Surface | Colour |\n| --- | --- |\n| Ground | `#16112f` |\n| Panel | `#251d4c` |\n| Ink | `#f4ecff` |\n| Accent | `#ffb4a2` |\n| Window chrome | `rgba(255, 251, 249, 0.93)` |\n| App body | `#1c1540` |\n\n## Type and layout\n\nTypeface: `Avenir Next, Avenir, Segoe UI, sans-serif`, at the large text size.\n\n- Strip at the top\n- glass chrome\n- spacious spacing\n- round glyphs\n- aurora sky\n\n## What a skin is\n\nA skin is data, not code: one JSON file saying what the ground, the windows, the strip, the glyphs, the wallpaper and every app palette should look like. It cannot run script and it cannot load anything from the network except one Google Fonts stylesheet. See [the skins guide](https://www.jonkum.in/docs/skins).\n\nPublished by Kumin Consulting on 2026-09-17, released under CC0-1.0.",
       "page": "https://www.jonkum.in/community/dawn"
+    },
+    {
+      "slug": "hello-script",
+      "name": "Hello script",
+      "kind": "script",
+      "summary": "The smallest possible NextOS Script: one command that writes a friendly, timestamped note to your Notes folder.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools",
+      "homepage": "https://www.jonkum.in/community/hello-script",
+      "license": "MIT",
+      "publishedAt": "2026-09-18",
+      "updatedAt": "2026-09-18",
+      "categories": [
+        "automation",
+        "productivity"
+      ],
+      "tags": [
+        "script",
+        "sample",
+        "notes",
+        "command"
+      ],
+      "seo": {
+        "title": "Hello script - a NextOS Script example",
+        "description": "A one-file NextOS Script: bind a command to Mod+Shift+H and it writes a timestamped hello note to ~/Notes. The reference example for writing your own.",
+        "keywords": [
+          "nextos script",
+          "nextos automation",
+          "sample script",
+          "script sdk"
+        ]
+      },
+      "faq": [
+        {
+          "q": "What does it actually do?",
+          "a": "Nothing more than its name says: running its command (bound to Mod+Shift+H, or from the Scripts app) writes ~/Notes/hello.md with the current time and a note about what triggered it, then shows a notification. It exists to be read, not to be useful on its own."
+        },
+        {
+          "q": "What permission does it ask for?",
+          "a": "One: fs:write:~/Notes, so it can write the note. It asks for nothing else - no network, no other tools, no other folders."
+        }
+      ],
+      "install": {
+        "kind": "script"
+      },
+      "requires": {
+        "platforms": [
+          "web"
+        ]
+      },
+      "permissions": [
+        "fs:write:~/Notes"
+      ],
+      "support": {
+        "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+      },
+      "script": {
+        "id": "hello-script",
+        "name": "Hello script",
+        "version": "1.0.0",
+        "description": "Writes a friendly, timestamped note to ~/Notes/hello.md - the smallest possible NextOS Script.",
+        "main": "src/index.ts",
+        "permissions": [
+          "fs:write:~/Notes"
+        ],
+        "tools": [],
+        "triggers": [
+          {
+            "kind": "command",
+            "title": "Say hello",
+            "keybinding": "Mod+Shift+H"
+          }
+        ],
+        "author": {
+          "name": "Kumin Consulting",
+          "url": "https://www.jonkum.in"
+        }
+      },
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/hello-script/script/script.zip",
+        "sha256": "baa36bd8df8ca1286abf4ff1699d4f934d75433abed0157109225bc1c12576cb",
+        "bytes": 2623
+      },
+      "screenshots": [],
+      "readme": "# Hello script\n\nThe smallest possible [NextOS Script](https://www.jonkum.in/nextos): one command, one permission, one file. Run it and it writes a timestamped note to `~/Notes/hello.md` and shows a notification. It exists as a reference for writing your own - copy `script/files/src/index.ts` and go from there.\n\n## Install it\n\nIn NextOS, open the App Store, add this repository as a source (see the root [README](https://github.com/kumin-consulting/nextos-community-tools#add-your-tool)), and install \"Hello script\" - or open [jonkum.in/os?install=script:hello-script](https://www.jonkum.in/os?install=script:hello-script) and NextOS installs and approves it for you.\n\n## What it asks for\n\nOne permission, `fs:write:~/Notes`, so it can write the note - nothing else. It calls no tools and reaches no network.\n\n## The trigger\n\nA `command` trigger, bound to `Mod+Shift+H` and also reachable from the command bar and the Scripts app's Run button. See `script/files/script.json` for the manifest and `script/files/src/index.ts` for the whole script - about a dozen lines.",
+      "page": "https://www.jonkum.in/community/hello-script"
     },
     {
       "slug": "nextos-runner",

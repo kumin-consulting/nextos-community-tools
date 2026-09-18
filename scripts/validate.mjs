@@ -14,6 +14,8 @@ import { validateAgainst } from './lib/jsonSchema.mjs';
 const ROOT = new URL('..', import.meta.url).pathname;
 const schema = JSON.parse(readFileSync(join(ROOT, 'schema/tool.schema.json'), 'utf8'));
 const skinSchema = JSON.parse(readFileSync(join(ROOT, 'schema/skin.schema.json'), 'utf8'));
+const scriptSchema = JSON.parse(readFileSync(join(ROOT, 'schema/script.schema.json'), 'utf8'));
+const extensionSchema = JSON.parse(readFileSync(join(ROOT, 'schema/extension.schema.json'), 'utf8'));
 
 export { validateAgainst };
 
@@ -67,6 +69,90 @@ export function validateSkinFolder(folder, tool) {
   return problems;
 }
 
+/** Everything a `kind: "script"` folder has to hold: a valid
+ *  script/files/script.json against schema/script.schema.json, its id
+ *  matching the tool slug, and a built, hash-locked download - a script
+ *  IS code, so (unlike a skin) there is no manifest-only path. */
+export function validateScriptFolder(folder, tool) {
+  const problems = [];
+  const manifestFile = join(folder, 'script/files/script.json');
+  if (!existsSync(manifestFile)) {
+    problems.push('script/files/script.json is missing (a tool with kind "script" carries the script itself)');
+    return problems;
+  }
+  let manifest = null;
+  try {
+    manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+  } catch (e) {
+    problems.push(`script/files/script.json is not valid JSON: ${e.message}`);
+    return problems;
+  }
+  validateAgainst(scriptSchema, manifest, 'script', problems);
+  if (manifest && typeof manifest === 'object') {
+    if (manifest.id !== tool.slug) problems.push(`script.id "${manifest.id}" must equal the tool slug "${tool.slug}"`);
+    if (manifest.name !== tool.name) problems.push('script.name must equal tool.name');
+    // The schema's pattern already refuses a ".." segment; this is the
+    // second, code-level check the brief asks for by name (a path
+    // traversal in `main` is exactly the corpus case a generated CI
+    // check must never wave through on a regex typo elsewhere).
+    if (typeof manifest.main === 'string' && (manifest.main.includes('..') || manifest.main.startsWith('/'))) problems.push('script.main: must be a path under src/ with no ".." segment');
+  }
+  if (!existsSync(join(folder, 'script/files/build')) || readdirSync(join(folder, 'script/files/build')).filter((f) => f.endsWith('.js')).length === 0) {
+    problems.push('script/files/build/*.js is missing - run `npm run build:tool -- <slug>`');
+  }
+  if (!existsSync(join(folder, 'script/script.lock.json'))) problems.push('script/script.lock.json is missing - run `npm run build:tool -- <slug>`');
+  if (tool.install?.kind !== 'script') problems.push('tool.install.kind: must be "script" for a script');
+  return problems;
+}
+
+/** Everything a `kind: "extension"` folder has to hold: a valid
+ *  extension/files/extension.json against schema/extension.schema.json,
+ *  its id matching the tool slug, at least one `contributes` list (an
+ *  extension that contributes nothing is not an extension), every
+ *  panels/settingsSections/railCards `html` path present on disk, and -
+ *  only when it declares `main` - a built, hash-locked download exactly
+ *  like a script's. */
+export function validateExtensionFolder(folder, tool) {
+  const problems = [];
+  const manifestFile = join(folder, 'extension/files/extension.json');
+  if (!existsSync(manifestFile)) {
+    problems.push('extension/files/extension.json is missing (a tool with kind "extension" carries the extension itself)');
+    return problems;
+  }
+  let manifest = null;
+  try {
+    manifest = JSON.parse(readFileSync(manifestFile, 'utf8'));
+  } catch (e) {
+    problems.push(`extension/files/extension.json is not valid JSON: ${e.message}`);
+    return problems;
+  }
+  validateAgainst(extensionSchema, manifest, 'extension', problems);
+  if (manifest && typeof manifest === 'object') {
+    if (manifest.id !== tool.slug) problems.push(`extension.id "${manifest.id}" must equal the tool slug "${tool.slug}"`);
+    if (manifest.name !== tool.name) problems.push('extension.name must equal tool.name');
+    if (typeof manifest.main === 'string' && (manifest.main.includes('..') || manifest.main.startsWith('/'))) problems.push('extension.main: must be a path under src/ with no ".." segment');
+    const contributes = manifest.contributes && typeof manifest.contributes === 'object' ? manifest.contributes : {};
+    const lists = ['commands', 'contextActions', 'fileHandlers', 'previewRenderers', 'panels', 'settingsSections', 'railCards', 'hooks', 'events'];
+    if (!lists.some((k) => Array.isArray(contributes[k]) && contributes[k].length > 0)) {
+      problems.push('extension.contributes: at least one contribution is required - an extension that contributes nothing has nothing to install');
+    }
+    for (const key of ['panels', 'settingsSections', 'railCards']) {
+      for (const item of contributes[key] ?? []) {
+        if (typeof item?.html === 'string' && (item.html.includes('..') || item.html.startsWith('/'))) problems.push(`extension.contributes.${key}: "${item.html}" must be a path under panels/ with no ".." segment`);
+        else if (typeof item?.html === 'string' && !existsSync(join(folder, 'extension/files', item.html))) problems.push(`extension.contributes.${key}: ${item.html} is not in the tool folder`);
+      }
+    }
+    if (manifest.main) {
+      if (!existsSync(join(folder, 'extension/files/build')) || readdirSync(join(folder, 'extension/files/build')).filter((f) => f.endsWith('.js')).length === 0) {
+        problems.push('extension/files/build/*.js is missing - run `npm run build:tool -- <slug>` (this extension declares `main`)');
+      }
+    }
+  }
+  if (!existsSync(join(folder, 'extension/extension.lock.json'))) problems.push('extension/extension.lock.json is missing - run `npm run build:tool -- <slug>`');
+  if (tool.install?.kind !== 'extension') problems.push('tool.install.kind: must be "extension" for an extension');
+  return problems;
+}
+
 export function loadTools() {
   const dir = join(ROOT, 'tools');
   const out = [];
@@ -88,18 +174,31 @@ export function loadTools() {
       for (const s of tool.screenshots ?? []) if (typeof s?.src === 'string' && !/^https:\/\//.test(s.src) && !existsSync(join(folder, s.src))) problems.push(`screenshot ${s.src} is not in the tool folder`);
       if (tool.seo?.ogImage && !/^https:\/\//.test(tool.seo.ogImage) && !existsSync(join(folder, tool.seo.ogImage))) problems.push(`seo.ogImage ${tool.seo.ogImage} is not in the tool folder`);
       if (tool.kind === 'skin') problems.push(...validateSkinFolder(folder, tool));
+      if (tool.kind === 'script') problems.push(...validateScriptFolder(folder, tool));
+      if (tool.kind === 'extension') problems.push(...validateExtensionFolder(folder, tool));
     }
-      // The skin is read back here so build-manifest.mjs can inline it
-    // without opening the folder again. A folder whose skin.json does not
-    // parse has already collected a problem above, so `null` here is not a
-    // silent failure - the build refuses to run at all while any tool has
+      // The skin/script/extension payload is read back here so
+    // build-manifest.mjs and build-catalog.mjs can inline it without
+    // opening the folder again. A folder whose payload does not parse has
+    // already collected a problem above, so `null` here is not a silent
+    // failure - the build refuses to run at all while any tool has
     // problems.
     let skin = null;
     const skinFile = join(folder, 'skin/skin.json');
     if (tool?.kind === 'skin' && existsSync(skinFile)) {
       try { skin = JSON.parse(readFileSync(skinFile, 'utf8')); } catch { skin = null; }
     }
-    out.push({ slug: entry, tool, problems, skin, readme: existsSync(join(folder, 'README.md')) ? readFileSync(join(folder, 'README.md'), 'utf8') : '' });
+    let scriptManifest = null;
+    const scriptFile = join(folder, 'script/files/script.json');
+    if (tool?.kind === 'script' && existsSync(scriptFile)) {
+      try { scriptManifest = JSON.parse(readFileSync(scriptFile, 'utf8')); } catch { scriptManifest = null; }
+    }
+    let extensionManifest = null;
+    const extensionFile = join(folder, 'extension/files/extension.json');
+    if (tool?.kind === 'extension' && existsSync(extensionFile)) {
+      try { extensionManifest = JSON.parse(readFileSync(extensionFile, 'utf8')); } catch { extensionManifest = null; }
+    }
+    out.push({ slug: entry, tool, problems, skin, scriptManifest, extensionManifest, readme: existsSync(join(folder, 'README.md')) ? readFileSync(join(folder, 'README.md'), 'utf8') : '' });
   }
   const slugs = new Set(out.map((t) => t.slug));
   for (const t of out) for (const rel of t.tool?.related ?? []) if (!slugs.has(rel)) t.problems.push(`related slug "${rel}" is not a tool in this repository`);

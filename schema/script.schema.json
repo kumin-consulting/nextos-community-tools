@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/schema/script.schema.json",
+  "title": "NextOS script manifest",
+  "description": "A NextOS Script's script.json - what runs in the worker sandbox, bound to a command, an OS event, a schedule, or nothing (manual only). Hand-written from the Extend series' MASTER brief (lib/os/scripts owns the runtime; this schema is what a tool folder here and NextOS's own community-share route both hold a script manifest to). Mirrors NextOS's own AppPermission union verbatim - a script asks for the same permissions an app does.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "version", "description", "main", "permissions", "tools", "triggers", "author"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 2, "maxLength": 64, "description": "Must equal the tool slug." },
+    "name": { "type": "string", "minLength": 2, "maxLength": 60 },
+    "version": { "type": "string", "minLength": 1, "maxLength": 32 },
+    "description": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "main": { "type": "string", "pattern": "^src/(?!.*\\.\\.)[A-Za-z0-9_./-]+\\.(ts|tsx|js|jsx)$", "minLength": 5, "maxLength": 200, "description": "A path under src/, no leading slash, no \"..\" segment (the pattern already excludes both)." },
+    "permissions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(fs:(read|write):.+|intents|events|notifications|clipboard|agents|network|storage|windows|db:read|db:write)$",
+        "description": "NextOS's AppPermission union, verbatim (lib/apps/manifest.ts) - a bare permission or an fs:read:/fs:write: path."
+      }
+    },
+    "tools": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 80 }, "description": "Agent tool names this script may call, by name." },
+    "triggers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["command", "event", "schedule", "manual"] },
+          "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "keybinding": { "type": "string", "minLength": 1, "maxLength": 40, "pattern": "^(Mod|Ctrl|Alt|Shift|Meta)(\\+(Mod|Ctrl|Alt|Shift|Meta|[A-Za-z0-9]))*\\+[A-Za-z0-9]$" },
+          "pattern": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "every": { "type": "string", "pattern": "^[0-9]+[smhd]$", "description": "e.g. \"1d\", \"30m\"." },
+          "at": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$", "description": "HH:MM, 24 hour." }
+        },
+        "additionalProperties": false
+      }
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 80 }, "url": { "type": "string", "format": "uri", "pattern": "^https://" } }
+    }
+  }
+}

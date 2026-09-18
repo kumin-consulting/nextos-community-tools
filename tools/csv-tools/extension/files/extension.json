@@ -1,0 +1,23 @@
+{
+  "id": "csv-tools",
+  "name": "CSV tools",
+  "version": "1.0.0",
+  "description": "Open any .csv as a sortable table - a Finder context action, a file handler, a preview renderer and one panel.",
+  "main": "src/index.ts",
+  "permissions": ["fs:read:home"],
+  "tools": [],
+  "contributes": {
+    "contextActions": [
+      { "id": "csv.open", "appId": "finder", "label": "Open as table", "when": { "extensions": [".csv"] } }
+    ],
+    "fileHandlers": [
+      { "id": "csv", "extensions": [".csv"], "label": "CSV table", "panel": "table" }
+    ],
+    "previewRenderers": [
+      { "id": "csv.preview", "extensions": [".csv"], "handler": "previewCsv" }
+    ],
+    "panels": [
+      { "id": "table", "title": "CSV table", "html": "panels/table.html", "where": "window" }
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "slug": "hello-script",
+  "name": "Hello script",
+  "kind": "script",
+  "summary": "The smallest possible NextOS Script: one command that writes a friendly, timestamped note to your Notes folder.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
+  "repository": "https://github.com/kumin-consulting/nextos-community-tools",
+  "homepage": "https://www.jonkum.in/community/hello-script",
+  "license": "MIT",
+  "publishedAt": "2026-09-18",
+  "updatedAt": "2026-09-18",
+  "categories": [
+    "automation",
+    "productivity"
+  ],
+  "tags": [
+    "script",
+    "sample",
+    "notes",
+    "command"
+  ],
+  "seo": {
+    "title": "Hello script - a NextOS Script example",
+    "description": "A one-file NextOS Script: bind a command to Mod+Shift+H and it writes a timestamped hello note to ~/Notes. The reference example for writing your own.",
+    "keywords": [
+      "nextos script",
+      "nextos automation",
+      "sample script",
+      "script sdk"
+    ]
+  },
+  "faq": [
+    {
+      "q": "What does it actually do?",
+      "a": "Nothing more than its name says: running its command (bound to Mod+Shift+H, or from the Scripts app) writes ~/Notes/hello.md with the current time and a note about what triggered it, then shows a notification. It exists to be read, not to be useful on its own."
+    },
+    {
+      "q": "What permission does it ask for?",
+      "a": "One: fs:write:~/Notes, so it can write the note. It asks for nothing else - no network, no other tools, no other folders."
+    }
+  ],
+  "install": {
+    "kind": "script"
+  },
+  "requires": {
+    "platforms": [
+      "web"
+    ]
+  },
+  "permissions": [
+    "fs:write:~/Notes"
+  ],
+  "support": {
+    "issues": "https://github.com/kumin-consulting/nextos-community-tools/issues"
+  }
+}

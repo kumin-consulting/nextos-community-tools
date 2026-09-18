@@ -34,6 +34,25 @@
 // string this module produces, which is a different thing entirely) - so
 // this runs identically inside the build Web Worker (buildWorker.ts) and
 // in plain node (scripts/test-apps-native-build.mjs).
+//
+// EXTEND SERIES ADDITION (E3, script-extension-kinds): a sixth bare
+// specifier, `@kumin/script`, and a second output shape for `kind:
+// 'script'|'extension'` inputs - `export default __appExports.default`
+// (the script's `main`) plus `hooks`/`commands` instead of the app
+// shape's `tools`/`intents`/`onInstall`/`onUninstall`. `kind` defaults to
+// 'app' and every existing app kind's output is byte-for-byte unchanged
+// (verified by re-running `build-app.mjs --check` on chess/recall/sketch/
+// nextos-runner after this edit - see the E3 handoff).
+//
+// `@kumin/script` resolves at RUN time to `self.__kuminScript(id)` (a
+// worker has no `window`) with a `window.__kuminScript(id)` fallback for
+// a non-worker host - this is a PLACEHOLDER naming, not a contract: E2
+// (lib/os/scripts, the actual worker sandbox) owns the real global and
+// may name it differently. This vendored copy of moduleGraph.ts is kept
+// in sync with lib/apps/native/moduleGraph.ts in kumin-consulting/
+// jonkum.in by hand (see build-tool.mjs's header); the E3 handoff says to
+// re-vendor from the site's own file once E2 lands its `@kumin/script`
+// specifier on develop, rather than trust this guess indefinitely.
 
 import ts from 'typescript';
 
@@ -51,8 +70,14 @@ export interface ModuleGraphInput {
    *  '@kumin/sdk' accessor so each app's bundle resolves to ITS OWN sdk
    *  instance (see sdk.ts's getSdkFor) rather than a single shared
    *  global, which could not be correct once more than one native app
-   *  has ever loaded on the page (see sdk.ts's header comment). */
+   *  has ever loaded on the page (see sdk.ts's header comment). For a
+   *  script/extension input this is its id, baked the same way into the
+   *  '@kumin/script' accessor. */
   appId: string;
+  /** 'app' (default, unchanged output) or 'script'/'extension' - picks
+   *  the bare-specifier set and the exported shape. See this file's
+   *  header. */
+  kind?: 'app' | 'script' | 'extension';
 }
 
 export interface ModuleGraphResult {
@@ -67,8 +92,9 @@ export interface ModuleGraphResult {
 
 /** The five specifiers the brief says the build maps to
  *  `window.__kuminSdk.<x>` accessors - everything else must resolve to a
- *  file under the app's own src/. */
-const BARE_SPECIFIERS = new Set(['react', 'react-dom', 'react/jsx-runtime', 'zustand', '@kumin/sdk']);
+ *  file under the app's own src/. `@kumin/script` is the sixth, added for
+ *  script/extension inputs (see this file's header). */
+const BARE_SPECIFIERS = new Set(['react', 'react-dom', 'react/jsx-runtime', 'zustand', '@kumin/sdk', '@kumin/script']);
 
 const RESOLVE_SUFFIXES = ['', '.tsx', '.ts', '.jsx', '.js', '.json', '.css', '/index.tsx', '/index.ts', '/index.jsx', '/index.js'];
 
@@ -96,6 +122,46 @@ function resolveRelative(files: Record<string, string>, fromPath: string, spec: 
     if (Object.prototype.hasOwnProperty.call(files, candidate)) return candidate;
   }
   return undefined;
+}
+
+/** EXTEND SERIES ADDITION (E3): every top-level named export the entry
+ *  file declares (not `default`, tracked separately by the fixed
+ *  `export default __appExports.default;` line every kind emits). An app
+ *  entry's shape is fixed (tools/intents/onInstall/onUninstall) and never
+ *  calls this - only a script/extension entry does, because MASTER's
+ *  contract lets an extension name its hook/handler exports anything
+ *  (`hooks`, `commands`, or an arbitrary `previewCsv`/`onNoteSave` a
+ *  `contributes.*.handler` string points at) - the wrapper has to
+ *  re-export whatever the entry actually exports, not a fixed list.
+ *  Covers `export function x() {}`, `export const x = ...`, and
+ *  `export { x, y as z }` (the exported name, not the local one). Does
+ *  NOT resolve `export * from './other'` - MASTER's shape never asks a
+ *  script/extension entry to do that, and the linker's job is to mirror
+ *  what NextOS's own runtime import() sees, not to add capability the
+ *  brief never specified. */
+function extractExportNames(path: string, text: string): string[] {
+  const source = ts.createSourceFile(path, text, ts.ScriptTarget.ES2020, false, scriptKindFor(path));
+  const names = new Set<string>();
+  const hasExportModifier = (node: ts.Node): boolean => !!ts.canHaveModifiers(node) && (ts.getModifiers(node) ?? []).some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
+  const isDefaultModifier = (node: ts.Node): boolean => !!ts.canHaveModifiers(node) && (ts.getModifiers(node) ?? []).some((m) => m.kind === ts.SyntaxKind.DefaultKeyword);
+  source.statements.forEach((statement) => {
+    if (ts.isExportDeclaration(statement) && !statement.moduleSpecifier && statement.exportClause && ts.isNamedExports(statement.exportClause)) {
+      for (const el of statement.exportClause.elements) {
+        const exported = el.name.text;
+        if (exported !== 'default') names.add(exported);
+      }
+      return;
+    }
+    if (!hasExportModifier(statement) || isDefaultModifier(statement)) return;
+    if ((ts.isFunctionDeclaration(statement) || ts.isClassDeclaration(statement)) && statement.name) {
+      names.add(statement.name.text);
+    } else if (ts.isVariableStatement(statement)) {
+      for (const decl of statement.declarationList.declarations) {
+        if (ts.isIdentifier(decl.name)) names.add(decl.name.text);
+      }
+    }
+  });
+  return Array.from(names);
 }
 
 function scriptKindFor(path: string): ts.ScriptKind {
@@ -170,7 +236,7 @@ function transpileSource(path: string, text: string): string {
  * property reads per `require` call.
  */
 export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
-  const { entryPath, files, appId } = input;
+  const { entryPath, files, appId, kind = 'app' } = input;
   if (!Object.prototype.hasOwnProperty.call(files, entryPath)) {
     throw new Error(`Entry file "${entryPath}" was not found. Files seen: ${Object.keys(files).sort().join(', ') || '(none)'}`);
   }
@@ -215,8 +281,8 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
       const resolved = resolveRelative(files, path, spec);
       if (!resolved) {
         throw new Error(
-          `Cannot find "${spec}" imported from "${path}". Only files under this app's src/ and the five bare specifiers ` +
-            '(react, react-dom, react/jsx-runtime, zustand, @kumin/sdk) can be imported - no dynamic import(), no network fetch of code.'
+          `Cannot find "${spec}" imported from "${path}". Only files under this app's src/ and the bare specifiers ` +
+            '(react, react-dom, react/jsx-runtime, zustand, @kumin/sdk, @kumin/script) can be imported - no dynamic import(), no network fetch of code.'
         );
       }
       resolveMap[spec] = resolved;
@@ -237,8 +303,32 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
     .map((p) => `  modules[${JSON.stringify(p)}] = function (module, exports, require) {\n${compiled.get(p)!.code}\n  };`)
     .join('\n');
 
+  // `@kumin/sdk` (app) reads window.__kuminSdk (a native app is trusted
+  // OS-origin code with a DOM). `@kumin/script` (script/extension) reads
+  // self.__kuminScript first - the worker sandbox has no `window` - with
+  // a window fallback for a host that runs it off the main thread
+  // instead; see this file's header on why this global's name is a
+  // placeholder pending E2's real worker runtime.
+  const sdkBareLine =
+    kind === 'app'
+      ? `    "@kumin/sdk": function () { return window.__kuminSdk && window.__kuminSdk.sdk(${appIdJson}); }`
+      : `    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g(${appIdJson}); }`;
+  const exportTail =
+    kind === 'app'
+      ? ['export default __appExports.default;', 'export const tools = __appExports.tools;', 'export const intents = __appExports.intents;', 'export const onInstall = __appExports.onInstall;', 'export const onUninstall = __appExports.onUninstall;']
+      : [
+          'export default __appExports.default;',
+          // Whatever the entry actually names its exports - see
+          // extractExportNames' header. `hooks`/`commands` (MASTER's two
+          // named conventions) always end up in this list when the entry
+          // declares them; nothing is hardcoded. Every name here is a
+          // syntactic JS identifier (extractExportNames only ever reads
+          // one off a real binding), so a plain property access is safe.
+          ...extractExportNames(entryPath, files[entryPath]).map((name) => `export const ${name} = __appExports.${name};`),
+        ];
+
   const code = [
-    '// Generated by lib/apps/native/build.ts - do not edit. Rebuild from src/ with apps_build.',
+    `// Generated by ${kind === 'app' ? 'lib/apps/native/build.ts - do not edit. Rebuild from src/ with apps_build.' : 'lib/os/scripts (build-tool.mjs on the community side) - do not edit.'}`,
     'var __appExports = (function () {',
     '  "use strict";',
     '  var modules = Object.create(null);',
@@ -249,7 +339,7 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
     '    "react-dom": function () { return window.__kuminSdk && window.__kuminSdk.reactDom; },',
     '    "react/jsx-runtime": function () { return window.__kuminSdk && window.__kuminSdk.reactJsxRuntime; },',
     '    "zustand": function () { return window.__kuminSdk && window.__kuminSdk.zustand; },',
-    `    "@kumin/sdk": function () { return window.__kuminSdk && window.__kuminSdk.sdk(${appIdJson}); }`,
+    sdkBareLine,
     '  };',
     '  function req(fromPath, spec) {',
     '    if (Object.prototype.hasOwnProperty.call(bareMap, spec)) return bareMap[spec]();',
@@ -267,11 +357,7 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
     modulesSrc,
     `  return runModule(${entryJson});`,
     '})();',
-    'export default __appExports.default;',
-    'export const tools = __appExports.tools;',
-    'export const intents = __appExports.intents;',
-    'export const onInstall = __appExports.onInstall;',
-    'export const onUninstall = __appExports.onUninstall;',
+    ...exportTail,
     '',
   ].join('\n');
 

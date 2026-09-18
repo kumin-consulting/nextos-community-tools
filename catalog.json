@@ -2,8 +2,8 @@
   "format": "kumin-catalog",
   "version": 1,
   "name": "NextOS community tools",
-  "description": "Apps built by the community for NextOS - one page each at jonkum.in/community.",
-  "updatedAt": "2026-09-17T00:00:00.000Z",
+  "description": "Apps, scripts and extensions built by the community for NextOS - one page each at jonkum.in/community.",
+  "updatedAt": "2026-09-18T00:00:00.000Z",
   "apps": [
     {
       "id": "chess",
@@ -43,6 +43,54 @@
         "pgn",
         "offline",
         "keyboard"
+      ]
+    },
+    {
+      "id": "csv-tools",
+      "name": "CSV tools",
+      "version": "1.0.0",
+      "kind": "extension",
+      "description": "Open any .csv as a sortable table - a Finder context action, a file handler, a preview renderer and one panel.",
+      "homepage": "https://www.jonkum.in/community/csv-tools",
+      "permissions": [
+        "fs:read:home"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/csv-tools/extension/extension.zip",
+        "sha256": "f37dae6500cef5f01b2a48cff567e2041323e270ff25bcd4ce3fb1849e70c2d7",
+        "bytes": 7532
+      },
+      "tags": [
+        "extension",
+        "csv",
+        "finder",
+        "sample"
+      ]
+    },
+    {
+      "id": "hello-script",
+      "name": "Hello script",
+      "version": "1.0.0",
+      "kind": "script",
+      "description": "Writes a friendly, timestamped note to ~/Notes/hello.md - the smallest possible NextOS Script.",
+      "homepage": "https://www.jonkum.in/community/hello-script",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "permissions": [
+        "fs:write:~/Notes"
+      ],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/hello-script/script/script.zip",
+        "sha256": "baa36bd8df8ca1286abf4ff1699d4f934d75433abed0157109225bc1c12576cb",
+        "bytes": 2623
+      },
+      "tags": [
+        "script",
+        "sample",
+        "notes",
+        "command"
       ]
     },
     {
