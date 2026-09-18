@@ -1,0 +1,92 @@
+{
+  "format": "nextos-skin",
+  "version": 1,
+  "id": "crt",
+  "name": "CRT",
+  "description": "A green phosphor terminal: scanlines, a soft bloom and a faint 60 Hz flicker over a black-on-green command line.",
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "base": "dark",
+  "tokens": {
+    "ground": "#020805",
+    "ground2": "#04140a",
+    "panel": "#03170c",
+    "panelSolid": "#03170c",
+    "line": "rgba(57, 255, 20, 0.14)",
+    "lineStrong": "rgba(57, 255, 20, 0.28)",
+    "ink": "#7cff9e",
+    "ink2": "rgba(124, 255, 158, 0.72)",
+    "ink3": "rgba(124, 255, 158, 0.46)",
+    "accent": "#39ff14",
+    "agent": "#9dffb0",
+    "agentSoft": "rgba(157, 255, 176, 0.18)",
+    "warn": "#ffd166",
+    "ok": "#39ff14",
+    "err": "#ff5f56",
+    "radius": 2,
+    "blur": 6,
+    "transparency": 0.9
+  },
+  "cell": {
+    "chrome": "rgba(3, 20, 10, 0.95)",
+    "chromeInk": "#7cff9e",
+    "chromeInk2": "rgba(124, 255, 158, 0.6)",
+    "edge": "rgba(57, 255, 20, 0.25)",
+    "body": "#020805",
+    "darkChrome": "rgba(3, 20, 10, 0.95)",
+    "darkEdge": "rgba(57, 255, 20, 0.25)",
+    "darkBody": "#020805"
+  },
+  "app": {
+    "light": {
+      "bg": "#f4fff6",
+      "ink": "#04240f",
+      "line": "rgba(4, 36, 15, 0.12)",
+      "hover": "rgba(4, 36, 15, 0.06)",
+      "active": "rgba(4, 36, 15, 0.1)",
+      "scrim": "rgba(2, 20, 8, 0.92)",
+      "danger": { "bg": "#fdecea", "line": "#f3c2be", "ink": "#8a2a20" },
+      "warn": { "bg": "#fdf2df", "line": "#eed19f", "ink": "#7a530f" },
+      "info": { "bg": "#e8f7ed", "line": "#bfe4cb", "ink": "#1f6b3a" },
+      "ok": { "bg": "#e4f9e6", "line": "#b8e6bd", "ink": "#1c6e2a" }
+    },
+    "dark": {
+      "bg": "#020805",
+      "ink": "#7cff9e",
+      "line": "rgba(57, 255, 20, 0.12)",
+      "hover": "rgba(57, 255, 20, 0.08)",
+      "active": "rgba(57, 255, 20, 0.14)",
+      "scrim": "rgba(1, 8, 4, 0.95)",
+      "danger": { "bg": "rgba(255, 95, 86, 0.14)", "line": "rgba(255, 95, 86, 0.32)", "ink": "#ff8f88" },
+      "warn": { "bg": "rgba(255, 209, 102, 0.14)", "line": "rgba(255, 209, 102, 0.32)", "ink": "#ffd166" },
+      "info": { "bg": "rgba(157, 255, 176, 0.14)", "line": "rgba(157, 255, 176, 0.32)", "ink": "#9dffb0" },
+      "ok": { "bg": "rgba(57, 255, 20, 0.14)", "line": "rgba(57, 255, 20, 0.32)", "ink": "#39ff14" }
+    }
+  },
+  "type": {
+    "family": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+    "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+    "size": "medium"
+  },
+  "sky": {
+    "style": "grid",
+    "colors": ["#0b3d1f", "#020805"],
+    "grain": 0.08,
+    "vignette": 0.4
+  },
+  "layout": {
+    "strip": "bottom",
+    "chrome": "flat",
+    "density": "compact",
+    "glyphs": "square"
+  },
+  "wallpaper": "linear-gradient(180deg, #03170c 0%, #020805 70%, #010402 100%)",
+  "script": {
+    "main": "src/index.ts",
+    "description": "Draws a scanline + phosphor-bloom overlay over the whole shell and drives a faint 60 Hz brightness flicker with requestAnimationFrame. Purely cosmetic: it only adds a fixed, pointer-events:none overlay element and toggles a CSS custom property each frame - it reads no data, calls no other API, and removes the overlay and stops the loop completely when the skin is turned off."
+  }
+}

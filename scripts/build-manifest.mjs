@@ -38,6 +38,19 @@ const downloadFor = (slug, kind) => {
   return { url: `${RAW}/tools/${slug}/${kind}/${kind}.zip`, sha256: lock.sha256, bytes: lock.bytes };
 };
 
+/** SKIN-SCRIPTS SERIES ADDITION (S2, share): the download block for a
+ *  SCRIPTED skin - skin/skin.lock.json, pointing at skin/skin.zip. A
+ *  data-only skin has no skin.lock.json at all, so this returns
+ *  undefined for one and the manifest inlines no `download` for it - the
+ *  same test the S2 brief names by name ("manifest parsing yields
+ *  download for the scripted skin and none for dawn"). */
+const skinDownloadFor = (slug) => {
+  const lockPath = join(ROOT, 'tools', slug, 'skin', 'skin.lock.json');
+  if (!existsSync(lockPath)) return undefined;
+  const lock = JSON.parse(readFileSync(lockPath, 'utf8'));
+  return { url: `${RAW}/tools/${slug}/skin/skin.zip`, sha256: lock.sha256, bytes: lock.bytes };
+};
+
 const manifest = {
   format: 'nextos-community-tools',
   version: 1,
@@ -45,7 +58,7 @@ const manifest = {
   source: 'https://github.com/kumin-consulting/nextos-community-tools',
   tools: tools.map(({ slug, tool, readme, skin, scriptManifest, extensionManifest }) => ({
     ...tool,
-    ...(tool.kind === 'skin' && skin ? { skin, preview: absolute(slug, 'images/preview.svg') } : {}),
+    ...(tool.kind === 'skin' && skin ? { skin, preview: absolute(slug, 'images/preview.svg'), ...(skin.script ? { download: skinDownloadFor(slug) } : {}) } : {}),
     ...(tool.kind === 'script' && scriptManifest ? { script: scriptManifest, download: downloadFor(slug, 'script') } : {}),
     ...(tool.kind === 'extension' && extensionManifest ? { extension: extensionManifest, download: downloadFor(slug, 'extension') } : {}),
     seo: tool.seo ? { ...tool.seo, ...(tool.seo.ogImage ? { ogImage: absolute(slug, tool.seo.ogImage) } : {}) } : undefined,

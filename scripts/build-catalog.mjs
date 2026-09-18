@@ -14,6 +14,20 @@
 // lib/apps/catalog/types.ts's CatalogAppEntry.kind on the NextOS side for
 // why this is the same field widened, not a new one). Download URLs
 // point at each entry's committed <kind>.zip on the main branch.
+//
+// SKIN-SCRIPTS SERIES ADDITION (S2, share): a SCRIPTED skin (one whose
+// skin/skin.json carries a `script`) is listed too, `kind: "skin"` -
+// NextOS's own lib/apps/catalog/validate.ts widens its KNOWN_KINDS to
+// accept "skin" for exactly this reason: this same catalog.json also
+// lists apps/scripts/extensions, and validateCatalog fails the WHOLE
+// document on one unrecognised entry, not just that entry. A scripted
+// skin is not installable through the App Store's own install flow
+// (there is no native/hosted/bundled unpack for "skin" - a skin installs
+// through the Skins app's Community tab, from manifest.json, which
+// already carries its own `download` block) - listing it here only keeps
+// this document parseable everywhere NextOS reads a "kumin-catalog", and
+// gives anyone browsing an added catalogue source an honest look at what
+// it lists. A data-only skin (`dawn`) is never listed here, unchanged.
 // `--check` fails when the committed catalog.json is stale.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -22,8 +36,29 @@ import { loadTools } from './validate.mjs';
 const ROOT = new URL('..', import.meta.url).pathname;
 const RAW = 'https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main';
 const apps = [];
-for (const { slug, tool, problems } of loadTools()) {
+for (const { slug, tool, problems, skin } of loadTools()) {
   if (problems.length) continue;
+  if (tool.kind === 'skin') {
+    if (!skin?.script) continue;
+    const lockPath = join(ROOT, 'tools', slug, 'skin', 'skin.lock.json');
+    if (!existsSync(lockPath)) { console.error(`${slug}: skin.lock.json missing - run build:tool first`); process.exit(1); }
+    const lock = JSON.parse(readFileSync(lockPath, 'utf8'));
+    apps.push({
+      id: skin.id,
+      name: tool.name,
+      version: tool.version,
+      kind: 'skin',
+      ...(tool.summary ? { description: tool.summary } : {}),
+      homepage: `https://www.jonkum.in/community/${slug}`,
+      ...(tool.author ? { author: tool.author } : {}),
+      ...(tool.license ? { license: tool.license } : {}),
+      permissions: [],
+      download: { url: `${RAW}/tools/${slug}/skin/skin.zip`, sha256: lock.sha256, bytes: lock.bytes },
+      screenshots: [`${RAW}/tools/${slug}/images/preview.svg`],
+      tags: tool.tags ?? [],
+    });
+    continue;
+  }
   if (!['app', 'script', 'extension'].includes(tool.kind)) continue;
   const kindDir = join(ROOT, 'tools', slug, tool.kind);
   const manifestName = tool.kind === 'app' ? 'app.json' : `${tool.kind}.json`;

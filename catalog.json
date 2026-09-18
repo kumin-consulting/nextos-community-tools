@@ -46,6 +46,37 @@
       ]
     },
     {
+      "id": "crt",
+      "name": "CRT",
+      "version": "1.0.0",
+      "kind": "skin",
+      "description": "A green phosphor terminal: scanlines, a soft bloom and a faint 60 Hz flicker over a black-on-green command line.",
+      "homepage": "https://www.jonkum.in/community/crt",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "license": "CC0-1.0",
+      "permissions": [],
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/skin/skin.zip",
+        "sha256": "d429a261d4a14c2ae86016a365291dc2b17c70665f8a82ddaf0d6aad5e598f1c",
+        "bytes": 13234
+      },
+      "screenshots": [
+        "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/images/preview.svg"
+      ],
+      "tags": [
+        "skin",
+        "theme",
+        "dark",
+        "terminal",
+        "crt",
+        "scripted",
+        "compact"
+      ]
+    },
+    {
       "id": "csv-tools",
       "name": "CSV tools",
       "version": "1.0.0",
