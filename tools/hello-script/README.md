@@ -4,7 +4,7 @@ The smallest possible [NextOS Script](https://www.jonkum.in/nextos): one command
 
 ## Install it
 
-In NextOS, open the App Store, add this repository as a source (see the root [README](https://github.com/kumin-consulting/nextos-community-tools#add-your-tool)), and install "Hello script" - or open [jonkum.in/os?install=script:hello-script](https://www.jonkum.in/os?install=script:hello-script) and NextOS installs and approves it for you.
+In NextOS, open the App Store, add this repository as a source (see the root [README](https://github.com/kumin-consulting/nextos-community-tools#add-your-tool)), and install "Hello script" - or open [jonkum.in/os?install=script:hello-script](https://www.jonkum.in/os?install=script:hello-script) and NextOS opens the App Store on it, ready for you to install and approve yourself - a deep link never installs anything on its own.
 
 ## What it asks for
 

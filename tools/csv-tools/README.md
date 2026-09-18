@@ -4,7 +4,7 @@ A small [NextOS Extension](https://www.jonkum.in/nextos): open any `.csv` file a
 
 ## Install it
 
-In NextOS, open the App Store, add this repository as a source (see the root [README](https://github.com/kumin-consulting/nextos-community-tools#add-your-tool)), and install "CSV tools" - or open [jonkum.in/os?install=extension:csv-tools](https://www.jonkum.in/os?install=extension:csv-tools) and NextOS installs and approves it for you.
+In NextOS, open the App Store, add this repository as a source (see the root [README](https://github.com/kumin-consulting/nextos-community-tools#add-your-tool)), and install "CSV tools" - or open [jonkum.in/os?install=extension:csv-tools](https://www.jonkum.in/os?install=extension:csv-tools) and NextOS opens the App Store on it, ready for you to install and approve yourself - a deep link never installs anything on its own.
 
 ## What it contributes
 
