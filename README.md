@@ -75,6 +75,8 @@ Three things have to agree, because the listing repeats them: `skin.id` is the f
 
 `tools/dawn` is a worked example: the `dawn` skin that ships with NextOS, in exactly the shape the Share button produces.
 
+A shared skin's pull request deliberately does NOT regenerate `manifest.json` - two people sharing on the same day would otherwise conflict over a generated file. `npm run check-manifest` knows this: a tool folder that is not in the manifest at all is reported as new and passes, while a tool the manifest already lists is still held to its folder. Run `npm run build` and commit the manifest when you merge.
+
 ## Field reference
 
 See [`schema/tool.schema.json`](schema/tool.schema.json) - it is the single source of truth, and `npm test` checks every tool against it. Skins are checked against [`schema/skin.schema.json`](schema/skin.schema.json) as well. Both go through `scripts/lib/jsonSchema.mjs`, a small dependency-free validator, so the checks need nothing installed. That file is generated from the NextOS repository too - edit it there, not here.

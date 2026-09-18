@@ -36,11 +36,23 @@ const manifest = {
 const text = JSON.stringify(manifest, null, 2) + '\n';
 const target = join(ROOT, 'manifest.json');
 if (process.argv.includes('--check')) {
-  let current = '';
-  try { current = readFileSync(target, 'utf8'); } catch {}
-  const strip = (s) => s.replace(/"generatedAt": "[^"]*"/, '');
-  if (strip(current) !== strip(text)) { console.error('manifest.json is out of date - run `npm run build` and commit it.'); process.exit(1); }
-  console.log('manifest.json is up to date.');
+  let current = null;
+  try { current = JSON.parse(readFileSync(target, 'utf8')); } catch {}
+  if (!current || !Array.isArray(current.tools)) { console.error('manifest.json is missing or unreadable - run `npm run build` and commit it.'); process.exit(1); }
+  const listed = new Set(current.tools.map((t) => t.slug));
+  const fresh = manifest.tools.filter((t) => listed.has(t.slug));
+  const added = manifest.tools.filter((t) => !listed.has(t.slug)).map((t) => t.slug);
+  const removed = current.tools.filter((t) => !manifest.tools.some((f) => f.slug === t.slug)).map((t) => t.slug);
+  // Both lists come out of loadTools' folder order, so a plain stringify
+  // of the overlap is a fair comparison.
+  const listedNow = current.tools.filter((t) => manifest.tools.some((f) => f.slug === t.slug));
+  if (JSON.stringify(fresh) !== JSON.stringify(listedNow)) {
+    console.error('manifest.json is out of date for a tool it already lists - run `npm run build` and commit it.');
+    process.exit(1);
+  }
+  if (removed.length) { console.error(`manifest.json lists tool(s) that no longer exist: ${removed.join(', ')} - run \`npm run build\` and commit it.`); process.exit(1); }
+  if (added.length) console.log(`manifest.json is up to date; ${added.length} new tool folder(s) not listed yet (${added.join(', ')}) - the manifest is rebuilt on merge.`);
+  else console.log('manifest.json is up to date.');
 } else {
   writeFileSync(target, text);
   console.log(`Wrote manifest.json with ${manifest.tools.length} tool(s).`);
