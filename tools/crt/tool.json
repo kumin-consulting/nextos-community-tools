@@ -1,0 +1,52 @@
+{
+  "slug": "crt",
+  "name": "CRT",
+  "kind": "skin",
+  "runsCode": true,
+  "summary": "A green phosphor terminal: scanlines, a soft bloom and a faint 60 Hz flicker over a black-on-green command line.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Kumin Consulting",
+    "url": "https://www.jonkum.in"
+  },
+  "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/crt",
+  "license": "CC0-1.0",
+  "publishedAt": "2026-09-18",
+  "updatedAt": "2026-09-18",
+  "categories": [
+    "design"
+  ],
+  "tags": [
+    "skin",
+    "theme",
+    "dark",
+    "terminal",
+    "crt",
+    "scripted",
+    "compact"
+  ],
+  "seo": {
+    "title": "CRT - a scripted NextOS skin",
+    "keywords": [
+      "crt skin",
+      "nextos skin",
+      "nextos theme",
+      "terminal theme",
+      "skin script"
+    ]
+  },
+  "screenshots": [
+    {
+      "src": "images/preview.svg",
+      "alt": "The CRT skin: a green phosphor terminal with scanlines over one window and the command strip."
+    }
+  ],
+  "install": {
+    "kind": "skin"
+  },
+  "requires": {
+    "platforms": [
+      "web"
+    ]
+  }
+}

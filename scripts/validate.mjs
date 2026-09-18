@@ -66,6 +66,20 @@ export function validateSkinFolder(folder, tool) {
     if (!existsSync(join(folder, picture))) problems.push(`${picture} is missing (rendered from the skin, not a screenshot)`);
   }
   if (tool.install?.kind !== 'skin') problems.push('tool.install.kind: must be "skin" for a skin');
+  // SKIN-SCRIPTS SERIES ADDITION (S2, share): a skin that carries a
+  // `script` IS code, unlike a data-only skin - it needs the same
+  // built/hash-locked download a script or an extension needs, and
+  // `runsCode` on tool.json has to say so (schema/tool.schema.json).
+  if (skin && typeof skin === 'object' && skin.script) {
+    if (typeof skin.script.main !== 'string') problems.push('skin.script.main is required when skin.script is present');
+    else if (!existsSync(join(folder, 'skin', skin.script.main))) problems.push(`skin.script.main "${skin.script.main}" is not in skin/src`);
+    if (!existsSync(join(folder, 'skin/build/skin.js'))) problems.push('skin/build/skin.js is missing - run `npm run build:tool -- <slug>`');
+    if (!existsSync(join(folder, 'skin/skin.zip'))) problems.push('skin/skin.zip is missing - run `npm run build:tool -- <slug>`');
+    if (!existsSync(join(folder, 'skin/skin.lock.json'))) problems.push('skin/skin.lock.json is missing - run `npm run build:tool -- <slug>`');
+    if (tool.runsCode !== true) problems.push('tool.runsCode: must be true for a skin that carries a script');
+  } else if (tool.runsCode) {
+    problems.push('tool.runsCode: must not be set for a skin with no script');
+  }
   return problems;
 }
 

@@ -61,6 +61,28 @@
 // kumin-consulting/jonkum.in by hand (see build-tool.mjs's header) -
 // diff the two files at the next integration to catch drift early,
 // rather than waiting for another silent runtime mismatch like this one.
+//
+// SKIN-SCRIPTS SERIES ADDITION (S2, "share"): a seventh bare specifier,
+// `@kumin/skin`, and a third output shape for `kind: 'skin'` inputs - a
+// scripted skin's `src/index.ts` (MASTER's Program shape: `export default
+// async function activate(ctx) {...}`, optional `export function
+// deactivate()`). Coded against MASTER's contract line ("'@kumin/skin'
+// resolves to window.__kuminSkinScript.sdk(id)") rather than against S1's
+// actual lib/os/skins/scriptSdk.ts, which lands in a parallel unit not
+// present in this worktree - see the S2 handoff for the one thing this
+// vendored copy had to decide on its own: since a `activate(ctx)` already
+// receives the SDK as its parameter, the ONLY reason a program would ever
+// need `@kumin/skin` as a module-level import is to reach the same SDK
+// from `deactivate()`, which MASTER's shape gives no parameter. This
+// linker resolves the bare specifier to `{ skin: <the same ctx
+// activate() receives> }` so MASTER's own worked example - `import {
+// skin } from '@kumin/skin';` - compiles and runs exactly as written.
+// This resolution is baked as literal generated JS inside build/skin.js
+// itself (see sdkBareLine below), so it is entirely this repository's own
+// choice and needs no agreement from S1's site-side moduleGraph.ts: the
+// only cross-repository contract that has to hold is the one MASTER
+// states, `window.__kuminSkinScript.sdk(id)` returning the SDK, which
+// this wraps.
 
 import ts from 'typescript';
 
@@ -82,10 +104,10 @@ export interface ModuleGraphInput {
    *  script/extension input this is its id, baked the same way into the
    *  '@kumin/script' accessor. */
   appId: string;
-  /** 'app' (default, unchanged output) or 'script'/'extension' - picks
-   *  the bare-specifier set and the exported shape. See this file's
-   *  header. */
-  kind?: 'app' | 'script' | 'extension';
+  /** 'app' (default, unchanged output), 'script'/'extension', or 'skin'
+   *  (S2, skin-scripts) - picks the bare-specifier set and the exported
+   *  shape. See this file's header. */
+  kind?: 'app' | 'script' | 'extension' | 'skin';
 }
 
 export interface ModuleGraphResult {
@@ -101,8 +123,9 @@ export interface ModuleGraphResult {
 /** The five specifiers the brief says the build maps to
  *  `window.__kuminSdk.<x>` accessors - everything else must resolve to a
  *  file under the app's own src/. `@kumin/script` is the sixth, added for
- *  script/extension inputs (see this file's header). */
-const BARE_SPECIFIERS = new Set(['react', 'react-dom', 'react/jsx-runtime', 'zustand', '@kumin/sdk', '@kumin/script']);
+ *  script/extension inputs; `@kumin/skin` is the seventh, added for skin
+ *  inputs (see this file's header). */
+const BARE_SPECIFIERS = new Set(['react', 'react-dom', 'react/jsx-runtime', 'zustand', '@kumin/sdk', '@kumin/script', '@kumin/skin']);
 
 const RESOLVE_SUFFIXES = ['', '.tsx', '.ts', '.jsx', '.js', '.json', '.css', '/index.tsx', '/index.ts', '/index.jsx', '/index.js'];
 
@@ -290,7 +313,7 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
       if (!resolved) {
         throw new Error(
           `Cannot find "${spec}" imported from "${path}". Only files under this app's src/ and the bare specifiers ` +
-            '(react, react-dom, react/jsx-runtime, zustand, @kumin/sdk, @kumin/script) can be imported - no dynamic import(), no network fetch of code.'
+            '(react, react-dom, react/jsx-runtime, zustand, @kumin/sdk, @kumin/script, @kumin/skin) can be imported - no dynamic import(), no network fetch of code.'
         );
       }
       resolveMap[spec] = resolved;
@@ -327,7 +350,14 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
   const sdkBareLine =
     kind === 'app'
       ? `    "@kumin/sdk": function () { return window.__kuminSdk && window.__kuminSdk.sdk(${appIdJson}); }`
-      : `    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g.sdk(${appIdJson}); }`;
+      : kind === 'skin'
+        ? // See this file's header ("SKIN-SCRIPTS SERIES ADDITION"): the
+          // `{ skin: ... }` wrapper exists only so MASTER's own worked
+          // example, `import { skin } from '@kumin/skin'`, compiles - the
+          // wrapped value is exactly `window.__kuminSkinScript.sdk(id)`,
+          // the same ctx object activate(ctx) already receives.
+          `    "@kumin/skin": function () { var g = (typeof window !== "undefined" && window.__kuminSkinScript) ? window.__kuminSkinScript : undefined; return { skin: g && g.sdk(${appIdJson}) }; }`
+        : `    "@kumin/script": function () { var g = (typeof self !== "undefined" && self.__kuminScript) ? self.__kuminScript : (typeof window !== "undefined" ? window.__kuminScript : undefined); return g && g.sdk(${appIdJson}); }`;
   const exportTail =
     kind === 'app'
       ? ['export default __appExports.default;', 'export const tools = __appExports.tools;', 'export const intents = __appExports.intents;', 'export const onInstall = __appExports.onInstall;', 'export const onUninstall = __appExports.onUninstall;']
@@ -343,7 +373,7 @@ export function buildBundle(input: ModuleGraphInput): ModuleGraphResult {
         ];
 
   const code = [
-    `// Generated by ${kind === 'app' ? 'lib/apps/native/build.ts - do not edit. Rebuild from src/ with apps_build.' : 'lib/os/scripts (build-tool.mjs on the community side) - do not edit.'}`,
+    `// Generated by ${kind === 'app' ? 'lib/apps/native/build.ts - do not edit. Rebuild from src/ with apps_build.' : kind === 'skin' ? 'lib/os/skins/script.ts (build-tool.mjs on the community side) - do not edit.' : 'lib/os/scripts (build-tool.mjs on the community side) - do not edit.'}`,
     'var __appExports = (function () {',
     '  "use strict";',
     '  var modules = Object.create(null);',

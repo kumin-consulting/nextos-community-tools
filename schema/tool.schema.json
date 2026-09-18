@@ -10,6 +10,7 @@
     "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 2, "maxLength": 64, "description": "The page address segment and the folder name. Lowercase letters, digits, single hyphens." },
     "name": { "type": "string", "minLength": 2, "maxLength": 60, "description": "The tool's name as people say it." },
     "kind": { "type": "string", "enum": ["app", "agent", "skill", "mcp-server", "cli", "template", "department", "integration", "skin", "script", "extension"], "description": "What kind of thing this is inside NextOS. A \"skin\" also needs skin/skin.json and images/preview.svg in its folder. A \"script\" needs script/files/script.json (+ src/**, build/**); an \"extension\" needs extension/files/extension.json (+ src, build, panels/**)." },
+    "runsCode": { "type": "boolean", "description": "SKIN-SCRIPTS SERIES ADDITION (S2, share): true when this tool ships a program that runs with full, unsandboxed access to the running OS - today, only a skin whose skin/skin.json carries a `script`. A \"script\" or an \"extension\" is already understood to be code by its kind alone and does not set this." },
     "summary": { "type": "string", "minLength": 60, "maxLength": 160, "description": "One plain sentence: the meta description and the listing card." },
     "version": { "type": "string", "minLength": 1, "maxLength": 32 },
     "author": {

@@ -706,6 +706,27 @@
       "type": "string",
       "maxLength": 32768,
       "description": "Optional extra CSS. The OS sanitises it on the way in and scopes it to the shell, dropping anything else."
+    },
+    "script": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "main"
+      ],
+      "description": "Optional. A skin may carry a JavaScript/TypeScript program that runs in the OS's own origin with FULL, UNSANDBOXED access to the running application - there is no sandbox and none is claimed. The source lives beside skin.json under src/**, the built module at build/skin.js, and the OS asks for one explicit approval, naming this description, before the code ever runs; the approved build is hash-pinned and re-checked at every activation.",
+      "properties": {
+        "main": {
+          "type": "string",
+          "pattern": "^(?!(?:.*/)?\\.\\.(?:/|$))src/(?:[^/<>:\"|?*\\\\]+/)*[^/<>:\"|?*\\\\]+$",
+          "description": "The entry file, under src/ (e.g. \"src/index.ts\"). No \"..\" segment, no empty segment, and none of < > : \" | ? * or a backslash."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "What the code does, in plain words. This is the text a person reads at the one-time approval, so it has to actually say what the program touches."
+        }
+      }
     }
   }
 }

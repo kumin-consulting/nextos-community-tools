@@ -150,6 +150,193 @@
       "page": "https://www.jonkum.in/community/chess"
     },
     {
+      "slug": "crt",
+      "name": "CRT",
+      "kind": "skin",
+      "runsCode": true,
+      "summary": "A green phosphor terminal: scanlines, a soft bloom and a faint 60 Hz flicker over a black-on-green command line.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kumin Consulting",
+        "url": "https://www.jonkum.in"
+      },
+      "repository": "https://github.com/kumin-consulting/nextos-community-tools/tree/main/tools/crt",
+      "license": "CC0-1.0",
+      "publishedAt": "2026-09-18",
+      "updatedAt": "2026-09-18",
+      "categories": [
+        "design"
+      ],
+      "tags": [
+        "skin",
+        "theme",
+        "dark",
+        "terminal",
+        "crt",
+        "scripted",
+        "compact"
+      ],
+      "seo": {
+        "title": "CRT - a scripted NextOS skin",
+        "keywords": [
+          "crt skin",
+          "nextos skin",
+          "nextos theme",
+          "terminal theme",
+          "skin script"
+        ]
+      },
+      "screenshots": [
+        {
+          "src": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/images/preview.svg",
+          "alt": "The CRT skin: a green phosphor terminal with scanlines over one window and the command strip."
+        }
+      ],
+      "install": {
+        "kind": "skin"
+      },
+      "requires": {
+        "platforms": [
+          "web"
+        ]
+      },
+      "skin": {
+        "format": "nextos-skin",
+        "version": 1,
+        "id": "crt",
+        "name": "CRT",
+        "description": "A green phosphor terminal: scanlines, a soft bloom and a faint 60 Hz flicker over a black-on-green command line.",
+        "author": {
+          "name": "Kumin Consulting",
+          "url": "https://www.jonkum.in"
+        },
+        "createdAt": "2026-01-01T00:00:00.000Z",
+        "updatedAt": "2026-01-01T00:00:00.000Z",
+        "base": "dark",
+        "tokens": {
+          "ground": "#020805",
+          "ground2": "#04140a",
+          "panel": "#03170c",
+          "panelSolid": "#03170c",
+          "line": "rgba(57, 255, 20, 0.14)",
+          "lineStrong": "rgba(57, 255, 20, 0.28)",
+          "ink": "#7cff9e",
+          "ink2": "rgba(124, 255, 158, 0.72)",
+          "ink3": "rgba(124, 255, 158, 0.46)",
+          "accent": "#39ff14",
+          "agent": "#9dffb0",
+          "agentSoft": "rgba(157, 255, 176, 0.18)",
+          "warn": "#ffd166",
+          "ok": "#39ff14",
+          "err": "#ff5f56",
+          "radius": 2,
+          "blur": 6,
+          "transparency": 0.9
+        },
+        "cell": {
+          "chrome": "rgba(3, 20, 10, 0.95)",
+          "chromeInk": "#7cff9e",
+          "chromeInk2": "rgba(124, 255, 158, 0.6)",
+          "edge": "rgba(57, 255, 20, 0.25)",
+          "body": "#020805",
+          "darkChrome": "rgba(3, 20, 10, 0.95)",
+          "darkEdge": "rgba(57, 255, 20, 0.25)",
+          "darkBody": "#020805"
+        },
+        "app": {
+          "light": {
+            "bg": "#f4fff6",
+            "ink": "#04240f",
+            "line": "rgba(4, 36, 15, 0.12)",
+            "hover": "rgba(4, 36, 15, 0.06)",
+            "active": "rgba(4, 36, 15, 0.1)",
+            "scrim": "rgba(2, 20, 8, 0.92)",
+            "danger": {
+              "bg": "#fdecea",
+              "line": "#f3c2be",
+              "ink": "#8a2a20"
+            },
+            "warn": {
+              "bg": "#fdf2df",
+              "line": "#eed19f",
+              "ink": "#7a530f"
+            },
+            "info": {
+              "bg": "#e8f7ed",
+              "line": "#bfe4cb",
+              "ink": "#1f6b3a"
+            },
+            "ok": {
+              "bg": "#e4f9e6",
+              "line": "#b8e6bd",
+              "ink": "#1c6e2a"
+            }
+          },
+          "dark": {
+            "bg": "#020805",
+            "ink": "#7cff9e",
+            "line": "rgba(57, 255, 20, 0.12)",
+            "hover": "rgba(57, 255, 20, 0.08)",
+            "active": "rgba(57, 255, 20, 0.14)",
+            "scrim": "rgba(1, 8, 4, 0.95)",
+            "danger": {
+              "bg": "rgba(255, 95, 86, 0.14)",
+              "line": "rgba(255, 95, 86, 0.32)",
+              "ink": "#ff8f88"
+            },
+            "warn": {
+              "bg": "rgba(255, 209, 102, 0.14)",
+              "line": "rgba(255, 209, 102, 0.32)",
+              "ink": "#ffd166"
+            },
+            "info": {
+              "bg": "rgba(157, 255, 176, 0.14)",
+              "line": "rgba(157, 255, 176, 0.32)",
+              "ink": "#9dffb0"
+            },
+            "ok": {
+              "bg": "rgba(57, 255, 20, 0.14)",
+              "line": "rgba(57, 255, 20, 0.32)",
+              "ink": "#39ff14"
+            }
+          }
+        },
+        "type": {
+          "family": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+          "mono": "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+          "size": "medium"
+        },
+        "sky": {
+          "style": "grid",
+          "colors": [
+            "#0b3d1f",
+            "#020805"
+          ],
+          "grain": 0.08,
+          "vignette": 0.4
+        },
+        "layout": {
+          "strip": "bottom",
+          "chrome": "flat",
+          "density": "compact",
+          "glyphs": "square"
+        },
+        "wallpaper": "linear-gradient(180deg, #03170c 0%, #020805 70%, #010402 100%)",
+        "script": {
+          "main": "src/index.ts",
+          "description": "Draws a scanline + phosphor-bloom overlay over the whole shell and drives a faint 60 Hz brightness flicker with requestAnimationFrame. Purely cosmetic: it only adds a fixed, pointer-events:none overlay element and toggles a CSS custom property each frame - it reads no data, calls no other API, and removes the overlay and stops the loop completely when the skin is turned off."
+        }
+      },
+      "preview": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/images/preview.svg",
+      "download": {
+        "url": "https://raw.githubusercontent.com/kumin-consulting/nextos-community-tools/main/tools/crt/skin/skin.zip",
+        "sha256": "10cb72a46b7e601433b2c41513c0e47c87248471e9b196915ab71190e9e7ca7a",
+        "bytes": 15912
+      },
+      "readme": "# CRT\n\nA green phosphor terminal: scanlines, a soft bloom and a faint 60 Hz flicker over a black-on-green command line.\n\n## Apply it\n\nOpen [jonkum.in/os?skin=crt](https://www.jonkum.in/os?skin=crt) and NextOS installs the skin and puts it on. The first time, it asks you to approve the code it runs - see \"What the code does\" below - then it stays with the rest of your skins, so you can switch back whenever you like.\n\n## The palette\n\n| Surface | Colour |\n| --- | --- |\n| Ground | `#020805` |\n| Panel | `#03170c` |\n| Ink | `#7cff9e` |\n| Accent | `#39ff14` |\n| Window chrome | `rgba(3, 20, 10, 0.95)` |\n| App body | `#020805` |\n\n## Type and layout\n\nTypeface: `ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`, at the medium text size.\n\n- Strip at the bottom\n- flat chrome\n- compact spacing\n- square glyphs\n- grid sky\n\n## What the code does\n\nTokens and CSS get the palette and the layout right, but not the scanlines, the phosphor bloom or the flicker a real CRT has - so this skin also ships a small program (`skin/src/index.ts`) that runs with full, unsandboxed access to the OS, the same trust a native app already has. It does exactly three things: adds one fixed, `pointer-events: none` overlay `<div>` painted with scanlines and a radial bloom, drives a ~60 Hz brightness wobble on that overlay with `requestAnimationFrame`, and removes both completely the moment the skin is turned off. It reads no data, calls no other API, and touches nothing outside that one element. NextOS asks you to approve this the first time the skin is applied - to your own copy or a community one - and shows you this same description when it does.\n\nSee [the skins guide](https://www.jonkum.in/docs/skins) for what a skin is, and \"Skins that run code\" in this repository's own README for the format `skin/src`, `skin/build/skin.js` and `skin/skin.zip` follow.\n\nPublished by Kumin Consulting on 2026-09-18, released under CC0-1.0.",
+      "page": "https://www.jonkum.in/community/crt"
+    },
+    {
       "slug": "csv-tools",
       "name": "CSV tools",
       "kind": "extension",
